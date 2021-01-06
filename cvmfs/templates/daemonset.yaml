@@ -66,6 +66,8 @@ spec:
             - name: cvmfs-cfgmap-default-local
               mountPath: /etc/cvmfs/default.local
               subPath: default.local
+            - name: cvmfs-cfgmap-config-d
+              mountPath: /etc/cvmfs/config.d
             - name: cvmfs-export
               mountPath: /cvmfs
               mountPropagation: Bidirectional
@@ -86,6 +88,9 @@ spec:
         - name: cvmfs-cfgmap-default-local
           configMap:
             name: {{ include "cvmfs.fullname" . }}-cfgmap-default-local
+        - name: cvmfs-cfgmap-config-d
+          configMap:
+            name: {{ include "cvmfs.fullname" . }}-cfgmap-config-d
         - name: cvmfs-export
           hostPath:
             path: /cvmfs

@@ -10,3 +10,19 @@ data:
     {{ $key }}='{{ $val }}'
     {{- end }}
     CVMFS_REPOSITORIES='{{ template "repolist_csv" . }}'
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cvmfs.fullname" . }}-cfgmap-config-d
+  labels:
+    {{- include "cvmfs.labels" . | nindent 4 }}
+data:
+  {{- range $repo,$custom_config := .Values.cvmfs.config_d }}
+  {{ $repo }}.local: |
+    {{- range $key,$val := $custom_config }}
+    {{ $key }}='{{ $val }}'
+    {{- end }}
+  {{- end }}
+
