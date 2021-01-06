@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "cvmfs.fullname" . }}
+  labels:
+    {{- include "cvmfs.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "cvmfs.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cvmfs.selectorLabels" . | nindent 8 }}
+    spec:
+      #hostPID: true
+      terminationGracePeriodSeconds: 60
+      initContainers:
+        - name: cvmfs-init0-create-varruncvmfs
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args: ["mkdir -p /var/run/cvmfs; chown cvmfs:cvmfs /var/run/cvmfs"]
+          volumeMounts:
+            - name: cvmfs-run-sockets
+              mountPath: /var/run/cvmfs
+        - name: cvmfs-init1-create-mountpoints
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args: ["for repo in $CVMFS_REPOSITORIES; do mkdir -p /cvmfs/$repo; chown cvmfs:cvmfs /cvmfs/$repo; done"]
+          env:
+            - name: CVMFS_REPOSITORIES
+              value: {{ template "repolist" . }}
+          volumeMounts:
+            - name: cvmfs-export
+              mountPath: /cvmfs
+      containers:
+        - name: cvmfs
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+          #command: ["/bin/sleep", "infinity"]
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/usr/bin/supervisorctl", "shutdown"]
+          # 
+          # TODO: StartUp probe to be implemented
+          # {{- include "cvmfs.startupProbe" . | nindent 10 }}
+          #
+          volumeMounts:
+            - name: cvmfs-dev-fuse
+              mountPath: /dev/fuse
+            - name: cvmfs-run-sockets
+              mountPath: /var/run/cvmfs
+            - name: cvmfs-cfgmap-supervisord-conf
+              mountPath: /etc/supervisord.conf
+              subPath: supervisord.conf
+            - name: cvmfs-cfgmap-supervisord-procs 
+              mountPath: /etc/supervisord.d
+            - name: cvmfs-cfgmap-default-local
+              mountPath: /etc/cvmfs/default.local
+              subPath: default.local
+            - name: cvmfs-export
+              mountPath: /cvmfs
+              mountPropagation: Bidirectional
+      volumes:
+        - name: cvmfs-dev-fuse
+          hostPath:
+            path: /dev/fuse
+            type: CharDevice
+        - name: cvmfs-run-sockets
+          emptyDir:
+            medium: Memory
+        - name: cvmfs-cfgmap-supervisord-conf
+          configMap:
+            name: {{ include "cvmfs.fullname" . }}-cfgmap-supervisord-conf
+        - name: cvmfs-cfgmap-supervisord-procs
+          configMap:
+            name: {{ include "cvmfs.fullname" . }}-cfgmap-supervisord-procs
+        - name: cvmfs-cfgmap-default-local
+          configMap:
+            name: {{ include "cvmfs.fullname" . }}-cfgmap-default-local
+        - name: cvmfs-export
+          hostPath:
+            path: /cvmfs
+            type: DirectoryOrCreate

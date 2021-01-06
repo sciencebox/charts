@@ -1,0 +1,18 @@
+image:
+  repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
+  tag: 2.7.5
+  pullPolicy: Always
+
+startupProbe:
+  enabled: false
+
+cvmfs:
+  repositories:
+    - sft.cern.ch
+    - sft-nightlies.cern.ch
+  mount_options:
+    uid: 998
+    gid: 996
+  default_local:
+    cvmfs_http_proxy: 'DIRECT'
+
