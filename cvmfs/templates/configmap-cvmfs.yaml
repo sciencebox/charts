@@ -6,11 +6,7 @@ metadata:
     {{- include "cvmfs.labels" . | nindent 4 }}
 data:
   default.local: |
-    {{- with .Values.cvmfs.default_local }}
-    CVMFS_DNS_MIN_TTL='{{ .cvmfs_dns_min_ttl | default 300 }}'
-    CVMFS_QUOTA_LIMIT='{{ .cvmfs_quota_limit | default 20000 }}'
-    CVMFS_HTTP_PROXY='{{ .cvmfs_http_proxy | default "DIRECT" }}'
-    CVMFS_CACHE_BASE='{{ .cvmfs_cache_base | default "/var/lib/cvmfs" }}'
+    {{- range $key,$val := .Values.cvmfs.default_local }}
+    {{ $key }}='{{ $val }}'
     {{- end }}
     CVMFS_REPOSITORIES='{{ template "repolist_csv" . }}'
-

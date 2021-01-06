@@ -14,5 +14,8 @@ cvmfs:
     uid: 998
     gid: 996
   default_local:
-    cvmfs_http_proxy: 'DIRECT'
+    CVMFS_DNS_MIN_TTL: 300
+    CVMFS_QUOTA_LIMIT: 20000
+    CVMFS_HTTP_PROXY: DIRECT
+    CVMFS_CACHE_BASE: /var/lib/cvmfs
 
