@@ -9,7 +9,146 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "frontier-squid.chart" . }}
 data:
-  squid.conf: |+
-    {{- range $value := .Values.configMap.squid }}
-    {{ $value }}
-    {{- end }}
+  squid.conf: |
+    # General squid configuration
+    # Cache management
+    cache_dir ufs /var/cache/squid 30000 16 256
+    cache_mem 256 MB
+    cache_mgr squid
+    cache_effective_user squid
+    cache_effective_group squid
+    maximum_object_size 1048576 KB
+    maximum_object_size_in_memory 32 KB
+    memory_cache_shared off
+
+    # Logs
+    access_log daemon:/var/log/squid/access.log squid
+    cache_log /var/log/squid/cache.log
+    strip_query_terms off
+    
+    # Miscellaneous
+    mime_table /etc/squid/mime.conf
+    icon_directory /usr/share/squid/icons/
+    coredump_dir /var/cache/squid
+    pid_filename /var/run/squid/squid.pid
+    max_filedescriptors 16384
+    http_port 3128
+    umask 022
+    # As per https://bugs.squid-cache.org/show_bug.cgi?id=4554
+    quick_abort_min 0 KB
+    quick_abort_max 0 KB
+    # As per https://bugs.squid-cache.org/show_bug.cgi?id=4531
+    minimum_expiry_time 0
+    dns_v4_first on
+    negative_ttl 1 minute
+    collapsed_forwarding on
+    cache_miss_revalidate off
+    # Prevent squid PTR lookups (as per http://lists.squid-cache.org/pipermail/squid-users/2016-February/009115.html)
+    url_rewrite_extras "%>a %un %>rm myip=%la myport=%lp"
+    store_id_extras "%>a %un %>rm myip=%la myport=%lp"
+    # Send response header as Apache
+    acl apache rep_header Server ^Apache
+    
+    
+    # Deny specific types of traffic
+    # Deny URN protocol (as per https://security.archlinux.org/CVE-2019-12526)
+    acl URNPROTO proto URN
+    http_access deny URNPROTO
+    # Deny send_hit for PragmaNoCache
+    acl PragmaNoCache req_header Pragma no-cache
+    send_hit deny PragmaNoCache
+    
+    
+    # ACL fragments
+    # ACL fragment for safe_ports: Will deny not safe_ports
+    acl safe_ports port 80
+    acl safe_ports port 8000
+    
+    # ACL fragment for ssl_ports: Will deny connect method for not ssl_ports
+    acl CONNECT method connect
+    acl ssl_ports port 443
+    
+    # ACL fragment for stratum_ones
+    acl stratum_ones url_regex ^http://cvmfs-stratum-one.cern.ch
+    acl stratum_ones url_regex ^http://cernvmfs.gridpp.rl.ac.uk
+    acl stratum_ones url_regex ^http://grid-cvmfs-one.desy.de
+    acl stratum_ones url_regex ^http://cvmfs.racf.bnl.gov
+    acl stratum_ones url_regex ^http://cvmfs.fnal.gov
+    acl stratum_ones url_regex ^http://cvmfs02.grid.sinica.edu.tw
+    acl stratum_ones url_regex ^http://cvmfs-atlas-nightlies.cern.ch
+    
+    # ACL fragment for frontiers
+    acl frontiers url_regex ^http://atlasfrontier.*cern.ch
+    acl frontiers url_regex ^http://atlasfrontier-ai.cern.ch
+    acl frontiers url_regex ^http://atlast0frontier-ai.cern.ch
+    acl frontiers url_regex ^http://atlast0frontier.*cern.ch
+    acl frontiers url_regex ^http://cc.*in2p3.fr
+    acl frontiers url_regex ^http://cmsfrontier.cern.ch
+    acl frontiers url_regex ^http://aiatlas.cern.ch
+    acl frontiers url_regex ^http://lcgft-atlas.gridpp.rl.ac.uk
+    acl frontiers url_regex ^http://lcgvo-frontier.gridpp.rl.ac.uk
+    acl frontiers url_regex ^http://svn.nordugrid.org
+    
+    # ACL fragment for osgstorage
+    acl osgstorage url_regex ^http://osgxroot.usatlas.bnl.gov
+    acl osgstorage url_regex ^http://xrd-cache-1.t2.ucsd.edu
+    acl osgstorage url_regex ^http://mwt2-stashcache.campuscluster.illinois.edu
+    acl osgstorage url_regex ^http://its-condor-xrootd1.syr.edu
+    acl osgstorage url_regex ^http://osg-kansas-city-stashcache.nrp.internet2.edu
+    acl osgstorage url_regex ^http://fiona.uvalight.net
+    acl osgstorage url_regex ^http://osg-chicago-stashcache.nrp.internet2.edu
+    acl osgstorage url_regex ^http://osg-new-york-stashcache.nrp.internet2.edu
+    acl osgstorage url_regex ^http://sc-cache.chtc.wisc.edu
+    acl osgstorage url_regex ^http://osg-gftp.pace.gatech.edu
+    
+    # ACL fragment for misc
+    acl misc url_regex ^http://cvmfs-stratum-zero.cern.ch
+    acl misc url_regex ^http://cernvm-webfs.cern.ch
+    acl misc url_regex ^http://hepvm.cern.ch
+    acl misc url_regex ^http://cvmfs-atlas-nightlies.cern.ch
+    acl misc url_regex ^http://sdtcvmfs.cern.ch
+    acl misc url_regex ^http://klei.nikhef.nl
+    acl misc url_regex ^http://cvmfs-s1bnl.opensciencegrid.org
+    acl misc url_regex ^http://cvmfs-s1fnal.opensciencegrid.org
+    acl misc url_regex ^http://cvmfs-s1goc.opensciencegrid.org
+    acl misc url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
+    acl misc url_regex ^http://cvmfsrep.grid.sinica.edu.tw
+    acl misc url_regex ^http://cvmfsrepo.lcg.triumf.ca
+    acl misc url_regex ^http://voatlas179.cern.ch
+    acl misc url_regex ^http://volhcb28.cern.ch
+    
+    # ACL fragment for dst_dom
+    acl dstdom dstdom_regex \.openhtc\.io$
+    
+    # ACL fragment for grid_ca
+    acl grid_ca urlpath_regex \.crl$
+    acl grid_ca urlpath_regex \.r0$
+    acl grid_ca urlpath_regex \.pem$
+    acl grid_ca urlpath_regex \.der$
+    acl grid_ca urlpath_regex \.crl_url$
+    acl grid_ca urlpath_regex \/crls\/
+    
+    
+    # Refresh patterns
+    refresh_pattern ^ftp:                1440    20%    10080
+    refresh_pattern ^gopher:             1440     0%     1440
+    refresh_pattern -i (/cgi-bin/|\?)       0     0%        0
+    refresh_pattern .                       0    20%     4320
+    
+    
+    # Allow/Deny Directives
+    # Allow directives
+    http_access allow localhost
+    http_access allow localhost manager
+    http_access allow stratum_ones
+    http_access allow frontiers
+    http_access allow osgstorage
+    http_access allow misc
+    http_access allow dstdom
+    http_access allow grid_ca
+    
+    # Deny directives
+    http_access deny !safe_ports
+    http_access deny CONNECT !ssl_ports
+    http_access deny manager
+    http_access deny all
