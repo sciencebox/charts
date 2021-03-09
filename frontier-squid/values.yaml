@@ -1,6 +1,3 @@
-
-namespace: 
-
 replicaCount: 1
 
 image:
@@ -8,17 +5,22 @@ image:
   tag: 4.9-4.1
   pullPolicy: IfNotPresent
 
-nodeSelector:
-  role: frontier
+customLabels:
+  service: cvmfs
+  component: frontier-squid
 
-enableLivenessProbe: true
-enableReadinessProbe: true
+podAssignment:
+  enableNodeSelector: true      # Requires a node labeled as per customLabels.
+  enablePodAntiAffinity: false  # Shard the stateful set on as many nodes as possible
+
+enableLivenessProbe: false      # To be implemented
+enableReadinessProbe: false     # To be implemented
 
 configMap:
   squid:
     - '# General squid configuration'
     - '# Cache management'
-    - 'cache_dir ufs /var/cache/squid 50000 16 256'
+    - 'cache_dir ufs /var/cache/squid 30000 16 256'
     - 'cache_mem 256 MB'
     - 'cache_mgr squid'
     - 'cache_effective_user squid'

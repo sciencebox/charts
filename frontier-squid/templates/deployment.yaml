@@ -19,7 +19,28 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "frontier-squid.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- toYaml .Values.customLabels | nindent 8 }}
     spec:
+      {{- if .Values.podAssignment.enableNodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.customLabels | nindent 8 }}
+      {{- end }}
+      {{- if .Values.podAssignment.enablePodAntiAffinity }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                {{- range $key, $val := .Values.customLabels }}
+                - key: {{ $key }}
+                  operator: In
+                  values:
+                  - {{ $val }}
+                {{- end }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -51,15 +72,3 @@ spec:
         - name: frontier-squid-config
           configMap:
             name: {{ include "frontier-squid.fullname" . }}-config
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-#    {{- with .Values.affinity }}
-#      affinity:
-#        {{- toYaml . | nindent 8 }}
-#    {{- end }}
-#    {{- with .Values.tolerations }}
-#      tolerations:
-#        {{- toYaml . | nindent 8 }}
-#    {{- end }}
