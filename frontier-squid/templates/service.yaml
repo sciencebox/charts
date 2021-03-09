@@ -1,16 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  #  {{- if .Values.namespace }}
-  #  namespace: {{ .Values.namespace }}
-  #  {{- end }}
-  namespace: {{ default "" .Values.namespace }}
   name: {{ include "frontier-squid.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "frontier-squid.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "frontier-squid.chart" . }}
+    {{- include "frontier-squid.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -21,6 +14,5 @@ spec:
     targetPort: {{ .targetPort }}
   {{- end }}
   selector:
-    app.kubernetes.io/name: {{ include "frontier-squid.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "frontier-squid.selectorLabels" . | nindent 4 }}
 

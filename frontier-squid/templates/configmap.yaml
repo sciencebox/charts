@@ -4,10 +4,7 @@ metadata:
   namespace: {{ default "" .Values.namespace }}
   name: {{ include "frontier-squid.fullname" . }}-config
   labels:
-    app.kubernetes.io/name: {{ include "frontier-squid.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "frontier-squid.chart" . }}
+    {{- include "frontier-squid.labels" . | nindent 4 }}
 data:
   squid.conf: |
     # General squid configuration
