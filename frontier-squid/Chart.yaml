@@ -8,7 +8,7 @@ keywords:
   - Cache
   - CVMFS
   - ScienceBox
-home: https://github.com/cernbox/cboxredirectd
+home: http://frontier.cern.ch/
 sources:
   - http://frontier.cern.ch/
   - https://twiki.cern.ch/twiki/bin/view/Frontier/InstallSquid
