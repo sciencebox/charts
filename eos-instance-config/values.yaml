@@ -1,0 +1,47 @@
+image:
+  repository: gitlab-registry.cern.ch/dss/eos
+  tag: 4.8.39
+  pullPolicy: Always
+
+affinity:
+  testname: testvalue
+
+eosMgmUrl: eos-mgm-0.eos-mgm.default.svc.cluster.local
+
+#TODO: Move to config section
+spaceDefineDefault:
+  groupSize: 8
+  groupMod: 1
+
+recycleConfig:
+  size: 10G
+  inodes: 10M
+  lifetime: 2592000   # 30 days in seconds
+  ratio: 0.2
+#
+
+config:
+  testname: testvalue
+
+  space:
+    groupSize: 8
+    groupMod: 1
+
+  recycle:
+    size: 10G
+    inodes: 10M
+    lifetime: 2592000   # 30 days in seconds
+    ratio: 0.2
+
+  # DEMO USERS HOME DIR
+  # See https://github.com/sciencebox/helm-charts/issues/2
+
+customLabels:
+  service: eos
+  component: eos-mgm
+
+podAssignment:
+  enableNodeSelector: false     # Requires a node labeled as per customLabels
+
+mgmofs:
+  instance: eosdockertest

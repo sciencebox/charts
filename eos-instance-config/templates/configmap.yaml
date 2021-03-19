@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eos-instance-config.fullname" . }}-script
+  labels:
+    {{- include "eos-instance-config.labels" . | nindent 4 }}
+data:
+  instance_config.sh: |
+    #!/bin/bash
+    set -x
+
+    handle_exit_condition () {
+      local rc=$1
+      local text=$2
+
+      if [ $rc -ne 0 ]; then
+        echo "  ✗ $text. Aborting."
+        exit 1
+      else
+        echo "  ✓ Success!"
+      fi
+    }
+
+    init_probe() {
+      local cmd=$@
+      local max_wait=60
+      local sleep=5
+      start_time=$(date +%s)
+      rc=-1
+      while [ $rc -ne 0 ];
+      do
+        timeout --preserve-status $sleep $cmd
+        rc=$?
+
+        # Bail out after max_wait
+        tot_wait=$(($(date +%s)-start_time))
+        echo "        $tot_wait seconds... (timeout at $max_wait)"
+        if [ $tot_wait -ge $max_wait ]; then
+          echo "ERROR: MGM not reachable after $tot_wait secs. Giving up."
+          exit 1
+        fi
+        sleep $sleep
+      done
+    }
+
+    # Start the MGM process in background so that we can run other commands
+    echo "INFO: Starting MGM..."
+    /usr/bin/xrootd -n mgm -c /etc/xrd.cf.mgm -m -b -Rdaemon >/dev/null 2>&1
+
+    # Wait for the MGM to be online
+    echo "INFO: Checking the MGM is online..."
+    init_probe eos -r 0 0 ns >/dev/null 2>&1
+    echo "INFO: MGM is online."
+
+
+    # Check if a previous configuration already exists. If so, don't touch.
+    echo "INFO: Looking for previous EOS configurations..."
+    if [ $(eos -b config ls | grep -w 'instance_bootstrap' | wc -l) -eq 1 ]; then
+      echo "  ✓ EOS configurations found. Exiting."
+      exit 0
+    fi
+    echo "  ✓ None found. Configuring..."
+
+
+    ### Authentication
+    echo "INFO: Configuring authentication..."
+
+    # Enable SSS
+    echo "INFO: Enabling SSS..."
+    eos -b vid enable sss
+    handle_exit_condition $? "Error enabling SSS"
+
+    # Give sudo powers to daemon user
+    echo "INFO: Adding user 'daemon' to sudoers..."
+    eos -b vid set membership daemon +sudo
+    handle_exit_condition $? "Error adding user daemon to sudoers"
+
+    echo "INFO: ✓ EOS autentication initialized successfully."
+
+
+    echo "INFO: Configuring space and quota..."
+
+    # Define spare and default spaces
+    echo "INFO: Defining space spare..."
+    eos -b space define spare
+    handle_exit_condition $? "Error defining space spare"
+    echo "INFO: Defining space default..."
+    eos -b space define default {{ .Values.spaceDefineDefault.groupSize }} {{ .Values.spaceDefineDefault.groupMod }}
+    handle_exit_condition $? "Error defining space default"
+
+    # Activate default space
+    echo "INFO: Activating space default..."
+    eos -b space set default on
+    handle_exit_condition $? "Error activating space default"
+
+    ## # Turn-off quota for space default
+    ## echo "INFO: Turning off quota for space default..."
+    ## eos -b space quota default off
+    ## handle_exit_condition $? "Error turning off quota for space default"
+
+    # Set recycle bin # @todo review
+    # eos chmod 3711 /eos/{{ trimPrefix "eos" .Values.mgmofs.instance }}/proc/recycle   # drwx--s--+   1 root     root
+    # eos chmod 2755 /eos                                                               # drwxr-sr-+   1 root     root
+    # eos attr set default=replica /eos
+    # eos attr set sys.recycle="/eos/{{ trimPrefix "eos" .Values.mgmofs.instance }}/proc/recycle/" /eos/
+    # eos recycle config --size {{ .Values.recycleConfig.size }}
+    # eos recycle config --inodes {{ .Values.recycleConfig.inodes }}
+    # eos recycle config --lifetime {{ .Values.recycleConfig.lifetime }}
+    # eos recycle config --ratio {{ .Values.recycleConfig.ratio }}
+
+    ### Save config and leave
+    echo "INFO: Saving configuration..."
+    eos -b config save instance_bootstrap -f
+    eos -b config save default -f
+    handle_exit_condition $? "Error saving configuration"
+
+    exit 0
+
+    # useradd eos_k8s_admin
+    # eos -b vid set membership eos_k8s_admin +sudo
+

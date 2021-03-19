@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "eos-instance-config.fullname" . }}
+  labels:
+    {{- include "eos-instance-config.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{- toYaml .Values.customLabels | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: eos-instance-config
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sleep", "5s"]
+          env:
+            - name: XrdSecPROTOCOL
+              value: sss
+            - name: XrdSecsssKT
+              value: /etc/eos.keytab
+            - name: EOS_MGM_URL
+              value: root://{{ .Values.eosMgmUrl }}
+          volumeMounts:
+            - name: eos-instance-config-script
+              mountPath: /root/instance_config.sh
+              subPath: instance_config.sh
+      volumes:
+        - name: eos-instance-config-script
+          configMap:
+            name: {{ include "eos-instance-config.fullname" . }}-script
+            defaultMode: 0755
