@@ -27,7 +27,7 @@ config:
     maxsize: "10000000000"
 
   recycle:
-    configure: true
+    enable: true
     params:
       size: 10G
       inodes: 10M

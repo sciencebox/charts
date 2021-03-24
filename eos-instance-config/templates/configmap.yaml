@@ -92,7 +92,7 @@ data:
     ## Recycle bin
     echo "INFO: Configuring recycle bin..."
     {{- with .Values.config.recycle }}
-    {{- if .configure }}
+    {{- if .enable }}
     {{- range $param,$value := .params }}
     eos recycle config --{{ $param }} {{ $value }}
     {{- end }}
