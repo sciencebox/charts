@@ -8,33 +8,48 @@ affinity:
 
 eosMgmUrl: eos-mgm-0.eos-mgm.default.svc.cluster.local
 
-#TODO: Move to config section
-spaceDefineDefault:
-  groupSize: 8
-  groupMod: 1
-
-recycleConfig:
-  size: 10G
-  inodes: 10M
-  lifetime: 2592000   # 30 days in seconds
-  ratio: 0.2
-#
-
 config:
-  testname: testvalue
-
-  space:
+  spaceDefault:
     groupSize: 8
     groupMod: 1
 
-  recycle:
-    size: 10G
-    inodes: 10M
-    lifetime: 2592000   # 30 days in seconds
-    ratio: 0.2
+  sys:
+    recycle: "/eos/dockertest/proc/recycle/" #TODO: Fix dockertest
+    versioning: 10
 
-  # DEMO USERS HOME DIR
-  # See https://github.com/sciencebox/helm-charts/issues/2
+  sysForced:
+    blockchecksum: crc32c
+    blocksize: 4k
+    checksum: adler
+    layout: replica
+    nstripes: 2
+    space: default
+    maxsize: "10000000000"
+
+  recycle:
+    configure: true
+    params:
+      size: 10G
+      inodes: 10M
+      lifetime: "2592000" # 30 days in seconds
+      ratio: 0.2
+
+  directoryTree:
+    create: true
+    prefix: "/eos/user"
+
+  demoUsers:
+    createUsers: true
+    createHomeDirs: true
+    users:
+      unamePrefix: "user"
+      uidStart: 1000
+      gname: "users"
+      gid: 100
+      howMany: 10
+    quota:
+      size: 1T
+      inodes: 1M
 
 customLabels:
   service: eos

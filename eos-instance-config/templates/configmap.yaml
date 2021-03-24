@@ -8,18 +8,7 @@ data:
   instance_config.sh: |
     #!/bin/bash
     set -x
-
-    handle_exit_condition () {
-      local rc=$1
-      local text=$2
-
-      if [ $rc -ne 0 ]; then
-        echo "  ✗ $text. Aborting."
-        exit 1
-      else
-        echo "  ✓ Success!"
-      fi
-    }
+    alias eos='eos -r 0 0'
 
     init_probe() {
       local cmd=$@
@@ -43,79 +32,153 @@ data:
       done
     }
 
-    # Start the MGM process in background so that we can run other commands
-    echo "INFO: Starting MGM..."
-    /usr/bin/xrootd -n mgm -c /etc/xrd.cf.mgm -m -b -Rdaemon >/dev/null 2>&1
-
     # Wait for the MGM to be online
     echo "INFO: Checking the MGM is online..."
     init_probe eos -r 0 0 ns >/dev/null 2>&1
     echo "INFO: MGM is online."
 
-
     # Check if a previous configuration already exists. If so, don't touch.
     echo "INFO: Looking for previous EOS configurations..."
-    if [ $(eos -b config ls | grep -w 'instance_bootstrap' | wc -l) -eq 1 ]; then
+    if [ $(eos config ls | grep -w 'sciencebox_bootstrap' | wc -l) -eq 1 ]; then
       echo "  ✓ EOS configurations found. Exiting."
       exit 0
     fi
     echo "  ✓ None found. Configuring..."
 
 
-    ### Authentication
-    echo "INFO: Configuring authentication..."
+    ##### Authentication
+    ##echo "INFO: Configuring authentication..."
 
-    # Enable SSS
-    echo "INFO: Enabling SSS..."
-    eos -b vid enable sss
-    handle_exit_condition $? "Error enabling SSS"
+    ### Give sudo powers to daemon user
+    ##echo "INFO: Adding user 'daemon' to sudoers..."
+    ##eos vid set membership daemon +sudo
+    ##handle_exit_condition $? "Error adding user daemon to sudoers"
 
-    # Give sudo powers to daemon user
-    echo "INFO: Adding user 'daemon' to sudoers..."
-    eos -b vid set membership daemon +sudo
-    handle_exit_condition $? "Error adding user daemon to sudoers"
-
-    echo "INFO: ✓ EOS autentication initialized successfully."
+    ##echo "INFO: ✓ EOS autentication initialized successfully."
 
 
-    echo "INFO: Configuring space and quota..."
+    ## Space
+    echo "INFO: Configuring space..."
 
-    # Define spare and default spaces
+    {{- with .Values.config.spaceDefault }}
     echo "INFO: Defining space spare..."
-    eos -b space define spare
-    handle_exit_condition $? "Error defining space spare"
-    echo "INFO: Defining space default..."
-    eos -b space define default {{ .Values.spaceDefineDefault.groupSize }} {{ .Values.spaceDefineDefault.groupMod }}
-    handle_exit_condition $? "Error defining space default"
+    eos space define spare
 
-    # Activate default space
+    echo "INFO: Defining space default..."
+    {{- if .groupSize }}
+    {{- if .groupMod }}
+    eos space define default {{ .groupSize }} {{ .groupMod }}
+    {{- else }}
+    eos space define default {{ .groupSize }}
+    {{- end }}
+    {{- else }}
+    eos space define default
+    {{- end }}
+    {{- end }}
     echo "INFO: Activating space default..."
-    eos -b space set default on
-    handle_exit_condition $? "Error activating space default"
+    eos space set default on
+
+
+    ## System Attributes
+    echo "INFO: Configuring system attributese..."
+    {{- range $attribute,$value := .Values.config.sys }}
+    eos attr -r set sys.{{ $attribute }}={{ $value }} /eos
+    {{- end }}
+    {{- range $attribute,$value := .Values.config.sysForced }}
+    eos attr -r set sys.forced.{{ $attribute }}={{ $value }} /eos
+    {{- end }}
+
+
+    ## Recycle bin
+    echo "INFO: Configuring recycle bin..."
+    {{- with .Values.config.recycle }}
+    {{- if .configure }}
+    {{- range $param,$value := .params }}
+    eos recycle config --{{ $param }} {{ $value }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+
+
+    ## EOS directory tree
+    echo "INFO: Configuring directory tree..."
+    {{- $directoryTreePrefix := default "/eos/user" .Values.config.directoryTree.prefix -}}
+    {{- with .Values.config.directoryTree }}
+    {{- if .create }}
+    eos mkdir -p {{ $directoryTreePrefix }}
+    #eos attr set sys.mask="700" {{ $directoryTreePrefix }}
+    #eos attr set sys.owner.auth="*" {{ $directoryTreePrefix }}
+    for letter in {a..z}
+    do
+      eos mkdir -p {{ $directoryTreePrefix }}/$letter
+    done
+    {{- end }}
+    {{- end }}
+
+
+    ## EOS demo users
+    echo "INFO: Configuring demo users..."
+    {{- with .Values.config.demoUsers }}
+    {{- if .createUsers }}
+    ###
+    # TODO: This clearly does not work. We need to add users in the MGM container
+    ###
+    gname={{ default "users" .users.gname }}
+    gid={{ default "1000" .users.gid }}
+    groupadd --force --gid $gid $gname
+
+    uid_start={{ default 1000 .users.uidStart }}
+    uname_prefix={{ default "user" .users.unamePrefix }}
+    uname_initial=$(echo $uname_prefix | cut -c 1)
+
+    quota_size={{ default "1T" .quota.size }}
+    quota_inodes={{ default "1M" .quota.inodes }}
+
+    for i in $(seq {{ default 10 .users.howMany }})
+    do
+      ###
+      # TODO: This clearly does not work. We need to add users in the MGM container
+      ###
+      uid=$(echo $uid_start + $i | bc -l)
+      uname="$uname_prefix$i"
+      useradd --no-create-home --no-user-group --uid $uid $uname || true
+
+      {{- if .createHomeDirs }}
+      homedir={{ $directoryTreePrefix }}/$uname_initial/$uname
+      eos mkdir -p $homedir
+      eos chown $uname:$gname $homedir
+      eos chmod 2700 $homedir
+      eos attr set sys.acl=u:$uname:rwx $homedir
+      eos attr set sys.mask="700" $homedir
+      eos attr set sys.allow.oc.sync="1" $homedir
+      eos attr set sys.mtime.propagation="1" $homedir
+      eos attr set sys.forced.atomic="1" $homedir
+      eos attr set sys.versioning="10" $homedir
+      ###
+      # TODO: `error: you cannot set quota from storage node with 'sss' authentication!`
+      #eos quota set -u $uname -v $quota_size -i $quota_inodes -p {{ $directoryTreePrefix }}
+      ###
+      eos access allow user $uname
+      sleep 3
+      {{- end }}
+    done
+    {{- end }}
+    {{- end }}
+
 
     ## # Turn-off quota for space default
     ## echo "INFO: Turning off quota for space default..."
-    ## eos -b space quota default off
+    ## eos space quota default off
     ## handle_exit_condition $? "Error turning off quota for space default"
 
     # Set recycle bin # @todo review
     # eos chmod 3711 /eos/{{ trimPrefix "eos" .Values.mgmofs.instance }}/proc/recycle   # drwx--s--+   1 root     root
     # eos chmod 2755 /eos                                                               # drwxr-sr-+   1 root     root
-    # eos attr set default=replica /eos
-    # eos attr set sys.recycle="/eos/{{ trimPrefix "eos" .Values.mgmofs.instance }}/proc/recycle/" /eos/
-    # eos recycle config --size {{ .Values.recycleConfig.size }}
-    # eos recycle config --inodes {{ .Values.recycleConfig.inodes }}
-    # eos recycle config --lifetime {{ .Values.recycleConfig.lifetime }}
-    # eos recycle config --ratio {{ .Values.recycleConfig.ratio }}
 
     ### Save config and leave
     echo "INFO: Saving configuration..."
-    eos -b config save instance_bootstrap -f
-    eos -b config save default -f
-    handle_exit_condition $? "Error saving configuration"
+    eos config save sciencebox_bootstrap -f
+    eos config save default -f
 
     exit 0
-
-    # useradd eos_k8s_admin
-    # eos -b vid set membership eos_k8s_admin +sudo
 
