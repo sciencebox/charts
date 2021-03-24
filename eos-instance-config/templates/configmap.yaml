@@ -9,6 +9,7 @@ data:
     #!/bin/bash
     set -x
     alias eos='eos -r 0 0'
+    shopt -s expand_aliases
 
     init_probe() {
       local cmd=$@
@@ -34,7 +35,7 @@ data:
 
     # Wait for the MGM to be online
     echo "INFO: Checking the MGM is online..."
-    init_probe eos -r 0 0 ns >/dev/null 2>&1
+    init_probe eos ns >/dev/null 2>&1
     echo "INFO: MGM is online."
 
     # Check if a previous configuration already exists. If so, don't touch.
