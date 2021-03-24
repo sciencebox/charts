@@ -136,9 +136,9 @@ data:
       {{- if .createHomeDirs }}
       homedir={{ $directoryTreePrefix }}/$uname_initial/$uname
       eos mkdir -p $homedir
-      eos chown $uname:$gname $homedir
+      eos chown $uid:$gid $homedir
       eos chmod 2700 $homedir
-      eos attr set sys.acl=u:$uname:rwx $homedir
+      eos attr set sys.acl=u:$uid:rwx $homedir
       eos attr set sys.mask="700" $homedir
       eos attr set sys.allow.oc.sync="1" $homedir
       eos attr set sys.mtime.propagation="1" $homedir
@@ -146,9 +146,9 @@ data:
       eos attr set sys.versioning="10" $homedir
       ###
       # TODO: `error: you cannot set quota from storage node with 'sss' authentication!`
-      #eos quota set -u $uname -v $quota_size -i $quota_inodes -p {{ $directoryTreePrefix }}
+      #eos quota set -u $uid -v $quota_size -i $quota_inodes -p {{ $directoryTreePrefix }}
       ###
-      eos access allow user $uname
+      eos access allow user $uid
       sleep 3
       {{- end }}
     done
