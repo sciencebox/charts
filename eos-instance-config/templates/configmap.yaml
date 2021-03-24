@@ -46,17 +46,6 @@ data:
     echo "  ✓ None found. Configuring..."
 
 
-    ##### Authentication
-    ##echo "INFO: Configuring authentication..."
-
-    ### Give sudo powers to daemon user
-    ##echo "INFO: Adding user 'daemon' to sudoers..."
-    ##eos vid set membership daemon +sudo
-    ##handle_exit_condition $? "Error adding user daemon to sudoers"
-
-    ##echo "INFO: ✓ EOS autentication initialized successfully."
-
-
     ## Space
     echo "INFO: Configuring space..."
 
