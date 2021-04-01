@@ -19,14 +19,14 @@ data:
       rc=-1
       while [ $rc -ne 0 ];
       do
-        timeout --preserve-status $sleep $cmd
+        timeout --preserve-status $sleep $cmd >/dev/null 2>&1
         rc=$?
 
         # Bail out after max_wait
         tot_wait=$(($(date +%s)-start_time))
         echo "        $tot_wait seconds... (timeout at $max_wait)"
         if [ $tot_wait -ge $max_wait ]; then
-          echo "ERROR: MGM not reachable after $tot_wait secs. Giving up."
+          echo "ERROR: cmd \`$cmd\` failed after $tot_wait secs. Giving up."
           exit 1
         fi
         sleep $sleep
@@ -35,7 +35,7 @@ data:
 
     # Wait for the MGM to be online
     echo "INFO: Checking the MGM is online..."
-    init_probe eos ns >/dev/null 2>&1
+    init_probe eos ns
     echo "INFO: MGM is online."
 
     # Check if a previous configuration already exists. If so, don't touch.
