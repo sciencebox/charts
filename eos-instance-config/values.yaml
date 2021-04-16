@@ -11,7 +11,7 @@ config:
     groupMod: 1
 
   sys:
-    recycle: "/eos/dockertest/proc/recycle/" #TODO: Fix dockertest
+    recycle: "/eos/user/proc/recycle/"
     versioning: 10
 
   sysForced:
