@@ -3,9 +3,6 @@ image:
   tag: 4.8.39
   pullPolicy: Always
 
-affinity:
-  testname: testvalue
-
 eosMgmUrl: eos-mgm-0.eos-mgm.default.svc.cluster.local
 
 config:
@@ -57,6 +54,3 @@ customLabels:
 
 podAssignment:
   enableNodeSelector: false     # Requires a node labeled as per customLabels
-
-mgmofs:
-  instance: eosdockertest
