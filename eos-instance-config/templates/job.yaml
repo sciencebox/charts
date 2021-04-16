@@ -15,7 +15,7 @@ spec:
         - name: eos-instance-config
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/sleep", "5s"]
+          command: ["/bin/bash", "/root/instance_config.sh"]
           env:
             - name: XrdSecPROTOCOL
               value: sss
