@@ -70,7 +70,7 @@ data:
 
 
     ## System Attributes
-    echo "INFO: Configuring system attributese..."
+    echo "INFO: Configuring system attributes..."
     {{- range $attribute,$value := .Values.config.sys }}
     eos attr -r set sys.{{ $attribute }}={{ $value }} /eos
     {{- end }}
