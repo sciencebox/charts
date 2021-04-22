@@ -1,3 +1,5 @@
+{{- $directoryTreePrefix := default "/eos/user" .Values.config.directoryTree.prefix -}}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -79,6 +81,10 @@ data:
     {{- end }}
 
 
+    ## EOS root ownership and mode
+    # eos chmod 2755 /eos
+
+
     ## Recycle bin
     echo "INFO: Configuring recycle bin..."
     {{- with .Values.config.recycle }}
@@ -88,11 +94,11 @@ data:
     {{- end }}
     {{- end }}
     {{- end }}
+    # eos chmod 3711 {{ $directoryTreePrefix }}/proc/recycle
 
 
     ## EOS directory tree
     echo "INFO: Configuring directory tree..."
-    {{- $directoryTreePrefix := default "/eos/user" .Values.config.directoryTree.prefix -}}
     {{- with .Values.config.directoryTree }}
     {{- if .create }}
     eos mkdir -p {{ $directoryTreePrefix }}
@@ -155,15 +161,6 @@ data:
     {{- end }}
     {{- end }}
 
-
-    ## # Turn-off quota for space default
-    ## echo "INFO: Turning off quota for space default..."
-    ## eos space quota default off
-    ## handle_exit_condition $? "Error turning off quota for space default"
-
-    # Set recycle bin # @todo review
-    # eos chmod 3711 /eos/{{ trimPrefix "eos" .Values.mgmofs.instance }}/proc/recycle   # drwx--s--+   1 root     root
-    # eos chmod 2755 /eos                                                               # drwxr-sr-+   1 root     root
 
     ### Save config and leave
     echo "INFO: Saving configuration..."
