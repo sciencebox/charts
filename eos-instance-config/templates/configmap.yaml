@@ -135,6 +135,7 @@ data:
       ###
       # TODO: This clearly does not work. We need to add users in the MGM container
       ###
+      i=$(($i-1))
       uid=$(echo $uid_start + $i | bc -l)
       uname="$uname_prefix$i"
       useradd --no-create-home --no-user-group --uid $uid $uname || true
