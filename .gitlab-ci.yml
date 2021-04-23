@@ -65,7 +65,6 @@ deploy:
     - helm repo add ${HELM_CHART_REPO} https://registry.cern.ch/chartrepo/${HELM_CHART_REPO}
     - helm repo update
     - helm plugin install https://github.com/chartmuseum/helm-push
-    - env | sort
     - |
         set -x
         for chart in $(ls -d */Chart.yaml | xargs dirname); do
