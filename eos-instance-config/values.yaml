@@ -3,8 +3,6 @@ image:
   tag: 4.8.39
   pullPolicy: Always
 
-eosMgmUrl: eos-mgm-0.eos-mgm.default.svc.cluster.local
-
 config:
   spaceDefault:
     groupSize: 8

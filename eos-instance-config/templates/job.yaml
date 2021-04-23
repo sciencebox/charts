@@ -22,7 +22,7 @@ spec:
             - name: XrdSecsssKT
               value: /etc/eos.keytab
             - name: EOS_MGM_URL
-              value: root://{{ .Values.eosMgmUrl }}
+              value: root://{{ include "mgm.fqdn" . }}
           volumeMounts:
             - name: eos-instance-config-script
               mountPath: /root/instance_config.sh
