@@ -1,0 +1,23 @@
+image:
+  repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
+  tag: 2.8.1
+  pullPolicy: IfNotPresent
+
+cvmfs:
+  repositories:
+    - cvmfs-config.cern.ch
+    - sft.cern.ch
+    - sft-nightlies.cern.ch
+  mount_options:
+    uid: 998
+    gid: 996
+  default_local:
+    CVMFS_DNS_MIN_TTL: 300
+    CVMFS_QUOTA_LIMIT: 20000
+    CVMFS_HTTP_PROXY: DIRECT
+    CVMFS_CACHE_BASE: /var/lib/cvmfs
+  config_d:
+    sft.cern.ch:
+      CVMFS_HTTP_PROXY: 'http://ca-proxy.cern.ch:3128'
+    sft-nightlies.cern.ch:
+      CVMFS_HTTP_PROXY: 'http://ca-proxy.cern.ch:3128'
