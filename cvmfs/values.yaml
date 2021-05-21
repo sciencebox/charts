@@ -1,7 +1,7 @@
 image:
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
-  tag: 2.7.5
-  pullPolicy: Always
+  tag: 2.8.1
+  pullPolicy: IfNotPresent
 
 startupProbe:
   enabled: false
