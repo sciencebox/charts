@@ -63,35 +63,6 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-StartupProbe definition
-*/}}
-{{- define "cvmfs.startupProbe" -}}
-  {{- if .Values.startupProbe.enabled }}
-startupProbe:
-    {{- if .Values.startupProbe.tcpSocket }}
-  tcpSocket:
-    host: {{ .Values.startupProbe.tcpSocket.host }}
-    port: {{ .Values.startupProbe.tcpSocket.port }}
-    {{- end }}
-  failureThreshold: {{ .Values.startupProbe.failureThreshold }}
-  periodSeconds: {{ .Values.startupProbe.periodSeconds }}
-{{- else }}
-  {{- if .Values.global }}
-    {{- with .Values.global }}
-      {{- if .cvmfs.startupProbe.enabled }}
-startupProbe:
-  tcpSocket:
-    host: {{ $.Release.Name }}-mgm
-    port: {{ .service.xrootd_mgm.port }}
-  failureThreshold: {{ .cvmfs.startupProbe.failureThreshold }}
-  periodSeconds: {{ .cvmfs.startupProbe.periodSeconds }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
-{{- end }}
-
-{{/*
 Join repositories to blank-spaced list
 */}}
 {{- define "repolist" -}}

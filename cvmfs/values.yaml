@@ -3,9 +3,6 @@ image:
   tag: 2.8.1
   pullPolicy: IfNotPresent
 
-startupProbe:
-  enabled: false
-
 cvmfs:
   repositories:
     - cvmfs-config.cern.ch

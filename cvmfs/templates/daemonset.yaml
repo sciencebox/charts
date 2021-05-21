@@ -49,10 +49,6 @@ spec:
             preStop:
               exec:
                 command: ["/usr/bin/supervisorctl", "shutdown"]
-          # 
-          # TODO: StartUp probe to be implemented
-          # {{- include "cvmfs.startupProbe" . | nindent 10 }}
-          #
           volumeMounts:
             - name: cvmfs-dev-fuse
               mountPath: /dev/fuse
