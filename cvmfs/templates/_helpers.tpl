@@ -66,12 +66,12 @@ Create the name of the service account to use
 Join repositories to blank-spaced list
 */}}
 {{- define "repolist" -}}
-{{- join " " .Values.cvmfs.repositories }}
+{{- join " " .Values.repositories }}
 {{- end -}}
 
 {{/*
 Join repositories to comma-separated list
 */}}
 {{- define "repolist_csv" -}}
-{{- join "," .Values.cvmfs.repositories }}
+{{- join "," .Values.repositories }}
 {{- end -}}

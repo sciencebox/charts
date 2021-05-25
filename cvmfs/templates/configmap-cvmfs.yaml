@@ -6,7 +6,7 @@ metadata:
     {{- include "cvmfs.labels" . | nindent 4 }}
 data:
   default.local: |
-    {{- range $key,$val := .Values.cvmfs.default_local }}
+    {{- range $key,$val := .Values.default_local }}
     {{ $key }}='{{ $val }}'
     {{- end }}
     CVMFS_REPOSITORIES='{{ template "repolist_csv" . }}'
@@ -19,7 +19,7 @@ metadata:
   labels:
     {{- include "cvmfs.labels" . | nindent 4 }}
 data:
-  {{- range $repo,$custom_config := .Values.cvmfs.config_d }}
+  {{- range $repo,$custom_config := .Values.config_d }}
   {{ $repo }}.local: |
     {{- range $key,$val := $custom_config }}
     {{ $key }}='{{ $val }}'

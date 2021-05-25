@@ -51,8 +51,8 @@ data:
     events=PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
 
 ---
-{{- $uid := .Values.cvmfs.mount_options.uid -}}
-{{- $gid := .Values.cvmfs.mount_options.gid -}}
+{{- $uid := .Values.mount_options.uid -}}
+{{- $gid := .Values.mount_options.gid -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -61,7 +61,7 @@ metadata:
   labels:
     {{- include "cvmfs.labels" . | nindent 4 }}
 data:
-  {{- range .Values.cvmfs.repositories }}
+  {{- range .Values.repositories }}
 
   cvmfs-{{ . }}.ini: |
     [program:cvmfs-{{ . }}]
