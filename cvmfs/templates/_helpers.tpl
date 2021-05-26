@@ -75,3 +75,27 @@ Join repositories to comma-separated list
 {{- define "repolist_csv" -}}
 {{- join "," .Values.repositories }}
 {{- end -}}
+
+{{/*
+Mount UID definition
+  Define the owner (uid) of the cvmfs mount.
+*/}}
+{{- define "mount_uid" -}}
+{{- $uid := 998 -}}
+{{- if .Values.mount_options -}}
+  {{ $uid = int (dig "uid" $uid .Values.mount_options) }}
+{{- end }}
+{{- printf "%d" $uid }}
+{{- end }}
+
+{{/*
+Mount GID definition
+  Define the group (gid) owning the cvmfs mount.
+*/}}
+{{- define "mount_gid" -}}
+{{- $gid := 996 -}}
+{{- if .Values.mount_options -}}
+  {{ $gid = int (dig "gid" $gid .Values.mount_options) }}
+{{- end }}
+{{- printf "%d" $gid }}
+{{- end }}
