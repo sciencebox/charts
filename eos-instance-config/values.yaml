@@ -29,6 +29,15 @@ config:
       lifetime: "2592000" # 30 days in seconds
       ratio: 0.2
 
+  #
+  # OAuth2
+  #   Documentation at https://eos-docs.web.cern.ch/using/oauth2.html
+  #
+  oauth:
+    enabled: true
+    resourceEndpoint:
+    audienceClaim:
+
   directoryTree:
     create: true
     prefix: "/eos/user"

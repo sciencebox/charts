@@ -71,6 +71,17 @@ data:
     eos space set default on
 
 
+    ## OAuth2
+    {{- if .Values.config.oauth.enabled }}
+    {{- $audience_claim := "" }}
+    {{- if .Values.config.oauth.audienceClaim }}
+      {{- $audience_claim = (printf "@%s" .Values.config.oauth.audienceClaim) }}
+    {{- end }}
+    eos vid enable oauth2
+    eos vid set map -oauth2 key:{{ required "The OAuth resource enpoint is required" .Values.config.oauth.resourceEndpoint }}{{ $audience_claim }} vuid:0
+    {{- end }}
+
+
     ## System Attributes
     echo "INFO: Configuring system attributes..."
     {{- range $attribute,$value := .Values.config.sys }}
