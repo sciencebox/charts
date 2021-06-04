@@ -63,7 +63,7 @@ metadata:
 data:
   {{- range .Values.repositories }}
 
-  cvmfs-{{ . }}.ini: |
+  mount-{{ . }}.ini: |
     [program:cvmfs-{{ . }}]
     command=/usr/bin/cvmfs2 -o rw,nodev,_netdev,fsname=cvmfs2,system_mount,allow_other,foreground,uid={{ $uid }},gid={{ $gid }} {{ . }} /cvmfs/{{ . }}
     startsecs=10
