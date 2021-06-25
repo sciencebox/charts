@@ -24,10 +24,17 @@ spec:
             - name: EOS_MGM_URL
               value: root://{{ include "mgm.fqdn" . }}
           volumeMounts:
+            - name: eos-sss-keytab
+              mountPath: /etc/eos.keytab
+              subPath: eos.keytab
             - name: eos-instance-config-script
               mountPath: /root/instance_config.sh
               subPath: instance_config.sh
       volumes:
+        - name: eos-sss-keytab
+          secret:
+            secretName: {{ include "utils.sssKeytabName" . }}
+            defaultMode: 0400
         - name: eos-instance-config-script
           configMap:
             name: {{ include "eos-instance-config.fullname" . }}-script

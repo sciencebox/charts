@@ -3,6 +3,13 @@ image:
   tag: 4.8.39
   pullPolicy: Always
 
+#
+# SSS keytab to authenticate against eos mgm
+#   The name of the kubernetes secret containing the eos keytab to use.
+# Default: eos-sss-keytab
+sssKeytab:
+  secret:
+
 config:
   spaceDefault:
     groupSize: 8
