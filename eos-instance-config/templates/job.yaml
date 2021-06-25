@@ -13,8 +13,8 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: eos-instance-config
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: {{ include "utils.image" . }}
+          imagePullPolicy: {{ include "utils.imagePullPolicy" . }}
           command: ["/bin/bash", "/root/instance_config.sh"]
           env:
             - name: XrdSecPROTOCOL
