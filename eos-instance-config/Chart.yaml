@@ -9,5 +9,5 @@ description: The Chart to configure EOS for ScienceBox
 icon: https://eos-web.web.cern.ch/eos-web/img/logos/EOS_logo1.svg 
 dependencies:
 - name: utils
-  version: 0.1.0
+  version: 0.1.1
   repository: "https://registry.cern.ch/chartrepo/eos"
