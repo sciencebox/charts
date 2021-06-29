@@ -14,3 +14,8 @@ default_local:
   CVMFS_QUOTA_LIMIT: 20000
   CVMFS_HTTP_PROXY: DIRECT
   CVMFS_CACHE_BASE: /var/lib/cvmfs
+
+mountOptions:
+  uid: 998
+  gid: 996
+  hostMountpoint: /cvmfs

@@ -89,5 +89,5 @@ spec:
             name: {{ include "cvmfs.fullname" . }}-cfgmap-config-d
         - name: cvmfs-export
           hostPath:
-            path: /cvmfs
+            path: {{ default "/cvmfs" .Values.mountOptions.hostMountpoint }}
             type: DirectoryOrCreate

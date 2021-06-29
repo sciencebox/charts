@@ -82,3 +82,11 @@ mountOptions:
 
 If helm fails parsing the provided values, it will use 0, 0 (typically root, root).
 
+
+2. Mount at a different path on the host
+
+Default is to use `/cvmfs`, but this can be configured to a custom path using:
+```yaml
+mountOptions:
+  hostMountpoint: /var/cvmfs
+```
