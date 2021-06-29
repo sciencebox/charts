@@ -3,7 +3,27 @@ image:
   tag: 2.8.1
   pullPolicy: IfNotPresent
 
+#
+# Assign cvmfs pod to a node with a specific label.
+#   If true, it will be deployed only on nodes labeled as per customLabels (see below).
+#   If false, it will be deployed on all nodes of the cluster (it is a daemonSet).
+#
+podAssignment:
+  enableNodeSelector: false
 
+#
+# Custom labels to identify cvmfs pod.
+#
+# They are used by node selection, if enabled (see above).
+# Label nodes accordingly to avoid scheduling problems.
+#
+customLabels:
+  service: swan
+  component: swan-users
+
+#
+# Repositories to be mounted by cvmfs pod.
+#
 repositories:
   - cvmfs-config.cern.ch
   - sft.cern.ch
