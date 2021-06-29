@@ -75,7 +75,7 @@ A set of key-value pairs is expected for each repository and it will be mapped t
 Defaults are 998 and 996 for `uid` and `gid`, respectively.
 Custom values can be specified in `values.yaml` as integers with:
 ```yaml
-mount_options:
+mountOptions:
   uid: 1234
   gid: 5678
 ```

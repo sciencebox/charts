@@ -82,8 +82,10 @@ Mount UID definition
 */}}
 {{- define "mount_uid" -}}
 {{- $uid := 998 -}}
-{{- if .Values.mount_options -}}
-  {{ $uid = int (dig "uid" $uid .Values.mount_options) }}
+{{- if .Values.mountOptions -}}
+{{- if .Values.mountOptions.uid -}}
+  {{ $uid = int (.Values.mountOptions.uid) }}
+{{- end }}
 {{- end }}
 {{- printf "%d" $uid }}
 {{- end }}
@@ -94,8 +96,10 @@ Mount GID definition
 */}}
 {{- define "mount_gid" -}}
 {{- $gid := 996 -}}
-{{- if .Values.mount_options -}}
-  {{ $gid = int (dig "gid" $gid .Values.mount_options) }}
+{{- if .Values.mountOptions -}}
+{{- if .Values.mountOptions.gid -}}
+  {{ $gid = int (.Values.mountOptions.gid) }}
+{{- end }}
 {{- end }}
 {{- printf "%d" $gid }}
 {{- end }}
