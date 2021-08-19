@@ -10,6 +10,20 @@ spec:
       labels:
         {{- toYaml .Values.customLabels | nindent 8 }}
     spec:
+      {{- if .Values.podAssignment.enableMgmColocation }}
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                  - eos-mgm
+              topologyKey: "kubernetes.io/hostname"
+      {{- end }}
       restartPolicy: OnFailure
       containers:
         - name: eos-instance-config
