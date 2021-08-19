@@ -1,6 +1,6 @@
 image:
-  repository: gitlab-registry.cern.ch/dss/eos/eos-slim
-  tag: 4.8.55
+  repository: gitlab-registry.cern.ch/dss/eos/eos-all
+  tag: 4.8.57
   pullPolicy: Always
 
 #
