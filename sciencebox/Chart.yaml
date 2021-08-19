@@ -1,0 +1,17 @@
+apiVersion: v2
+#
+name: sciencebox
+type: application
+version: 0.0.1
+#
+description: The chart to deploy and configure ScienceBox
+icon: #TODO
+#
+dependencies:
+- name: server
+  alias: eos
+  version: 0.0.6
+  repository: "https://registry.cern.ch/chartrepo/eos"
+- name: eos-instance-config
+  version: 0.0.2
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"

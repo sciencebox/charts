@@ -1,0 +1,19 @@
+#
+# Global values
+#
+global:
+  # SSS keytab:
+  #   - Used by eos-server (qdb, mq, mgm, fst) and eos-instance-config
+  #   - Anchor for fusex in SWAN
+  sssKeytab:
+    secret: &sssKeytabName sciencebox-eos-sss-keytab
+
+#
+# EOS
+#
+eos:
+  mgm:
+    mgmofs:
+      instance: user
+  fst:
+    replicaCount: 4
