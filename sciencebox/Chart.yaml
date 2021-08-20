@@ -15,3 +15,6 @@ dependencies:
 - name: eos-instance-config
   version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
+- name: swan
+  version: 0.0.4
+  repository: "https://registry.cern.ch/chartrepo/swan"
