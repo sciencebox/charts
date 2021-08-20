@@ -13,5 +13,5 @@ dependencies:
   version: 0.0.6
   repository: "https://registry.cern.ch/chartrepo/eos"
 - name: eos-instance-config
-  version: 0.0.2
+  version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
