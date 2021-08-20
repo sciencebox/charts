@@ -49,7 +49,7 @@ config:
   #   Documentation at https://eos-docs.web.cern.ch/using/oauth2.html
   #
   oauth:
-    enabled: true
+    enabled: false
     resourceEndpoint:
     audienceClaim:
 
