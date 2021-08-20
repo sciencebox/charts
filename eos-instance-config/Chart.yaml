@@ -2,8 +2,8 @@ apiVersion: v2
 #
 name: eos-instance-config
 type: application
-version: 0.0.3
-appVersion: 4.8.39
+version: 0.0.4
+appVersion: 4.8.57
 #
 description: The Chart to configure EOS for ScienceBox
 icon: https://eos-web.web.cern.ch/eos-web/img/logos/EOS_logo1.svg 
