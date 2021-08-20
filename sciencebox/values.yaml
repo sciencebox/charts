@@ -2,6 +2,12 @@
 # Global values
 #
 global:
+  # EOS image tag:
+  #   - Used by eos-server (qdb, mq, mgm, fst) (eos-all image)
+  #             eos-instance-config (eos-all image)
+  #             fusex in SWAN (eos-fusex image)
+  tag: 4.8.57
+
   # SSS keytab:
   #   - Used by eos-server (qdb, mq, mgm, fst) and eos-instance-config
   #   - Anchor for fusex in SWAN
