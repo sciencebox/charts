@@ -1,4 +1,26 @@
 #
+# ScienceBox
+#
+sciencebox:
+  # sss keytab for eos
+  #   Will be used by eos server and fusex.
+  #   Options:
+  #     - createSecret: Create a secret either from file or from value.
+  #         If set to false, no secrets will be automatically generated. In this case, secretName must
+  #         be set to an existing secret containering the sss keytab
+  #     - secretName: Name of the secret containing the sss keytab
+  #     - fromFile: Provide the path to a file containing the eos keytab (defaults to files/eos.keytab)
+  #         A secret with name <secretName> will be created from it
+  #     - fromValue: Provide the full keytab as a string
+  #         Example: "0 u:daemon g:daemon n:eos-test+ N:69275826269580...
+  #         A secret with name <secretName> will be created from it
+  sssKeytab:
+    createSecret: true
+    secretName: &sssKeytabName sciencebox-eos-sss-keytab
+    #fromFile:
+    #fromValue:
+
+#
 # Global values
 #
 global:
@@ -12,7 +34,7 @@ global:
   #   - Used by eos-server (qdb, mq, mgm, fst) and eos-instance-config
   #   - Anchor for fusex in SWAN
   sssKeytab:
-    secret: &sssKeytabName sciencebox-eos-sss-keytab
+    secret: *sssKeytabName
 
 #
 # EOS

@@ -1,0 +1,31 @@
+{{/*
+SSH keytab content
+  Switch between keytab fromFile or fromValue according to priority:
+  - When both are defined, fromFile takes priority
+  - If only one is defined, that will be used as keytab
+  - Otherwise, an empty string will be returned
+*/}}
+{{- define "sssKeytab.content" -}}
+{{- $keytabFile := dig "sssKeytab" "fromFile" "files/eos.keytab" .Values.sciencebox -}}
+{{- $keytabFromFile := .Files.Get $keytabFile }}
+{{- $keytabFromValue := dig "sssKeytab" "fromValue" "" .Values.sciencebox }}
+{{- coalesce $keytabFromFile $keytabFromValue }}
+{{- end }}
+
+
+{{/*
+Create a secret to store the eos keytab
+  - If .Values.sciencebox.sssKeytab.createSecret is set to true and
+      if the keytab is provided either fromFile or fromValue
+  - The secret will be named .Values.sciencebox.sssKeytab.secretName
+*/}}
+{{- if and ( include "sssKeytab.content" . ) (.Values.sciencebox.sssKeytab.createSecret) -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.sciencebox.sssKeytab.secretName }}
+type: Opaque
+data:
+  eos.keytab: |-
+    {{ ( include "sssKeytab.content" . ) | b64enc }}
+{{- end }}
