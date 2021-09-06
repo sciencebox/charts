@@ -10,7 +10,7 @@ icon: #TODO
 dependencies:
 - name: server
   alias: eos
-  version: 0.0.6
+  version: 0.1.0
   repository: "https://registry.cern.ch/chartrepo/eos"
 - name: eos-instance-config
   version: 0.0.4
