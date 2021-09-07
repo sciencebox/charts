@@ -1,0 +1,73 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "ocis.fullname" . -}}
+{{- $servicePort := .Values.service.http.port -}}
+{{- $paths := .Values.ingress.paths -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "ocis.labels" . | nindent 4 }}
+  {{- if .Values.ingress.annotations }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+        {{- range $paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $servicePort }}
+        {{- end }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
+---
+{{- if .Values.ingress.grpc -}}
+{{- $grpcServicePort := .Values.service.grpc.port -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{ end -}}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-grpc
+  labels:
+    {{- include "ocis.labels" . | nindent 4 }}
+  {{- if .Values.ingress.grpc.annotations }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.grpc.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  rules:
+  {{- range .Values.ingress.grpc.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $grpcServicePort }}
+  {{- end }}
+  {{- if .Values.ingress.grpc.tls }}
+  tls:
+    {{- toYaml .Values.ingress.grpc.tls | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,20 @@
+{{- if .Values.services }}
+{{ $services := omit .Values.services "type" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ocis.fullname" . }}
+  labels:
+    {{- include "ocis.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.services.type }}
+  ports:
+{{- range $service, $port := $services }}
+    - port: {{ $port.port }}
+      targetPort: {{ $service }}
+      protocol: TCP
+      name: {{ $service }}
+{{- end }}
+  selector:
+    {{- include "ocis.selectorLabels" . | nindent 4 }}
+{{- end }}

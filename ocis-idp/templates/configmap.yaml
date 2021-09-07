@@ -1,0 +1,22 @@
+{{- if .Values.configFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ocis.fullname" . }}-config
+  labels:
+    {{- include "ocis.labels" . | nindent 4 }}
+data:
+  entrypoint.sh: |-
+    #!/bin/sh
+    set -x
+
+    {{- range .Values.entrypoint.services }}
+    {{ . }} &
+    {{- end }}
+    sleep infinite
+
+{{- range $filename, $fileContents := .Values.configFiles }}
+  {{ $filename }}: |-
+{{ $fileContents | indent 4 }}
+{{- end }}
+{{- end }}

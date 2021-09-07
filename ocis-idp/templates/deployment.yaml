@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ocis.fullname" . }}
+  labels:
+    {{- include "ocis.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ocis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ocis.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.services }}
+          {{ $services := omit .Values.services "type" }}
+          ports:
+            {{- range $service, $port := $services }}
+            - name: {{ $service }}
+              protocol: TCP
+              containerPort: {{ $port.port }}
+            {{- end }}
+          {{- end }}
+          command:
+            - /entrypoint
+          volumeMounts:
+            - name: {{ include "ocis.fullname" . }}-config-volume
+              mountPath: /entrypoint
+              subPath: entrypoint.sh
+            - name: {{ include "ocis.fullname" . }}-config-volume
+              mountPath: /etc/ocis/
+            - name: {{ include "ocis.fullname" . }}-data
+              mountPath: "{{ .Values.persistentVolume.mountPath }}"
+              subPath: "{{ .Values.persistentVolume.subPath }}"
+          env:
+          {{- range $name, $value := .Values.env }}
+            - name: "{{ $name }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- if .Values.extraEnv }}
+            {{- toYaml .Values.extraEnv | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: {{ include "ocis.fullname" . }}-config-volume
+          configMap:
+            name: {{ template "ocis.fullname" . }}-config
+            defaultMode: 0777
+        - name: {{ include "ocis.fullname" . }}-data
+        {{- if .Values.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "ocis.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir:
+          {{- if .Values.emptyDir.sizeLimit }}
+            sizeLimit: {{ .Values.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
+        {{- end -}}
