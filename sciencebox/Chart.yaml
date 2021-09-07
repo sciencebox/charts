@@ -16,5 +16,5 @@ dependencies:
   version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
 - name: swan
-  version: 0.0.4
+  version: 0.0.5
   repository: "https://registry.cern.ch/chartrepo/swan"
