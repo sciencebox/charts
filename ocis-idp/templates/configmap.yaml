@@ -1,4 +1,3 @@
-{{- if .Values.configFiles }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,6 +14,7 @@ data:
     {{- end }}
     sleep infinite
 
+{{- if .Values.configFiles }}
 {{- range $filename, $fileContents := .Values.configFiles }}
   {{ $filename }}: |-
 {{ $fileContents | indent 4 }}
