@@ -43,6 +43,19 @@ eos:
   mgm:
     mgmofs:
       instance: user
+    ldapBindUsers:
+      enable: true
+      nslcd:
+       config:
+         # TODO: ldap_uri should be guessed.
+         ldap_uri: ldap://ocis-idp.default.svc.cluster.local:9125
+         ldap_base: ou=users,dc=example,dc=org
+         ldap_binddn: cn=idp,ou=sysusers,dc=example,dc=org
+         ldap_bindpw: idp
+         ldap_user_search_base: dc=example,dc=org
+         ldap_group_search_base: ou=groups,dc=example,dc=org
+         ldap_filter_passwd: (objectClass=posixAccount)
+         ldap_filter_group: (objectClass=group)
   fst:
     replicaCount: 4
 
