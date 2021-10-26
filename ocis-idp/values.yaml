@@ -8,7 +8,11 @@ image:
 services:
   type: ClusterIP
   ldap:
-    port: 9125
+    port: 9389
+    targetPort: 9125
+  ldaps:
+    port: 9636
+    targetPort: 9126
   idp:
     port: 9130
 
@@ -36,8 +40,8 @@ entrypoint:
     - "ocis storage-userprovider"
     - "ocis storage-groupprovider"
     - "ocis accounts"
-    - "ocis idp"
     - "ocis glauth"
+    - "ocis idp"
 
 configFiles:
   identifier_registration.yaml: |

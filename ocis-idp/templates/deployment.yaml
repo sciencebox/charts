@@ -18,15 +18,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.services }}
-          {{ $services := omit .Values.services "type" }}
-          ports:
-            {{- range $service, $port := $services }}
-            - name: {{ $service }}
-              protocol: TCP
-              containerPort: {{ $port.port }}
-            {{- end }}
-          {{- end }}
           command:
             - /entrypoint
           volumeMounts:

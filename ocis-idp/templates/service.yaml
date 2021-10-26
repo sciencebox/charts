@@ -8,11 +8,12 @@ metadata:
     {{- include "ocis.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.services.type }}
+  {{- $services := omit .Values.services "type" }}
   ports:
-{{- range $service, $port := $services }}
-    - port: {{ $port.port }}
-      targetPort: {{ $service }}
-      protocol: TCP
+{{- range $service, $properties := $services }}
+    - port: {{ $properties.port }}
+      targetPort: {{ $properties.targetPort | default $properties.port}}
+      protocol: {{ $properties.protocol | default "TCP" }}
       name: {{ $service }}
 {{- end }}
   selector:
