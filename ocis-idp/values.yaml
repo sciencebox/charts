@@ -39,7 +39,8 @@ entrypoint:
     - "ocis idp"
     - "ocis glauth"
 
-configFiles.identifier_registration\\.yaml: |
+configFiles:
+  identifier_registration.yaml: |
     clients:
       - id: web
         name: ownCloud web app
