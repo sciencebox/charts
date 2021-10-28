@@ -115,13 +115,22 @@ swan:
           client_secret:
           # TODO: We should infer pick the url automatically...
           oauth_callback_url:
+          scope:
+            - openid
+            - email
+            - profile
+            - offline_access
+          jwt_signing_algorithms:
+            - HS256
+            - RS256
+            - PS256
           # With the CERN SSO we will get a valid token for EOS. If the eosxd supports oauth,
           # we will be able to use it from the terminal, even with local_home=True.
           # The oCIS idp probably doesn't support exchanging tokens, but we will be able to re-use
           # the swan token with EOS if needed (although we shouldn't)
           exchange_tokens:
-            - eos-service
-            - cernbox-service
+          ##   - eos-service
+          ##   - cernbox-service
         JupyterHub:
           # We should expose cernbox and swan from the same url to simplify the deployment
           # We can do that by using different base url's for each.
@@ -132,14 +141,14 @@ swan:
         # Might need fixes on the swan code cause we break if we don't set user_roles (at least when using GPU).
         00-authConf: |
           def pre_spawn_hook(authenticator, spawner, auth_state):
-            spawner.environment['ACCESS_TOKEN'] = auth_state['exchanged_tokens']['eos-service']
+            ## spawner.environment['ACCESS_TOKEN'] = auth_state['exchanged_tokens']['eos-service']
             spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
-            spawner.user_uid = str(str(auth_state['oauth_user']['cern_uid'])) # k8s only supports values as strings!
+            spawner.user_uid = str(1000) # Fake value -- Nobody uses this.
             decoded_token = authenticator._decode_token(auth_state['access_token'])
             spawner.user_roles = authenticator.claim_roles_key(authenticator, decoded_token)
           c.KeyCloakAuthenticator.pre_spawn_hook = pre_spawn_hook
         02-spawnError: |
-          cernbox_url = 'CHANGE_ME' # This should come from the ScienceBox config !! If necessary, this can come as an env var
+          cernbox_url = 'CHANGE_ME' #TODO: This should come from the ScienceBox config !! If necessary, this can come as an env var
 
           SPAWN_ERROR_MESSAGE = f"""SWAN could not start a session for your user, please try again. If the problem persists, please check:
           <ul>
