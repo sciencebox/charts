@@ -104,6 +104,8 @@ swan:
         type: sqlite-memory
       extraEnv:
         JUPYTERHUB_CRYPT_KEY:
+        # OAUTH2_TLS_VERIFY: "0"  # Accept self-signed/invalid certificate from OCIS IDP
+        # TODO: This is not enought. Also the authenticator (and EOS) has to tolerate self-signed/invalid certs
       cookieSecret:
       config:
         SwanKubeSpawner:
