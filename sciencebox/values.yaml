@@ -87,7 +87,7 @@ swan:
       hostMountpoint: /var/eos
       config:
         oauth2: 1
-        sss: 1
+        sss: 0
         # TODO: eos_mgm_alias should be guessed.
         #eos_mgm_alias: "eos-mgm.default.svc.cluster.local"
         eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
