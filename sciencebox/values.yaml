@@ -141,7 +141,7 @@ swan:
         # Might need fixes on the swan code cause we break if we don't set user_roles (at least when using GPU).
         00-authConf: |
           def pre_spawn_hook(authenticator, spawner, auth_state):
-            ## spawner.environment['ACCESS_TOKEN'] = auth_state['exchanged_tokens']['eos-service']
+            spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
             spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
             spawner.user_uid = str(1000) # Fake value -- Nobody uses this.
             decoded_token = authenticator._decode_token(auth_state['access_token'])
