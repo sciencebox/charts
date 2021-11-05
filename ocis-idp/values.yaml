@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: owncloud/ocis
+  repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis-idp
   tag: 1.11.0
   pullPolicy: Always
 
@@ -30,18 +30,18 @@ env:
   IDP_LDAP_UUID_ATTRIBUTE_TYPE: "text"
   IDP_LDAP_FILTER: "(objectClass=posixaccount)"
   IDP_IDENTIFIER_REGISTRATION_CONF: /etc/ocis/identifier_registration.yaml
+  IDP_ISS: "https://edocker.cern.ch:9130"  #TODO: This should be guessed
 
 extraEnv: []
 
-entrypoint:
-  services:
-    - "ocis settings"
-    - "ocis storage-metadata"
-    - "ocis storage-userprovider"
-    - "ocis storage-groupprovider"
-    - "ocis accounts"
-    - "ocis glauth"
-    - "ocis idp"
+extensions:
+  - settings
+  - storage-metadata
+  - storage-userprovider
+  - storage-groupprovider
+  - accounts
+  - glauth
+  - idp
 
 configFiles:
   identifier_registration.yaml: |
