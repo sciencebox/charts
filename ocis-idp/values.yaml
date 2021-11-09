@@ -30,7 +30,6 @@ env:
   IDP_LDAP_UUID_ATTRIBUTE_TYPE: "text"
   IDP_LDAP_FILTER: "(objectClass=posixaccount)"
   IDP_IDENTIFIER_REGISTRATION_CONF: /etc/ocis/identifier_registration.yaml
-  IDP_ISS: "https://edocker.cern.ch:9130"  #TODO: This should be guessed
 
 extraEnv: []
 
@@ -54,12 +53,6 @@ configFiles:
           - https://ocis-idp.local/oidc-callback.html
           - https://ocis-idp.local/oidc-silent-redirect.html
         origins:
-          - https://ocis-idp.local
-      - id: swan
-        secret: KFeFWWEZO9TkisIQzR3fo7hfiMXlOpaqP8CFuTbSHzV1TUuGECglPxpiVKJfOXIx
-        name: SWAN
-        application_type: native
-        redirect_uris:
           - https://ocis-idp.local
 
 persistentVolume:
