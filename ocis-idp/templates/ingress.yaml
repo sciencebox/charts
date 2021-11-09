@@ -1,7 +1,6 @@
-{{- if .Values.ingress.enabled -}}
+{{- if and .Values.ingress.enabled .Values.ingress.exposeIdp -}}
 {{- $fullName := include "ocis.fullname" . -}}
-{{- $servicePort := .Values.service.http.port -}}
-{{- $paths := .Values.ingress.paths -}}
+{{- $idpPort := .Values.services.idp.port -}}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
 apiVersion: networking.k8s.io/v1beta1
 {{ else }}
@@ -24,19 +23,23 @@ spec:
     - host: {{ . }}
       http:
         paths:
-        {{- range $paths }}
+        {{- range tuple "/.well-known" "/konnect" "/signin" }}
           - path: {{ . }}
+            pathType: Prefix
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ $servicePort }}
+              servicePort: {{ $idpPort }}
         {{- end }}
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
     {{- toYaml .Values.ingress.tls | nindent 4 }}
   {{- end }}
+{{- end }}
+
 ---
-{{- if .Values.ingress.grpc -}}
+{{- if and .Values.ingress.enabled .Values.ingress.grpc -}}
+{{- $fullName := include "ocis.fullname" . -}}
 {{- $grpcServicePort := .Values.service.grpc.port -}}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
 apiVersion: networking.k8s.io/v1beta1
@@ -69,5 +72,4 @@ spec:
   tls:
     {{- toYaml .Values.ingress.grpc.tls | nindent 4 }}
   {{- end }}
-{{- end }}
 {{- end }}

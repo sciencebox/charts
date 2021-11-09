@@ -101,8 +101,8 @@ ingress:
     # kubernetes.io/ingress.class: nginx
   hosts:
     - ocis-idp.local
-  paths:
-    - /.well-known
+  exposeIdp: true
+  exposeLdap: false
   tls: []
   #  - secretName: ocis-tls
   #    hosts:
