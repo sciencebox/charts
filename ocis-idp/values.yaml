@@ -15,6 +15,7 @@ services:
     targetPort: 9126
   idp:
     port: 9130
+    targetPort: 9130
 
 # oCIS IDP config defaults from https://owncloud.dev/extensions/idp/configuration/
 env:
