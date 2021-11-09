@@ -96,17 +96,17 @@ swan:
   # JupyterHub
   jupyterhub:
     proxy:
-      secretToken:
+      secretToken: 11df35dab7527b3798de5224f06458db1e0526fa65700e81e18f17f89822e0cf
     hub:
       # The default (pvc) is not working in openstack...
       # TODO: Add some persistency here
       db:
         type: sqlite-memory
       extraEnv:
-        JUPYTERHUB_CRYPT_KEY:
+        JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
         # OAUTH2_TLS_VERIFY: "0"  # Accept self-signed/invalid certificate from OCIS IDP
         # TODO: This is not enought. Also the authenticator (and EOS) has to tolerate self-signed/invalid certs
-      cookieSecret:
+      cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
       config:
         SwanKubeSpawner:
           local_home: False
