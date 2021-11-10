@@ -1,11 +1,7 @@
 {{- if and .Values.ingress.enabled .Values.ingress.exposeIdp -}}
 {{- $fullName := include "ocis.fullname" . -}}
 {{- $idpPort := .Values.services.idp.port -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
-apiVersion: networking.k8s.io/v1beta1
-{{ else }}
-apiVersion: extensions/v1beta1
-{{ end -}}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -27,8 +23,10 @@ spec:
           - path: {{ . }}
             pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $idpPort }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $idpPort }}
         {{- end }}
   {{- end }}
   {{- if .Values.ingress.tls }}
@@ -41,11 +39,7 @@ spec:
 {{- if and .Values.ingress.enabled .Values.ingress.grpc -}}
 {{- $fullName := include "ocis.fullname" . -}}
 {{- $grpcServicePort := .Values.service.grpc.port -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
-apiVersion: networking.k8s.io/v1beta1
-{{ else }}
-apiVersion: extensions/v1beta1
-{{ end -}}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}-grpc
@@ -65,8 +59,10 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $grpcServicePort }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $grpcServicePort }}
   {{- end }}
   {{- if .Values.ingress.grpc.tls }}
   tls:
