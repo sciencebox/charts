@@ -44,8 +44,7 @@ ocis-idp:
   env:
     # Set access token expiration to 8hrs (=28800s) until the auto-renewal is fixed
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    # TODO: This should be guessed
-    IDP_ISS: &hostname https://edocker.cern.ch
+    IDP_ISS: https://idp.hostname
   configFiles:
     identifier_registration.yaml: |
       clients:
@@ -56,7 +55,6 @@ ocis-idp:
   ingress:
     enabled: true
     hosts:
-      - edocker.cern.ch
     exposeIdp: true
 
 #
@@ -70,7 +68,6 @@ eos:
       enable: true
       nslcd:
        config:
-         # TODO: ldap_uri should be guessed.
          ldap_uri: ldap://ocis-idp.default.svc.cluster.local:9389
          ldap_base: ou=users,dc=example,dc=org
          ldap_binddn: cn=idp,ou=sysusers,dc=example,dc=org
@@ -111,8 +108,6 @@ swan:
       config:
         oauth2: 1
         sss: 0
-        # TODO: eos_mgm_alias should be guessed.
-        #eos_mgm_alias: "eos-mgm.default.svc.cluster.local"
         eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
 
   #
@@ -135,12 +130,10 @@ swan:
         KeyCloakAuthenticator:
           # TODO: It may use the internal k8s service.
           #       Go through ingress for TLS termination for now.
-          # TODO: This should be guessed
-          oidc_issuer: https://edocker.cern.ch
+          oidc_issuer: https://idp.hostname
           client_id: swan
           client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
-          # TODO: This should be guessed
-          oauth_callback_url: https://edocker.cern.ch/swan/hub/oauth_callback
+          oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
           scope:
             - openid
             - email
