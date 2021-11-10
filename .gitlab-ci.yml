@@ -69,6 +69,6 @@ deploy:
         set -x
         CHART=$(echo $CI_COMMIT_TAG | awk -F '@' '{print $1}')
         helm dependency update ${CHART}
-        helm push ${CHART}/ ${HELM_CHART_REPO}
+        helm cm-push ${CHART}/ ${HELM_CHART_REPO}
   only:
     - tags
