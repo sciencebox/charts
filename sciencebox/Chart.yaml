@@ -20,5 +20,5 @@ dependencies:
   version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
 - name: ocis-idp
-  version: 0.0.3
+  version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
