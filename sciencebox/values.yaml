@@ -36,6 +36,29 @@ global:
   sssKeytab:
     secret: *sssKeytabName
 
+
+#
+# OCIS-IDP
+#
+ocis-idp:
+  env:
+    # Set access token expiration to 8hrs (=28800s) until the auto-renewal is fixed
+    IDP_ACCESS_TOKEN_EXPIRATION: 28800
+    # TODO: This should be guessed
+    IDP_ISS: &hostname https://edocker.cern.ch
+  configFiles:
+    identifier_registration.yaml: |
+      clients:
+        - id: swan
+          secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
+          name: SWAN
+          application_type: native
+  ingress:
+    enabled: true
+    hosts:
+      - edocker.cern.ch
+    exposeIdp: true
+
 #
 # EOS
 #
@@ -104,19 +127,20 @@ swan:
         type: sqlite-memory
       extraEnv:
         JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
-        # OAUTH2_TLS_VERIFY: "0"  # Accept self-signed/invalid certificate from OCIS IDP
-        # TODO: This is not enought. Also the authenticator (and EOS) has to tolerate self-signed/invalid certs
+        OAUTH2_TLS_VERIFY: "0"  # Accept self-signed/invalid certificate from OCIS IDP
       cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
       config:
         SwanKubeSpawner:
           local_home: True
         KeyCloakAuthenticator:
-          oidc_issuer:
-          client_id:
-          # TODO retrieve from app portal
-          client_secret:
-          # TODO: We should infer pick the url automatically...
-          oauth_callback_url:
+          # TODO: It may use the internal k8s service.
+          #       Go through ingress for TLS termination for now.
+          # TODO: This should be guessed
+          oidc_issuer: https://edocker.cern.ch
+          client_id: swan
+          client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
+          # TODO: This should be guessed
+          oauth_callback_url: https://edocker.cern.ch/swan/hub/oauth_callback
           scope:
             - openid
             - email
@@ -196,11 +220,10 @@ swan:
         #nginx.ingress.kubernetes.io/rewrite-target: /
         #nginx.ingress.kubernetes.io/secure-backends: "true"
       hosts:
-        #- hostname_where_the_ingress_lives
       # tls:
       #   - secretName: swan-tls-cert
       #     hosts:
-      #       - diogo-swan.cern.ch
+      #       - test.mydomain
 
   # To decide if we keep this or we manage the tls secret differently
   # If we keep it, maybe should change the name from swan.secrets.ingress to smth else
