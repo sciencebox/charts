@@ -2,5 +2,5 @@ apiVersion: v2
 name: ocis-idp
 description: oCIS (ownCloud Infinite Scale) opinionated Identity Provider
 type: application
-version: 0.0.2
+version: 0.0.3
 appVersion: 0.0.1
