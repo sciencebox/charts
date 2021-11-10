@@ -12,9 +12,13 @@ dependencies:
   alias: eos
   version: 0.1.0
   repository: "https://registry.cern.ch/chartrepo/eos"
-- name: eos-instance-config
-  version: 0.0.4
-  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 - name: swan
   version: 0.0.5
   repository: "https://registry.cern.ch/chartrepo/swan"
+#
+- name: eos-instance-config
+  version: 0.0.4
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
+- name: ocis-idp
+  version: 0.0.3
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
