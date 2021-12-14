@@ -15,42 +15,35 @@ spec:
         {{- include "ocis.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
-          volumeMounts:
-            - name: ocis-configfiles
-              mountPath: /etc/ocis/
-            - name: ocis-supervisord-conf
-              mountPath: /etc/supervisord.conf
-              subPath: supervisord.conf
-            - name: ocis-supervisord-procs
-              mountPath: /etc/supervisord.d
-            - name: ocis-data
-              mountPath: "{{ .Values.persistentVolume.mountPath }}"
-              subPath: "{{ .Values.persistentVolume.subPath }}"
+        {{- $chart := .Chart -}}
+        {{- $values := .Values -}}
+        {{- range .Values.extensions }}
+        - name: "{{ $chart.Name }}-{{ . }}"
+          image: "{{ $values.image.repository }}:{{ $values.image.tag }}"
+          imagePullPolicy: {{ $values.image.pullPolicy }}
+          command: ["/usr/bin/ocis", "{{ . }}"]
           env:
-          {{- range $name, $value := .Values.env }}
+          {{- range $name, $value := $values.env }}
             - name: "{{ $name }}"
               value: "{{ $value }}"
           {{- end }}
-          {{- if .Values.extraEnv }}
-            {{- toYaml .Values.extraEnv | nindent 12 }}
+          {{- if $values.extraEnv }}
+            {{- toYaml $values.extraEnv | nindent 12 }}
           {{- end }}
+          volumeMounts:
+            - name: ocis-configfiles
+              mountPath: /etc/ocis/
+            - name: ocis-data
+              mountPath: "{{ $values.persistentVolume.mountPath }}"
+              subPath: "{{ $values.persistentVolume.subPath }}"
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml $values.resources | nindent 12 }}
+        {{- end }}
       volumes:
         - name: ocis-configfiles
           configMap:
             name: {{ include "ocis.fullname" . }}-configfiles
             defaultMode: 0777
-        - name: ocis-supervisord-conf
-          configMap:
-            name: {{ include "ocis.fullname" . }}-supervisord-conf
-        - name: ocis-supervisord-procs
-          configMap:
-            name: {{ include "ocis.fullname" . }}-supervisord-procs
         - name: ocis-data
         {{- if .Values.persistentVolume.enabled }}
           persistentVolumeClaim:
