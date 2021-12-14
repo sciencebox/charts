@@ -1,0 +1,114 @@
+replicaCount: 1
+
+image:
+  repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis-idp
+  tag: 1.11.0
+  pullPolicy: Always
+
+services:
+  type: ClusterIP
+  ldap:
+    port: 9389
+    targetPort: 9125
+  ldaps:
+    port: 9636
+    targetPort: 9126
+  idp:
+    port: 9130
+    targetPort: 9130
+
+# oCIS IDP config defaults from https://owncloud.dev/extensions/idp/configuration/
+env:
+  IDP_LDAP_URI: "ldap://localhost:9125"
+  IDP_LDAP_BIND_DN: "cn=idp,ou=sysusers,dc=example,dc=org"
+  IDP_LDAP_BIND_PASSWORD: "idp"
+  IDP_LDAP_BASE_DN: "ou=users,dc=example,dc=org"
+  IDP_LDAP_SCOPE: "sub"
+  IDP_LDAP_LOGIN_ATTRIBUTE: "cn"
+  IDP_LDAP_EMAIL_ATTRIBUTE: "email"
+  IDP_LDAP_NAME_ATTRIBUTE: "sn"
+  IDP_LDAP_UUID_ATTRIBUTE: "uid"
+  IDP_LDAP_UUID_ATTRIBUTE_TYPE: "text"
+  IDP_LDAP_FILTER: "(objectClass=posixaccount)"
+  IDP_IDENTIFIER_REGISTRATION_CONF: /etc/ocis/identifier_registration.yaml
+
+extraEnv: []
+
+extensions:
+  - settings
+  - storage-metadata
+  - storage-userprovider
+  - storage-groupprovider
+  - accounts
+  - glauth
+  - idp
+
+configFiles:
+  identifier_registration.yaml: |
+    clients:
+      - id: web
+        name: ownCloud web app
+        trusted: yes
+        redirect_uris:
+          - https://ocis-idp.local/
+          - https://ocis-idp.local/oidc-callback.html
+          - https://ocis-idp.local/oidc-silent-redirect.html
+        origins:
+          - https://ocis-idp.local
+
+persistentVolume:
+  ## If true, ocis will create/use a Persistent Volume Claim
+  ## If false, use emptyDir instead
+  enabled: false
+
+  ## Must match those of existing PV or dynamic provisioner
+  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  accessModes:
+    - ReadWriteOnce
+
+  annotations: {}
+
+  ## If defined, PVC MUST be created manually before volume will be bound
+  existingClaim: ""
+
+  mountPath: /var/tmp
+  ## Subdirectory of the PV to mount. If the root directory is not empty
+  subPath: ""
+  size: 10Gi
+
+  ## If set to "-", storageClassName: "": disables dynamic provisioning
+  ## If undefined or null, chooses the default provisioner.
+  # storageClass: "-"
+
+  # volumeBindingMode: ""
+
+emptyDir:
+  sizeLimit: ""
+
+resources: {}
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
+  #   ephemeral-storage: "2Gi"
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  #   ephemeral-storage: "2Gi"
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+  hosts:
+    - ocis-idp.local
+  exposeIdp: true
+  exposeLdap: false
+  tls: []
+  #  - secretName: ocis-tls
+  #    hosts:
+  #      - ocis.local
+  grpc: {}
+    # annotations: {}
+    # hosts:
+    #   - api.cernbox.cern.ch
+    # tls: []
