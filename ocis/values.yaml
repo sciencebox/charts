@@ -75,11 +75,13 @@ resources: {}
 #   - exposed on 8080 -- port is where external clients must connect to
 #   - type (i.e., service type) is global for all declared services
 #
+#  services:
+#    type: ClusterIP
+#    idp:
+#      port: 8080
+#      targetPort: 9130
+#
 services:
-  type: ClusterIP
-  idp:
-    port: 8080
-    targetPort: 9130
 
 #
 # Ingress configuration
