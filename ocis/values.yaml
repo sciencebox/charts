@@ -5,79 +5,48 @@ image:
   tag: 1.11.0
   pullPolicy: Always
 
-services:
-  type: ClusterIP
-  ldap:
-    port: 9389
-    targetPort: 9125
-  ldaps:
-    port: 9636
-    targetPort: 9126
-  idp:
-    port: 9130
-    targetPort: 9130
+#
+# oCIS extensions to be executed in the pod
+#
+extensions:
 
-# oCIS IDP config defaults from https://owncloud.dev/extensions/idp/configuration/
+#
+# Environment variables to set in each container of the pod
+#
 env:
-  IDP_LDAP_URI: "ldap://localhost:9125"
-  IDP_LDAP_BIND_DN: "cn=idp,ou=sysusers,dc=example,dc=org"
-  IDP_LDAP_BIND_PASSWORD: "idp"
-  IDP_LDAP_BASE_DN: "ou=users,dc=example,dc=org"
-  IDP_LDAP_SCOPE: "sub"
-  IDP_LDAP_LOGIN_ATTRIBUTE: "cn"
-  IDP_LDAP_EMAIL_ATTRIBUTE: "email"
-  IDP_LDAP_NAME_ATTRIBUTE: "sn"
-  IDP_LDAP_UUID_ATTRIBUTE: "uid"
-  IDP_LDAP_UUID_ATTRIBUTE_TYPE: "text"
-  IDP_LDAP_FILTER: "(objectClass=posixaccount)"
-  IDP_IDENTIFIER_REGISTRATION_CONF: /etc/ocis/identifier_registration.yaml
-
 extraEnv: []
 
-extensions:
-  - settings
-  - storage-metadata
-  - storage-userprovider
-  - storage-groupprovider
-  - accounts
-  - glauth
-  - idp
-
+#
+# Configuration files for oCIS extensions mounted at /etc/ocis/
+#
 configFiles:
-  identifier_registration.yaml: |
-    clients:
-      - id: web
-        name: ownCloud web app
-        trusted: yes
-        redirect_uris:
-          - https://ocis-idp.local/
-          - https://ocis-idp.local/oidc-callback.html
-          - https://ocis-idp.local/oidc-silent-redirect.html
-        origins:
-          - https://ocis-idp.local
 
+#
+# Storage perisstency configuration
+#
 persistentVolume:
-  ## If true, ocis will create/use a Persistent Volume Claim
-  ## If false, use emptyDir instead
+  # If true, ocis will create/use a Persistent Volume Claim
+  # If false, use emptyDir instead
   enabled: false
 
-  ## Must match those of existing PV or dynamic provisioner
-  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  # Must match those of existing PV or dynamic provisioner
+  # Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   accessModes:
     - ReadWriteOnce
 
   annotations: {}
 
-  ## If defined, PVC MUST be created manually before volume will be bound
+  # If defined, PVC MUST be created manually before volume will be bound
   existingClaim: ""
 
+  # Mount path inside the container
   mountPath: /var/tmp
-  ## Subdirectory of the PV to mount. If the root directory is not empty
+  # Subdirectory of the PV to mount. If the root directory is not empty
   subPath: ""
   size: 10Gi
 
-  ## If set to "-", storageClassName: "": disables dynamic provisioning
-  ## If undefined or null, chooses the default provisioner.
+  # If set to "-", storageClassName: "": disables dynamic provisioning
+  # If undefined or null, chooses the default provisioner.
   # storageClass: "-"
 
   # volumeBindingMode: ""
@@ -85,6 +54,9 @@ persistentVolume:
 emptyDir:
   sizeLimit: ""
 
+#
+# Reserve hardware resource for the pod
+#
 resources: {}
   # requests:
   #   cpu: 500m
@@ -95,23 +67,46 @@ resources: {}
   #   memory: 512Mi
   #   ephemeral-storage: "2Gi"
 
+#
+# Service ports declaration for oCIS extensions
+#
+# Example of idp extension:
+#   - running on port 9130 -- targetPort is where the extension listens inside the container
+#   - exposed on 8080 -- port is where external clients must connect to
+#   - type (i.e., service type) is global for all declared services
+#
+services:
+  type: ClusterIP
+  idp:
+    port: 8080
+    targetPort: 9130
+
+#
+# Ingress configuration
+#
+# Example of hosts configuration for 'ocis.local' server name:
+#   - paths: forwarding paths '/.well-known', '/konnect', '/signin'
+#   - pathType: using declared paths as prefixes
+#   - backendName: left blank -- the full name of the chart will be used
+#   - backendPort: forwarding to port 8080 (which is where the service is exposed)
+#
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
   hosts:
-    ocis.local:
+    ocis-idp.local:
       paths:
       - '/.well-known'
       - '/konnect'
       - '/signin'
       pathType: Prefix
       backendName:
-      backendPort: 9130
+      backendPort: 8080
   tls: []
   #  - secretName: ocis-tls
   #    hosts:
-  #      - ocis.local
+  #      - ocis-idp.local
   grpc: {}
     # annotations: {}
     # hosts:
