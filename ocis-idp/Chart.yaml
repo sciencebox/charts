@@ -7,3 +7,9 @@ appVersion: 1.11.0
 #
 description: oCIS (ownCloud Infinite Scale) opinionated Identity Provider
 icon: https://owncloud.dev/media/is.png
+#
+dependencies:
+- name: ocis
+  alias: ocis-idp
+  version: 0.0.5
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
