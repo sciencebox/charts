@@ -1,6 +1,5 @@
-{{- if and .Values.ingress.enabled .Values.ingress.exposeIdp -}}
+{{- if and .Values.ingress.enabled -}}
 {{- $fullName := include "ocis.fullname" . -}}
-{{- $idpPort := .Values.services.idp.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -15,18 +14,21 @@ metadata:
   {{- end }}
 spec:
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
+  {{- range $hostname, $params := .Values.ingress.hosts }}
+    - host: {{ $hostname }}
       http:
         paths:
-        {{- range tuple "/.well-known" "/konnect" "/signin" }}
+        {{- $pathType := $params.pathType -}}
+        {{- $backendName := $params.backendName -}}
+        {{- $backendPort := $params.backendPort -}}
+        {{- range $params.paths }}
           - path: {{ . }}
-            pathType: Prefix
+            pathType: {{ default "Prefix" $pathType }}
             backend:
               service:
-                name: {{ $fullName }}
+                name: {{ default $fullName $backendName }}
                 port:
-                  number: {{ $idpPort }}
+                  number: {{ $backendPort }}
         {{- end }}
   {{- end }}
   {{- if .Values.ingress.tls }}
