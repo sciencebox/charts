@@ -21,6 +21,7 @@ ocis-idp:
   
   #
   # oCIS IDP config defaults from https://owncloud.dev/extensions/idp/configuration/
+  #   2021/12/15: IDP documentation moved to https://github.com/libregraph/lico
   #
   env:
     IDP_LDAP_URI: "ldap://localhost:9125"
