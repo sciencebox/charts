@@ -91,20 +91,23 @@ services:
 #   - pathType: using declared paths as prefixes
 #   - backendName: left blank -- the full name of the chart will be used
 #   - backendPort: forwarding to port 8080 (which is where the service is exposed)
+# ingress:
+#   enabled: true
+#   hosts:
+#     ocis-idp.local:
+#       paths:
+#       - '/.well-known'
+#       - '/konnect'
+#       - '/signin'
+#       pathType: Prefix
+#       backendName:
+#       backendPort: 8080
 #
 ingress:
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
-  hosts:
-    ocis-idp.local:
-      paths:
-      - '/.well-known'
-      - '/konnect'
-      - '/signin'
-      pathType: Prefix
-      backendName:
-      backendPort: 8080
+  hosts: {}
   tls: []
   #  - secretName: ocis-tls
   #    hosts:
