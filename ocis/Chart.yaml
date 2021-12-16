@@ -2,7 +2,7 @@ apiVersion: v2
 #
 name: ocis
 type: application
-version: 0.0.4
+version: 0.0.5
 appVersion: 1.11.0
 #
 description: ownCloud Infinite Scale (oCIS) skeleton chart
