@@ -22,7 +22,7 @@ extraEnv: []
 configFiles:
 
 #
-# Storage perisstency configuration
+# Storage persistency configuration
 #
 persistentVolume:
   # If true, ocis will create/use a Persistent Volume Claim

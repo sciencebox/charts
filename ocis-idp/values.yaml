@@ -56,7 +56,7 @@ ocis-idp:
             - https://ocis-idp.local
   
   #
-  # Storage perisstency configuration
+  # Storage persistency configuration
   #
   persistentVolume:
     # If true, ocis will create/use a Persistent Volume Claim
