@@ -16,12 +16,6 @@ podAssignment:
 enableLivenessProbe: false      # To be implemented
 enableReadinessProbe: false     # To be implemented
 
-service:
-  type: ClusterIP
-  ports:
-  - name: squid
-    port: 3128
-
 #ingress:
 #  enabled: true
 #  annotations: {}

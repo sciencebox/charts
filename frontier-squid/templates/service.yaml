@@ -5,14 +5,12 @@ metadata:
   labels:
     {{- include "frontier-squid.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-  {{- range .Values.service.ports }}
-  - name: {{ .name }}
-    protocol: TCP
-    port: {{ .port }}
-    targetPort: {{ .targetPort }}
-  {{- end }}
+    - port: 3128
+      targetPort: 3128
+      protocol: TCP
+      name: squid
   selector:
     {{- include "frontier-squid.selectorLabels" . | nindent 4 }}
 
