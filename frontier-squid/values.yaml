@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/frontier-squid
-  tag: 4.9-4.1
+  tag: 4.15-2.1
   pullPolicy: IfNotPresent
 
 customLabels:
@@ -10,7 +10,7 @@ customLabels:
   component: frontier-squid
 
 podAssignment:
-  enableNodeSelector: true      # Requires a node labeled as per customLabels.
+  enableNodeSelector: false     # Requires a node labeled as per customLabels.
   enablePodAntiAffinity: false  # Shard the stateful set on as many nodes as possible
 
 enableLivenessProbe: false      # To be implemented

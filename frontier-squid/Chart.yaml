@@ -1,6 +1,10 @@
+apiVersion: v2
+#
 name: frontier-squid
-version: 0.1.0
-appVersion: 4.9-4.1
+type: application
+version: 0.1.1
+appVersion: 4.15-2.1
+#
 description: Frontier Squid cache for CVMFS clients
 keywords:
   - Frontier
@@ -13,7 +17,3 @@ sources:
   - http://frontier.cern.ch/
   - https://twiki.cern.ch/twiki/bin/view/Frontier/InstallSquid
   - https://gitlab.cern.ch/sciencebox
-maintainers:
-  - name: Enrico Bocchi
-    email: enrico.bocchi@cern.ch
-
