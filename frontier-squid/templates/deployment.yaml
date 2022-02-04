@@ -39,9 +39,6 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
-        ports:
-          - containerPort: 3128
-            protocol: TCP
 #        livenessProbe:
 #          exec:
 #            command:
