@@ -29,13 +29,48 @@ repositories:
   - sft.cern.ch
   - sft-nightlies.cern.ch
 
+#
+# cvmfs configuration common to all repositories stored as key:value pairs
+#
+#   Documentation at:
+#   - https://cvmfs.readthedocs.io/en/stable/cpt-configure.html
+#   - https://cvmfs.readthedocs.io/en/stable/apx-parameters.html#client-parameters
+#
 default_local:
   CVMFS_DNS_MIN_TTL: 300
   CVMFS_QUOTA_LIMIT: 20000
   CVMFS_HTTP_PROXY: DIRECT
   CVMFS_CACHE_BASE: /var/lib/cvmfs
 
+#
+# Additional mount options common to all repositories
+#
 mountOptions:
   uid: 998
   gid: 996
   hostMountpoint: /cvmfs
+
+#
+# Prefetch from cvmfs to keep client cache warm and speed up users' sessions
+#
+prefetcher:
+  enabled: true
+  jobs:
+    cron_opennotebook_python2_ipy:
+      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_99python2/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m ipykernel > /dev/null 2>&1 || true )"
+      minute: '*/15'
+    cron_opennotebook_python2_root:
+      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_99python2/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m JupyROOT.kernel.rootkernel > /dev/null 2>&1 || true )"
+      minute: '*/15'
+    cron_opennotebook_python3_ipy:
+      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_101swan/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m ipykernel > /dev/null 2>&1 || true )"
+      minute: '*/15'
+    cron_opennotebook_python3_root:
+      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_101swan/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m JupyROOT.kernel.rootkernel > /dev/null 2>&1 || true )"
+      minute: '*/15'
+    cron_opennotebook_python3nx_ipy:
+      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_95apython3_nxcals/x86_64-centos7-gcc7-opt/setup.sh && ( timeout 20s python -m ipykernel > /dev/null 2>&1 || true )"
+      minute: '*/15'
+    cron_opennotebook_python3nx_spark:
+      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_100_nxcals/x86_64-centos7-gcc9-opt/setup.sh && ( timeout 20s python -c 'import pyspark' > /dev/null 2>&1 || true )"
+      minute: '*/15'

@@ -71,6 +71,18 @@ spec:
             - name: cvmfs-export
               mountPath: /cvmfs
               mountPropagation: Bidirectional
+        {{- if .Values.prefetcher.enabled }}
+        - name: cvmfs-prefetcher
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/sbin/crond", "-n", "-s", "-x", "ext,sch,proc,pars,misc,bit"]
+          volumeMounts:
+            - name: cvmfs-prefetcher-crontab
+              mountPath: /etc/cron.d
+            - name: cvmfs-export
+              mountPath: /cvmfs
+              mountPropagation: HostToContainer
+        {{- end }}
       volumes:
         - name: cvmfs-dev-fuse
           hostPath:
@@ -91,6 +103,9 @@ spec:
         - name: cvmfs-cfgmap-config-d
           configMap:
             name: {{ include "cvmfs.fullname" . }}-cfgmap-config-d
+        - name: cvmfs-prefetcher-crontab
+          configMap:
+            name: {{ include "cvmfs.fullname" . }}-prefetcher-crontab
         - name: cvmfs-export
           hostPath:
             path: {{ default "/cvmfs" .Values.mountOptions.hostMountpoint }}

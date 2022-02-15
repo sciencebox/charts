@@ -1,0 +1,19 @@
+{{- if .Values.prefetcher.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cvmfs.fullname" . }}-prefetcher-crontab
+  labels:
+    {{- include "cvmfs.labels" . | nindent 4 }}
+data:
+  prefetcher: |
+    # Run the CVMFS prefetcher jobs
+    SHELL=/bin/bash
+    PATH=/sbin:/bin:/usr/sbin:/usr/bin
+    MAILTO=""
+    {{- range $name,$specs := .Values.prefetcher.jobs }}
+    {{- with $specs }}
+    {{ default "*" .minute }} {{ default "*" .hour }} {{ default "*" .day }} {{ default "*" .month }} {{ default "*" .weekday }} {{ default "root" .user }} {{ .command }}
+    {{- end }}
+    {{- end }}
+{{- end }}
