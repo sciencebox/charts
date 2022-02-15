@@ -35,6 +35,15 @@ spec:
                 {{- end }}
               topologyKey: "kubernetes.io/hostname"
       {{- end }}
+      initContainers:
+        - name: frontier-squid-init0-makedirs
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
+          command: ["/usr/sbin/squid -f /etc/squid/squid.conf -N -z"]
+          volumeMounts:
+            - name: frontier-squid-config
+              mountPath: /etc/squid/squid.conf
+              subPath: squid.conf
       containers:
       - name: frontier-squid
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
