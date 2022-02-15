@@ -3,11 +3,19 @@ image:
   tag: 4.15-2.1
   pullPolicy: IfNotPresent
 
-replicaCount: 1
+#
+# Number of frontier-squid pods to run
+#
+#   Squid is seamlessly load-balanced via its network service. Running more replicas
+#     will provide more capacity and the ability to serve more clients.
+#   Consider enabling PodAntiAffinity to increase availability.
+#
+replicas: 1
 
 #
 # Assign frontier-squid pod(s) to a node with a specific label
 #   and distribute them on different nodes to avoid single points of failure.
+#
 #
 podAssignment:
   # If true, requires a node labeled as per customLabels.
@@ -33,9 +41,10 @@ enableReadinessProbe: false     # To be implemented
 #
 # Squid configuration
 #
-#   configFile: Provide a full configuration file.
-#     Overrides the provided configMap only if provided and the file exists
-#   config: Parameters to change default valules in the provided configMap.
+#   - configFile: Provide a full configuration file.
+#       Overrides the provided configMap only if provided and the file exists
+#   - config: Parameters to change default valules in the provided configMap.
+#
 configFile: files/mysquid.conf
 config:
   fileDescriptors: 16384

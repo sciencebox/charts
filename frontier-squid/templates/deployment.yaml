@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "frontier-squid.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default 1 .Values.replicaCount }}
+  replicas: {{ default 1 .Values.replicas }}
   selector:
    matchLabels:
      {{- include "frontier-squid.selectorLabels" . | nindent 6 }}
