@@ -49,9 +49,9 @@ configFile: files/mysquid.conf
 config:
   fileDescriptors: 16384
   cache:
+    minSize: "0 KB"             # Applies to both in-memory and on disk caches
     diskDirectory: "/var/cache/squid"
     diskSpace: 10000    # in MB
-    diskMinSize: "4 KB"
-    diskMaxSize: "1 GB"
+    diskMaxSize: "1 GB"         # Maximum object size to be cached on disk
     memorySpace: "256 MB"
-    memoryMaxSize: "32 KB"
+    memoryMaxSize: "32 KB"      # Maximum object size to be cached in memory
