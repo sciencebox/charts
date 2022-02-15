@@ -39,16 +39,18 @@ spec:
         - name: frontier-squid-init0-makedirs
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
-          command: ["/usr/sbin/squid -f /etc/squid/squid.conf -N -z"]
+          command: ["/usr/sbin/squid", "-f", "/etc/squid/squid.conf", "-N", "-z"]
           volumeMounts:
             - name: frontier-squid-config
               mountPath: /etc/squid/squid.conf
               subPath: squid.conf
+            - name: frontier-squid-disk-cache
+              mountPath: {{ default "/var/cache/squid" .Values.config.cache.diskDirectory }}
       containers:
       - name: frontier-squid
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
-        command: ["/usr/sbin/squid -f /etc/squid/squid.conf -N -d 1"]
+        command: ["/usr/sbin/squid", "-f", "/etc/squid/squid.conf", "-N", "-d1"]
 #        livenessProbe:
 #          exec:
 #            command:
@@ -69,7 +71,11 @@ spec:
           - name: frontier-squid-config
             mountPath: /etc/squid/squid.conf
             subPath: squid.conf
+          - name: frontier-squid-disk-cache
+            mountPath: {{ default "/var/cache/squid" .Values.config.cache.diskDirectory }}
       volumes:
         - name: frontier-squid-config
           configMap:
             name: {{ include "frontier-squid.fullname" . }}-config
+        - name: frontier-squid-disk-cache
+          emptyDir: {}
