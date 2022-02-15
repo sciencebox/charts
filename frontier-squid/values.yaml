@@ -46,14 +46,3 @@ config:
     diskMaxSize: "1 GB"
     memorySpace: "256 MB"
     memoryMaxSize: "32 KB"
-
-#ingress:
-#  enabled: true
-#  annotations: {}
-#  paths:
-#    - /
-#  hosts:
-#    - passtlstest001.cern.ch
-#  tls: []
-
-#resources: {}
