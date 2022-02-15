@@ -36,7 +36,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: frontier-squid
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
         command: ["/usr/sbin/squid -f /etc/squid/squid.conf -N -d 1"]
