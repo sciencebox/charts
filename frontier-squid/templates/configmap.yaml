@@ -7,28 +7,37 @@ metadata:
     {{- include "frontier-squid.labels" . | nindent 4 }}
 data:
   squid.conf: |
+{{- $config := "" -}}
+{{- if .Values.configFile -}}
+{{- $config = .Files.Get .Values.configFile }}
+{{- end -}}
+{{- if $config -}}
+{{ $config | nindent 4 }}
+{{- else }}
     # General squid configuration
     # Cache management
-    cache_dir ufs /var/cache/squid 30000 16 256
-    cache_mem 256 MB
+    {{- with .Values.config.cache -}}
+    cache_dir ufs {{ default "/var/cache/squid" .diskDirectory }} {{ default "10000" .diskSpace }} 16 256
+    cache_mem {{ default "256 MB" .memorySpace }}
     cache_mgr squid
     cache_effective_user squid
     cache_effective_group squid
-    maximum_object_size 1048576 KB
-    maximum_object_size_in_memory 32 KB
+    minimum_object_size {{ default "4 KB" .diskMinSize }}
+    maximum_object_size {{ default "1 GB" .diskMaxSize }}
+    maximum_object_size_in_memory {{ default "32 KB" .memoryMaxSize }}
     memory_cache_shared off
+    {{- end }}
 
     # Logs
     access_log daemon:/var/log/squid/access.log squid
     cache_log /var/log/squid/cache.log
     strip_query_terms off
-    
+
     # Miscellaneous
     mime_table /etc/squid/mime.conf
     icon_directory /usr/share/squid/icons/
-    coredump_dir /var/cache/squid
     pid_filename /var/run/squid/squid.pid
-    max_filedescriptors 16384
+    max_filedescriptors {{ default "16384" .Values.config.fileDescriptors }}
     http_port 3128
     umask 022
     # As per https://bugs.squid-cache.org/show_bug.cgi?id=4554
@@ -45,17 +54,7 @@ data:
     store_id_extras "%>a %un %>rm myip=%la myport=%lp"
     # Send response header as Apache
     acl apache rep_header Server ^Apache
-    
-    
-    # Deny specific types of traffic
-    # Deny URN protocol (as per https://security.archlinux.org/CVE-2019-12526)
-    acl URNPROTO proto URN
-    http_access deny URNPROTO
-    # Deny send_hit for PragmaNoCache
-    acl PragmaNoCache req_header Pragma no-cache
-    send_hit deny PragmaNoCache
-    
-    
+
     # ACL fragments
     # ACL fragment for safe_ports: Will deny not safe_ports
     acl safe_ports port 80
@@ -68,24 +67,21 @@ data:
     # ACL fragment for stratum_ones
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.cern.ch
     acl stratum_ones url_regex ^http://cernvmfs.gridpp.rl.ac.uk
+    acl stratum_ones url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
     acl stratum_ones url_regex ^http://grid-cvmfs-one.desy.de
-    acl stratum_ones url_regex ^http://cvmfs.racf.bnl.gov
+    acl stratum_ones url_regex ^http://cvmfs-stratum-one.zeuthen.desy.de
+    acl stratum_ones url_regex ^http://klei.nikhef.nl
+    acl stratum_ones url_regex ^http://cvmfs01.nikhef.nl
     acl stratum_ones url_regex ^http://cvmfs.fnal.gov
+    acl stratum_ones url_regex ^http://cvmfs.racf.bnl.gov
+    acl stratum_ones url_regex ^http://hcc-cvmfs.unl.edu
+    acl stratum_ones url_regex ^http://cvmfs-s1.*.opensciencegrid.org
+    acl stratum_ones url_regex ^http://oasis.opensciencegrid.org
+    acl stratum_ones url_regex ^http://cvmfsrepo.lcg.triumf.ca
+    acl stratum_ones url_regex ^http://cvmfsrep.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs02.grid.sinica.edu.tw
-    acl stratum_ones url_regex ^http://cvmfs-atlas-nightlies.cern.ch
-    
-    # ACL fragment for frontiers
-    acl frontiers url_regex ^http://atlasfrontier.*cern.ch
-    acl frontiers url_regex ^http://atlasfrontier-ai.cern.ch
-    acl frontiers url_regex ^http://atlast0frontier-ai.cern.ch
-    acl frontiers url_regex ^http://atlast0frontier.*cern.ch
-    acl frontiers url_regex ^http://cc.*in2p3.fr
-    acl frontiers url_regex ^http://cmsfrontier.cern.ch
-    acl frontiers url_regex ^http://aiatlas.cern.ch
-    acl frontiers url_regex ^http://lcgft-atlas.gridpp.rl.ac.uk
-    acl frontiers url_regex ^http://lcgvo-frontier.gridpp.rl.ac.uk
-    acl frontiers url_regex ^http://svn.nordugrid.org
-    
+    acl stratum_ones url_regex ^http://cvmfs-stratum-one.ihep.ac.cn
+
     # ACL fragment for osgstorage
     acl osgstorage url_regex ^http://osgxroot.usatlas.bnl.gov
     acl osgstorage url_regex ^http://xrd-cache-1.t2.ucsd.edu
@@ -99,23 +95,9 @@ data:
     acl osgstorage url_regex ^http://osg-gftp.pace.gatech.edu
     
     # ACL fragment for misc
-    acl misc url_regex ^http://cvmfs-stratum-zero.cern.ch
     acl misc url_regex ^http://cernvm-webfs.cern.ch
     acl misc url_regex ^http://hepvm.cern.ch
-    acl misc url_regex ^http://cvmfs-atlas-nightlies.cern.ch
     acl misc url_regex ^http://sdtcvmfs.cern.ch
-    acl misc url_regex ^http://klei.nikhef.nl
-    acl misc url_regex ^http://cvmfs-s1bnl.opensciencegrid.org
-    acl misc url_regex ^http://cvmfs-s1fnal.opensciencegrid.org
-    acl misc url_regex ^http://cvmfs-s1goc.opensciencegrid.org
-    acl misc url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
-    acl misc url_regex ^http://cvmfsrep.grid.sinica.edu.tw
-    acl misc url_regex ^http://cvmfsrepo.lcg.triumf.ca
-    acl misc url_regex ^http://voatlas179.cern.ch
-    acl misc url_regex ^http://volhcb28.cern.ch
-    
-    # ACL fragment for dst_dom
-    acl dstdom dstdom_regex \.openhtc\.io$
     
     # ACL fragment for grid_ca
     acl grid_ca urlpath_regex \.crl$
@@ -138,10 +120,8 @@ data:
     http_access allow localhost
     http_access allow localhost manager
     http_access allow stratum_ones
-    http_access allow frontiers
     http_access allow osgstorage
     http_access allow misc
-    http_access allow dstdom
     http_access allow grid_ca
     
     # Deny directives
@@ -149,3 +129,4 @@ data:
     http_access deny CONNECT !ssl_ports
     http_access deny manager
     http_access deny all
+{{- end -}}

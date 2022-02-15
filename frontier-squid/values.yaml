@@ -1,20 +1,51 @@
-replicaCount: 1
-
 image:
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/frontier-squid
   tag: 4.15-2.1
   pullPolicy: IfNotPresent
 
+replicaCount: 1
+
+#
+# Assign frontier-squid pod(s) to a node with a specific label
+#   and distribute them on different nodes to avoid single points of failure.
+#
+podAssignment:
+  # If true, requires a node labeled as per customLabels.
+  enableNodeSelector: false
+  # If true, shard the stateful set on as many nodes as possible.
+  #   Relevant only when running multiple replicas
+  #   Highly recommended for production scenarios
+  enablePodAntiAffinity: false
+
+#
+# Custom labels to identify frontier-squid pod(s).
+#
+# They are used by node selection, if enabled (see above).
+# Label nodes accordingly to avoid scheduling problems.
+#
 customLabels:
   service: cvmfs
   component: frontier-squid
 
-podAssignment:
-  enableNodeSelector: false     # Requires a node labeled as per customLabels.
-  enablePodAntiAffinity: false  # Shard the stateful set on as many nodes as possible
-
 enableLivenessProbe: false      # To be implemented
 enableReadinessProbe: false     # To be implemented
+
+#
+# Squid configuration
+#
+#   configFile: Provide a full configuration file.
+#     Overrides the provided configMap only if provided and the file exists
+#   config: Parameters to change default valules in the provided configMap.
+configFile: files/mysquid.conf
+config:
+  fileDescriptors: 16384
+  cache:
+    diskDirectory: "/var/cache/squid"
+    diskSpace: 10000    # in MB
+    diskMinSize: "4 KB"
+    diskMaxSize: "1 GB"
+    memorySpace: "256 MB"
+    memoryMaxSize: "32 KB"
 
 #ingress:
 #  enabled: true
