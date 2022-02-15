@@ -39,6 +39,7 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
+        command: ["/usr/sbin/squid -f /etc/squid/squid.conf -N -d 1"]
 #        livenessProbe:
 #          exec:
 #            command:
