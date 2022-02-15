@@ -16,7 +16,7 @@ data:
 {{- else }}
     # General squid configuration
     # Cache management
-    {{- with .Values.config.cache -}}
+    {{- with .Values.config.cache }}
     cache_dir ufs {{ default "/var/cache/squid" .diskDirectory }} {{ default "10000" .diskSpace }} 16 256
     cache_mem {{ default "256 MB" .memorySpace }}
     cache_mgr squid
