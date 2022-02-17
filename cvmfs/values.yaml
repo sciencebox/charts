@@ -1,6 +1,6 @@
 image:
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
-  tag: 2.8.1
+  tag: 2.9.0
   pullPolicy: IfNotPresent
 
 #
