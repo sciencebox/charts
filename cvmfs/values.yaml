@@ -51,26 +51,25 @@ mountOptions:
   hostMountpoint: /cvmfs
 
 #
-# Prefetch from cvmfs to keep client cache warm and speed up users' sessions
+# Prefetch from cvmfs repos to keep client cache warm
+#
+# Parameters:
+#   - enabled: Boolean to enable/disable prefetcher. Defaults to false
+#   - jobs: List of commands to execute in crond format
+#
+#   'cat_readme' is the name of a sample prefetching job with the following properties
+#     - command: The command to be executed -- In this case, a simple cat of a file
+#     - user: The user executing the command (Default: root)
+#     - minute, hour, day, month, weekday: When to executre the command as per cron file format (Default: *, aka every minute)
 #
 prefetcher:
-  enabled: true
-  jobs:
-    cron_opennotebook_python2_ipy:
-      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_99python2/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m ipykernel > /dev/null 2>&1 || true )"
-      minute: '*/15'
-    cron_opennotebook_python2_root:
-      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_99python2/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m JupyROOT.kernel.rootkernel > /dev/null 2>&1 || true )"
-      minute: '*/15'
-    cron_opennotebook_python3_ipy:
-      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_101swan/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m ipykernel > /dev/null 2>&1 || true )"
-      minute: '*/15'
-    cron_opennotebook_python3_root:
-      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_101swan/x86_64-centos7-gcc8-opt/setup.sh && ( timeout 20s python -m JupyROOT.kernel.rootkernel > /dev/null 2>&1 || true )"
-      minute: '*/15'
-    cron_opennotebook_python3nx_ipy:
-      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_95apython3_nxcals/x86_64-centos7-gcc7-opt/setup.sh && ( timeout 20s python -m ipykernel > /dev/null 2>&1 || true )"
-      minute: '*/15'
-    cron_opennotebook_python3nx_spark:
-      command: "source /cvmfs/sft.cern.ch/lcg/views/LCG_100_nxcals/x86_64-centos7-gcc9-opt/setup.sh && ( timeout 20s python -c 'import pyspark' > /dev/null 2>&1 || true )"
-      minute: '*/15'
+  enabled: false
+  #jobs:
+  #  cat_readme:
+  #    command: 'cat /cvmfs/sft.cern.ch/README.md'
+  #    user: 'root'
+  #    minute: '*'
+  #    hour: '*'
+  #    day: '*'
+  #    month: '*'
+  #    weekday: '*'
