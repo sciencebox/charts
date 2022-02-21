@@ -51,22 +51,30 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
         command: ["/usr/sbin/squid", "-f", "/etc/squid/squid.conf", "-N", "-d1"]
-#        livenessProbe:
-#          exec:
-#            command:
-#              - /usr/sbin/frontier-squid.
-#              - -k 
-#              - parse
-#          initialDelaySeconds: 5
-#          periodSeconds: 5
-#        readinessProbe:
-#          exec:
-#            command:
-#              - /usr/sbin/frontier-squid.
-#              - -k 
-#              - parse
-#          initialDelaySeconds: 5
-#          periodSeconds: 5
+        {{- if .Values.probes.liveness }}
+        livenessProbe:
+          tcpSocket:
+            port: 3128
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        {{- end }}
+        {{- if .Values.probes.readiness }}
+        readinessProbe:
+          exec:
+            command:
+              - /usr/bin/curl
+              - --silent
+              - --fail
+              - --output
+              - /dev/null
+              - --proxy
+              - http://127.0.0.1:3128
+              - http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        {{- end }}
         volumeMounts:
           - name: frontier-squid-config
             mountPath: /etc/squid/squid.conf

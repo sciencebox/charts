@@ -35,8 +35,23 @@ customLabels:
   service: cvmfs
   component: frontier-squid
 
-enableLivenessProbe: false      # To be implemented
-enableReadinessProbe: false     # To be implemented
+#
+# Enable or disable health probes.
+#   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+#
+# Liveness Probe:
+#   Checks every 10 seconds whether it is possible to open a TCP socket againsts port 3128.
+#   The frontier-squid container will be restarted after 3 failures.
+#
+# Readiness Probe:
+#   Checks every 30 seconds whether 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json' is alive using the squid in the pod as proxy.
+#   If unreachable, the failing frontier-squid pod will be removed from the service load-balanced alias.
+#
+# Default: All probes enabled.
+#
+probes:
+  liveness: true
+  readiness: true
 
 #
 # Squid configuration
