@@ -225,3 +225,8 @@ swan:
   #     ingress:
   #       cert:
   #       key:
+nginx:
+  ingress:
+    enabled: true
+  service:
+    type: NodePort
