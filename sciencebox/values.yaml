@@ -19,7 +19,8 @@ sciencebox:
     secretName: &sssKeytabName sciencebox-eos-sss-keytab
     #fromFile:
     #fromValue:
-
+  nginxpage:
+    configMapName: nginx-html
 #
 # Global values
 #
@@ -230,3 +231,4 @@ nginx:
     enabled: true
   service:
     type: NodePort
+  staticSiteConfigmap: nginx-html
