@@ -233,5 +233,5 @@ nginx:
   ingress:
     enabled: true
   service:
-    type: NodePort
+    type: ClusterIP
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
