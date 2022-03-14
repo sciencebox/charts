@@ -92,7 +92,6 @@ swan:
       - cvmfs-config.cern.ch
       - sft.cern.ch
       - sft-nightlies.cern.ch
-
   #
   # EOS Fusex mount
   eos:
@@ -108,7 +107,6 @@ swan:
         oauth2: 1
         sss: 0
         eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
-
   #
   # JupyterHub
   jupyterhub:
@@ -181,15 +179,6 @@ swan:
       cpu:
         limit: .5
         guarantee: .5
-      cvmfs:
-        deployDaemonSet: *cvmfsDeployDS
-        deployCsiDriver: *cvmfsDeployCSI
-        useCsiDriver: *cvmfsUseCSI
-        repositories: *cvmfsRepos
-      eos:
-        deployDaemonSet: *eosDeployDS
-        deployCsiDriver: *eosDeployCSI
-        useCsiDriver: *eosUseCSI
       extraEnv:
         # The sharing functionality won't work because we are deploying oCIS and not oc10
         # This will be replaced in the future with the CS3 APIs
@@ -207,8 +196,8 @@ swan:
     ingress:
       annotations:
         kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-redirect: true
-        nginx.ingress.kubernetes.io/force-ssl-redirect: true
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         #nginx.ingress.kubernetes.io/rewrite-target: /
         #nginx.ingress.kubernetes.io/secure-backends: "true"
       hosts:
@@ -216,6 +205,17 @@ swan:
       #   - secretName: swan-tls-cert
       #     hosts:
       #       - test.mydomain
+    custom:
+      cvmfs:
+        deployDaemonSet: *cvmfsDeployDS
+        deployCsiDriver: *cvmfsDeployCSI
+        useCsiDriver: *cvmfsUseCSI
+        repositories: *cvmfsRepos
+      eos:
+        deployDaemonSet: *eosDeployDS
+        deployCsiDriver: *eosDeployCSI
+        useCsiDriver: *eosUseCSI
+
 
   # To decide if we keep this or we manage the tls secret differently
   # If we keep it, maybe should change the name from swan.secrets.ingress to smth else
