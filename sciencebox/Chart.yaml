@@ -22,3 +22,6 @@ dependencies:
 - name: ocis-idp
   version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
+- name: nginx
+  version: 9.9.3
+  repository: "https://charts.bitnami.com/bitnami"

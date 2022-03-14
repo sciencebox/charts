@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sciencebox-landing-page-cfgmap
+  labels:
+data:
+  index.html: |-
+    {{ .Files.Get "files/sciencebox.html" | nindent 4 }}

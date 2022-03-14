@@ -19,7 +19,6 @@ sciencebox:
     secretName: &sssKeytabName sciencebox-eos-sss-keytab
     #fromFile:
     #fromValue:
-
 #
 # Global values
 #
@@ -225,3 +224,14 @@ swan:
   #     ingress:
   #       cert:
   #       key:
+
+#
+# NGINX
+#   This is a simple nginx web server to provide a landing page to ScienceBox users.
+#
+nginx:
+  ingress:
+    enabled: true
+  service:
+    type: ClusterIP
+  staticSiteConfigmap: sciencebox-landing-page-cfgmap
