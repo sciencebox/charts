@@ -113,6 +113,10 @@ swan:
     proxy:
       secretToken: 11df35dab7527b3798de5224f06458db1e0526fa65700e81e18f17f89822e0cf
     hub:
+      image:
+        name: "gitlab-registry.cern.ch/sciencebox/hotfixes/jupyterhub"
+        tag: "v1.18-20220314"
+        pullPolicy: "Always"
       # The default (pvc) is not working in openstack...
       # TODO: Add some persistency here
       db:
