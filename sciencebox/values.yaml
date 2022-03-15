@@ -69,7 +69,7 @@ eos:
       enable: true
       nslcd:
        config:
-         ldap_uri: ldap://ocis-idp.default.svc.cluster.local:9389
+         ldap_uri: ldap://sciencebox-ocis-idp.default.svc.cluster.local:9389
          ldap_base: ou=users,dc=example,dc=org
          ldap_binddn: cn=idp,ou=sysusers,dc=example,dc=org
          ldap_bindpw: idp
