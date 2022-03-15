@@ -231,7 +231,7 @@ swan:
 #
 nginx:
   ingress:
-    enabled: true
+    enabled: false
   service:
     type: ClusterIP
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
