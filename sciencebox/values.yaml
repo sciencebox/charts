@@ -125,18 +125,16 @@ swan:
         type: sqlite-memory
       extraEnv:
         JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
-        OAUTH2_TLS_VERIFY: "0"  # Accept self-signed/invalid certificate from OCIS IDP
       cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
       config:
         SwanKubeSpawner:
           local_home: True
         KeyCloakAuthenticator:
-          # TODO: It may use the internal k8s service.
-          #       Go through ingress for TLS termination for now.
           oidc_issuer: https://idp.hostname
           client_id: swan
           client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
           oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
+          tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
           scope:
             - openid
             - email
