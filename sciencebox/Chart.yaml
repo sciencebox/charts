@@ -10,7 +10,7 @@ icon: #TODO
 dependencies:
 - name: server
   alias: eos
-  version: 0.1.0
+  version: 0.1.0    # Do not update until https://gitlab.cern.ch/eos/eos-charts/-/issues/59
   repository: "https://registry.cern.ch/chartrepo/eos"
 - name: swan
   version: 0.1.6
