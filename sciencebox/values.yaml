@@ -198,6 +198,7 @@ swan:
         enabled: false
 
     ingress:
+      enabled: false
       annotations:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -235,7 +236,62 @@ swan:
 #
 nginx:
   ingress:
-    enabled: false
+    enabled: true
+    tls: true
+    secrets:
+      - name: jimil-tls
+        key: "-----BEGIN PRIVATE KEY-----
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC+CTlf/usQLrcN
+dzwYIppDMYHjTBZDb5jqIwnlj7hHcLGtPzTHkq8Ngw+8Jz3r+iIr3ppJNxiS6FOO
+3uXAwMgqk8VOReRJ8w0b7Emi2BiwsHtKNS/m7+Bi1ide/Pl6M3GCTeWhNB71puwr
+pX8Gh7STMraBNSdGCzc9c+foyj6ffAx+86/VTBebhaHaU+c99XOSRpWP4SlDQSm2
+nLdei1lFfjxGyjscEqSLIllJUji2ZzyJLxKwWWy2z7VNhcIvf2N8wI3xQUI/7IcP
+0qO/jOwgtlI/n9eSlNlOoiJ9lMnbw/IjhQAwS5ffHEE7SrvxjElPPWQdQRtfLTfA
+CA0gOQh1AgMBAAECggEAUzBUhnpgSlA439MvYl1bbEiy1F6NbG3g4bX+8hgtElD5
+5p5Bq4/Bw8d4zuPazn9MECo9HgnZXw4G7gcTSoLZ3RGdELu1yM12EqAoR/oTLN3E
+yuJnms+tSXb3+zQAvgbhDKqu+BeJ6f1ta1niNmiXmsxbakpra9UjFGq1vYkzSrrQ
+3WjfhIoa0iWerAV3E5VGXN9uuDNuVRNIt4F1z0kf8d/APuujWnoKG+jLulmwd2se
+pkqeLTV+WIwylwurq7XdJo5Yw5yHFsYdiokKEdIdoMDSp1Y4X6bmMhF057ZF39ql
+eKbPzOe7ZUe05IDuEhY0D3e4xxTVnzlxuhzGnxC84QKBgQDdFeqhT3CqVo/cUdEx
+8w9RG5D7tIP7qBdP2x6M9AMCrtiu3DIPdVbe87fZG8rxmf9IDibnXiedXmNCLTuI
+wtaLgauzXulzl8kd6flm5PjDW357nF/Jc8t2It4TX02sNpX3M5wte75R42BCeob4
+enygwKWXne4ue+8Q2HXT1eNr7QKBgQDcDAfFvaz1yM53V3wfNiPpNetU6zy14wj2
+LogDoQA4b8wk/8QUXEq+jSxF4Xi5vQvySmymbZ5mvMdnSqxWm+4pNKZoUX6ylNpx
+N7UzOhL0f7zIYsNGSx+/jdFmTBacz01A4AqVsL7reXHSwmPsINnU9lGyAYJWXoa3
+bhOD/RLNqQKBgEtYj8j/6Na0f3zHiXLrchnjOir+H0jhxWgatjO1aV09t20IcCsi
+g0OibdKZDTX/lKe64vlQ9lFEfLFt9u8p77JFs/2CaC9T2F/QgIXXnQv/H4EDDwX5
+56pQQbz6at85DyzbMuuxU3BW/FRLq7n9DIJAhW7BjQ3cgOIN00Ipj8MVAoGAFdZ7
+zvwL9jh/hQiBoPdWiQZ43GycEdD+SrBDf1izFObDc8iORRcDs/V+t1CxEn3Yeas5
+LSsj1T5W68FVaSMAd8Zp3WB5Gm/7XdERgov45ZrnuVtT1d4OwIvqhCR4+gb4u7+A
+TWrFB8l9qlTwZba8542qfef4b2niJMIf3bF39EECgYBLYyk8RnNNHPsNMqifFV+P
+paO4z7GHIIQBJEscpO8Amob96UZn1jP27OX10qIrnUBS1rX+S5SVboQ6MPxMMvmL
+tDTR1RpClQXYcKf2IgRB9kyYz3gOSd9e/GhH/8YaMDoJneBIm1eVEnBIpli4M2wr
+MfHT+VW3l0Y9cj9uw4R0vw==
+-----END PRIVATE KEY-----"
+        certificate: "-----BEGIN CERTIFICATE-----
+MIIEATCCAumgAwIBAgIUUCvvJFp60VZWAaUCJBl7e6yw8wgwDQYJKoZIhvcNAQEL
+BQAwgY8xCzAJBgNVBAYTAkNIMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQK
+DBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxITAfBgNVBAMMGGppbWlsLW51Yy5k
+eW5kbnMuY2Vybi5jaDElMCMGCSqGSIb3DQEJARYWamltaWxkZXNhaTQyQGdtYWls
+LmNvbTAeFw0yMjAzMTYxNTE2MDlaFw0yMzAzMTYxNTE2MDlaMIGPMQswCQYDVQQG
+EwJDSDETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQgV2lk
+Z2l0cyBQdHkgTHRkMSEwHwYDVQQDDBhqaW1pbC1udWMuZHluZG5zLmNlcm4uY2gx
+JTAjBgkqhkiG9w0BCQEWFmppbWlsZGVzYWk0MkBnbWFpbC5jb20wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+CTlf/usQLrcNdzwYIppDMYHjTBZDb5jq
+Iwnlj7hHcLGtPzTHkq8Ngw+8Jz3r+iIr3ppJNxiS6FOO3uXAwMgqk8VOReRJ8w0b
+7Emi2BiwsHtKNS/m7+Bi1ide/Pl6M3GCTeWhNB71puwrpX8Gh7STMraBNSdGCzc9
+c+foyj6ffAx+86/VTBebhaHaU+c99XOSRpWP4SlDQSm2nLdei1lFfjxGyjscEqSL
+IllJUji2ZzyJLxKwWWy2z7VNhcIvf2N8wI3xQUI/7IcP0qO/jOwgtlI/n9eSlNlO
+oiJ9lMnbw/IjhQAwS5ffHEE7SrvxjElPPWQdQRtfLTfACA0gOQh1AgMBAAGjUzBR
+MB0GA1UdDgQWBBSb6zGw+09+tL2iaX8/6V2ti1ZwqjAfBgNVHSMEGDAWgBSb6zGw
++09+tL2iaX8/6V2ti1ZwqjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUA
+A4IBAQBlLqS6j098prRVBRLj8nBh5AsZcWz81vBjHlKe1XBFqbnmAjB9HPsK7eNZ
+AGucC7OzQVaE7UQg0mjJbPRxakK8EsSWsj5YTh9rGtGsyy1zvvqPq0AYnYPoLMlq
+j8Flz0ziyhOv8fviprLhYWI7EUAQNdeGQtWBN6sLYs9cNV6mw3DHmznSBvDxF/Nv
+G3nBtP8zZ9C3l/T4pV/LQOk99o/HNWpBNdQZw2qOWNkX/HUEh2rTMTr2Wx1Y/Yku
+RGamhJyTOBvy8OPDZPEoBCFdFu5V+co5GMosk1RnuCwjCH63lbBJrZhTgQE3Pux1
+jpC/LuTa+mYUb7NY3xShLQTxoY5Q
+-----END CERTIFICATE-----"
   service:
     type: ClusterIP
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
