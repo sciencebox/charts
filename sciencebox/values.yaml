@@ -3,7 +3,7 @@
 #
 sciencebox:
   # sss keytab for eos
-  #   Will be used by eos server and fusex.
+  #   Will be used by eos server ('eos:' section) and fusex ('swan:fusex:' section).
   #   Options:
   #     - createSecret: Create a secret either from file or from value.
   #         If set to false, no secrets will be automatically generated. In this case, secretName must
@@ -17,21 +17,23 @@ sciencebox:
   sssKeytab:
     createSecret: true
     secretName: &sssKeytabName sciencebox-eos-sss-keytab
-    #fromFile:
+    fromFile: files/eos.keytab
     #fromValue:
+
 #
 # Global values
 #
 global:
+  #
   # EOS image tag:
   #   - Used by eos-server (qdb, mq, mgm, fst) (eos-all image)
   #             eos-instance-config (eos-all image)
   #             fusex in SWAN (eos-fusex image)
-  tag: 4.8.62
-
+  tag: 4.8.78
+  #
   # SSS keytab:
+  #   - Anchor from sciencebox:sssKeytab
   #   - Used by eos-server (qdb, mq, mgm, fst) and eos-instance-config
-  #   - Anchor for fusex in SWAN
   sssKeytab:
     secret: *sssKeytabName
 
@@ -67,7 +69,7 @@ eos:
       enable: true
       nslcd:
        config:
-         ldap_uri: ldap://ocis-idp.default.svc.cluster.local:9389
+         ldap_uri: ldap://sciencebox-ocis-idp.default.svc.cluster.local:9389
          ldap_base: ou=users,dc=example,dc=org
          ldap_binddn: cn=idp,ou=sysusers,dc=example,dc=org
          ldap_bindpw: idp
@@ -123,18 +125,16 @@ swan:
         type: sqlite-memory
       extraEnv:
         JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
-        OAUTH2_TLS_VERIFY: "0"  # Accept self-signed/invalid certificate from OCIS IDP
       cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
       config:
         SwanKubeSpawner:
           local_home: True
         KeyCloakAuthenticator:
-          # TODO: It may use the internal k8s service.
-          #       Go through ingress for TLS termination for now.
           oidc_issuer: https://idp.hostname
           client_id: swan
           client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
           oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
+          tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
           scope:
             - openid
             - email
