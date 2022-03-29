@@ -1,5 +1,5 @@
 {{/*
-SSH keytab content
+SSS keytab content
   Switch between keytab fromFile or fromValue according to priority:
   - When both are defined, fromFile takes priority
   - If only one is defined, that will be used as keytab
