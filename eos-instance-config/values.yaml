@@ -58,7 +58,7 @@ config:
     prefix: "/eos/user"
 
   demoUsers:
-    createUsers: true
+    createUsers: false
     createHomeDirs: true
     quota:
       size: 1T

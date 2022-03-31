@@ -154,30 +154,34 @@ data:
     echo "INFO: Configuring demo users..."
     {{- with .Values.config.demoUsers }}
 
-    {{- if .createUsers }}
+    # Stuff
+
     {{- if .userBlock }}
-    gname={{ default "users" .userBlock.gname }}
     gid={{ default "1000" .userBlock.gid }}
+    {{- if .createUsers }}
+    gname={{ default "users" .userBlock.gname }}
     #groupadd --force --gid $gid $gname
     #  This adds the group to the local container, which is useless.
     #  We should rather create the group on the IDP/LDAP side; Not implemented at the moment.
+    {{- end }}
     uid_start={{ default 1000 .userBlock.uidStart }}
     uname_prefix={{ default "user" .userBlock.unamePrefix }}
     uname_initial=$(echo $uname_prefix | cut -c 1)
     for i in $(seq {{ default 10 .userBlock.howMany }})
     do
-      i=$(($i-1))
+      i=$(($i-1))  # Start from 0
       uid=$(echo $uid_start + $i | bc -l)
       uname="$uname_prefix$i"
+      {{- if .createUsers }}
       #useradd --no-create-home --no-user-group --uid $uid $uname || true
       #  This adds the group to the local container, which is useless.
       #  We should rather create the group on the IDP/LDAP side; Not implemented at the moment.
+      {{- end }}
       {{- if .createHomeDirs }}
       homedir={{ $directoryTreePrefix }}/$uname_initial/$uname
       create_eos_homedir $homedir $uid $gid
       {{- end }}
     done
-    {{- end }}
     {{- end }}
     {{- end }}
 
