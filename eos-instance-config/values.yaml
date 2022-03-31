@@ -1,6 +1,6 @@
 image:
   repository: gitlab-registry.cern.ch/dss/eos/eos-all
-  tag: 4.8.57
+  tag: 4.8.78
   pullPolicy: Always
 
 #
