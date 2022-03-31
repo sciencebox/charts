@@ -124,35 +124,16 @@ data:
 
 
     ## EOS demo users
-    echo "INFO: Configuring demo users..."
-    {{- with .Values.config.demoUsers }}
-    {{- if .createUsers }}
-    ###
-    # TODO: This clearly does not work. We need to add users in the MGM container
-    ###
-    gname={{ default "users" .users.gname }}
-    gid={{ default "1000" .users.gid }}
-    groupadd --force --gid $gid $gname
+    create_eos_homedir () {
+      if [ $# -lt 3 ]; then
+        echo "ERR: Unable to create homedir: Wrong number of parameters."
+        return
+      fi
 
-    uid_start={{ default 1000 .users.uidStart }}
-    uname_prefix={{ default "user" .users.unamePrefix }}
-    uname_initial=$(echo $uname_prefix | cut -c 1)
+      local homedir=$1
+      local uid=$2
+      local gid=$3
 
-    quota_size={{ default "1T" .quota.size }}
-    quota_inodes={{ default "1M" .quota.inodes }}
-
-    for i in $(seq {{ default 10 .users.howMany }})
-    do
-      ###
-      # TODO: This clearly does not work. We need to add users in the MGM container
-      ###
-      i=$(($i-1))
-      uid=$(echo $uid_start + $i | bc -l)
-      uname="$uname_prefix$i"
-      useradd --no-create-home --no-user-group --uid $uid $uname || true
-
-      {{- if .createHomeDirs }}
-      homedir={{ $directoryTreePrefix }}/$uname_initial/$uname
       eos mkdir -p $homedir
       eos chown $uid:$gid $homedir
       eos chmod 2700 $homedir
@@ -164,12 +145,39 @@ data:
       eos attr set sys.versioning="10" $homedir
       ###
       # TODO: `error: you cannot set quota from storage node with 'sss' authentication!`
-      #eos quota set -u $uid -v $quota_size -i $quota_inodes -p {{ $directoryTreePrefix }}
+      #eos quota set -u $uid -v {{ default "1T" .Values.config.demoUsers.quota.size }} -i {{ default "1M" .Values.config.demoUsers.quota.inodes }} -p {{ $directoryTreePrefix }}
       ###
       eos access allow user $uid
       sleep 3
+    }
+
+    echo "INFO: Configuring demo users..."
+    {{- with .Values.config.demoUsers }}
+
+    {{- if .createUsers }}
+    {{- if .userBlock }}
+    gname={{ default "users" .userBlock.gname }}
+    gid={{ default "1000" .userBlock.gid }}
+    #groupadd --force --gid $gid $gname
+    #  This adds the group to the local container, which is useless.
+    #  We should rather create the group on the IDP/LDAP side; Not implemented at the moment.
+    uid_start={{ default 1000 .userBlock.uidStart }}
+    uname_prefix={{ default "user" .userBlock.unamePrefix }}
+    uname_initial=$(echo $uname_prefix | cut -c 1)
+    for i in $(seq {{ default 10 .userBlock.howMany }})
+    do
+      i=$(($i-1))
+      uid=$(echo $uid_start + $i | bc -l)
+      uname="$uname_prefix$i"
+      #useradd --no-create-home --no-user-group --uid $uid $uname || true
+      #  This adds the group to the local container, which is useless.
+      #  We should rather create the group on the IDP/LDAP side; Not implemented at the moment.
+      {{- if .createHomeDirs }}
+      homedir={{ $directoryTreePrefix }}/$uname_initial/$uname
+      create_eos_homedir $homedir $uid $gid
       {{- end }}
     done
+    {{- end }}
     {{- end }}
     {{- end }}
 

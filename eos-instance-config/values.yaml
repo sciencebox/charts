@@ -60,15 +60,15 @@ config:
   demoUsers:
     createUsers: true
     createHomeDirs: true
-    users:
+    quota:
+      size: 1T
+      inodes: 1M
+    userBlock:
+      howMany: 10
       unamePrefix: "user"
       uidStart: 1000
       gname: "users"
       gid: 100
-      howMany: 10
-    quota:
-      size: 1T
-      inodes: 1M
 
 customLabels:
   service: eos
