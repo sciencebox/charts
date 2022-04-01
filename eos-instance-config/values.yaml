@@ -63,6 +63,7 @@ config:
     quota:
       size: 1T
       inodes: 1M
+    userList:
     userBlock:
       howMany: 10
       unamePrefix: "user"
