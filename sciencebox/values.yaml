@@ -61,8 +61,13 @@ ocis-idp:
 #
 # EOS
 #
+#
+#   The server chart (aliased to eos) with qdb, mgm, and fst
 eos:
   mgm:
+    extraEnv:
+      EOS_MGM_OIDC_INSECURE: "true"
+      EOS_MGM_OIDC_MAP_FIELD: "preferred_username"
     mgmofs:
       instance: user
     ldapBindUsers:
