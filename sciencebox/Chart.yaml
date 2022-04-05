@@ -13,7 +13,7 @@ dependencies:
   version: 0.1.2
   repository: "https://registry.cern.ch/chartrepo/eos"
 - name: swan
-  version: 0.1.6
+  version: 0.1.9
   repository: "https://registry.cern.ch/chartrepo/swan"
 #
 - name: eos-instance-config
