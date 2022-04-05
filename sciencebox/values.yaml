@@ -79,6 +79,31 @@ eos:
          ldap_filter_group: (objectClass=group)
   fst:
     replicaCount: 4
+#
+#   The eos-instance-config chart to configure the instance for the ScienceBox needs
+eos-instance-config:
+  config:
+    demoUsers:
+      userList:
+        admin:
+          uid: 20004
+          gid: 30000
+        einstein:
+          uid: 20000
+          gid: 30000
+        marie:
+          uid: 20001
+          gid: 30000
+        moss:
+          uid: 20003
+          gid: 30000
+        reva:
+          uid: 10001
+          gid: 15000
+        richard:
+          uid: 20002
+          gid: 30000
+
 
 #
 # SWAN
