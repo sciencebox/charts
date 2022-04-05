@@ -131,6 +131,9 @@ swan:
     deployCsiDriver: &eosDeployCSI false
     useCsiDriver: &eosUseCSI false
   fusex:
+    checkMgmOnline:
+      enabled: true
+      eosMgmUrlAuto: true
     fusex:
       keytab:
         secret: *sssKeytabName
