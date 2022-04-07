@@ -142,7 +142,6 @@ swan:
       hostMountpoint: /var/eos
       config:
         oauth2: 1
-        sss: 0
         eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
   #
   # JupyterHub
