@@ -162,7 +162,7 @@ swan:
       cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
       config:
         SwanKubeSpawner:
-          local_home: True
+          local_home: False     # Use the homedir on EOS
         KeyCloakAuthenticator:
           oidc_issuer: https://idp.hostname
           client_id: swan
