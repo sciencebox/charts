@@ -8,8 +8,13 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "eos-instance-config.selectorLabels" . | nindent 8 }}
         {{- toYaml .Values.customLabels | nindent 8 }}
     spec:
+      {{- if .Values.podAssignment.enableNodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.customLabels | nindent 8 }}
+      {{- end }}
       {{- if .Values.podAssignment.enableMgmColocation }}
       affinity:
         podAffinity:

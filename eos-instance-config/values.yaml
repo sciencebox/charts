@@ -17,7 +17,21 @@ sssKeytab:
 #
 podAssignment:
   enableMgmColocation: true
+  enableNodeSelector: false     # Requires a node labeled as per customLabels
 
+#
+# Custom labels to identify eos-instance-config pod.
+#
+# They are used by node selection, if enabled (see above).
+# Label nodes accordingly to avoid scheduling problems.
+#
+customLabels:
+  service: eos
+  component: eos-mgm
+
+#
+# The actual EOS MGM configuration
+#
 config:
   spaceDefault:
     groupSize: 8
