@@ -8,6 +8,10 @@ description: The chart to deploy and configure ScienceBox
 icon: #TODO
 #
 dependencies:
+- name: openldap
+  alias: ldap
+  version: 2.0.4
+  repository: "https://jp-gouin.github.io/helm-openldap/"
 - name: server
   alias: eos
   version: 0.1.3

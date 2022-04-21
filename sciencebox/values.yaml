@@ -40,11 +40,11 @@ global:
 
 
 #
-# OpenLdap
+# LDAP -- OpenLDAP
 #
 #
 #   The LDAP server chart
-openldap:
+ldap:
   image:
     repository: &ldapImageRepo osixia/openldap
     tag: &ldapImageTag 1.5.0
