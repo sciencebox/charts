@@ -12,8 +12,8 @@ sssKeytab:
 
 #
 # Prefer colocation with MGM pod
-#   Assign weight 100 to colocation with 'component: eos-mgm' as per custom labels
-#   The idea is to re-use the eos container existing on the node running the mgm
+#   Assign weight 100 to colocation with 'component: eos-mgm' as per custom labels.
+#   The idea is to re-use the eos container image available on the node running the mgm.
 #
 podAssignment:
   enableMgmColocation: true
