@@ -42,6 +42,7 @@ global:
 #
 # LDAP -- OpenLDAP
 #
+#
 #   The LDAP server chart
 ldap:
   image:
