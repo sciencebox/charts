@@ -43,6 +43,9 @@ global:
 # OpenLdap
 #
 openldap:
+  replicaCount: 1
+  replication:
+    enabled: false
   adminPassword: admin
   configPassword: config
   env:
