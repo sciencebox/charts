@@ -1,0 +1,142 @@
+[shared]
+gatewaysvc = "localhost:9142"
+jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
+
+[grpc]
+address = "0.0.0.0:9142"
+
+[grpc.services.gateway]
+commit_share_to_storage_grant = true
+commit_share_to_storage_ref = true
+disable_home_creation_on_login = false
+transfer_shared_secret = "replace-me-with-a-transfer-secret"
+transfer_expires = 86400
+share_folder = "Shares"
+
+datagateway = "http://localhost:9143/data"
+
+[grpc.services.authprovider]
+auth_manager = "ldap"
+
+[grpc.services.authprovider.auth_managers.ldap]
+hostname = "sciencebox-ocis-idp.default.svc.cluster.local"
+port = 9636
+insecure = true
+#base_dn = "ou=users,dc=ocis,dc=test"
+#base_dn = "ou=users,dc=example,dc=org"
+base_dn = "o=libregraph-idm"
+loginfilter = "(&(objectclass=inetOrgPerson)(objectclass=owncloud)(|(uid={{login}})(mail={{login}})))"
+#bind_username = "cn=idp,ou=sysusers,dc=ocis,dc=test"
+#bind_username = "cn=idp,ou=sysusers,dc=example,dc=org"
+bind_username = "uid=reva,ou=sysusers,o=libregraph-idm"
+#bind_password = "idp"
+bind_password = "reva"
+schema = { dn = "dn", uid = "cn", mail = "mail", displayName = "displayname", cn = "cn" }
+gatewaysvc = "localhost:9142"
+
+[grpc.services.authregistry]
+driver = "static"
+
+[grpc.services.authregistry.drivers.static.rules]
+basic = "localhost:9142"
+publicshares = "localhost:9278"
+machine = "sciencebox-authprovider-machine:9166"
+
+[grpc.services.userprovider]
+driver = "ldap"
+
+[grpc.services.userprovider.drivers.ldap]
+hostname="sciencebox-ocis-idp.default.svc.cluster.local"
+port = 9636
+insecure = true
+#base_dn = "dc=ocis,dc=test"
+#base_dn = "ou=users,dc=example,dc=org"
+base_dn = "o=libregraph-idm"
+#userfilter="(&(objectclass=posixAccount)(cn=%s))"
+userfilter="(&(objectclass=inetOrgPerson)(objectclass=owncloud)(|(ownclouduuid={{.OpaqueId}})(uid={{.OpaqueId}})))"
+#findfilter="(&(objectclass=posixAccount)(|(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)))"
+findfilter="(&(objectclass=owncloud)(|(uid={{query}}*)(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)(description={{query}}*)))"
+#attributefilter="(&(objectclass=posixAccount)({{attr}}={{value}}))"
+attributefilter="(&(objectclass=owncloud)({{attr}}={{value}}))"
+#groupfilter="(&(objectclass=posixGroup)(cn=*)(memberuid={{.OpaqueId}}))"
+#groupfilter="(&(objectclass=posixGroup)(memberuid={{.OpaqueId}}))"
+# real one:
+#groupfilter="(&(objectclass=posixGroup)(objectclass=owncloud)(ownclouduuid={{.OpaqueId}}*))"
+groupfilter="(&(objectclass=groupOfNames)(objectclass=owncloud)(ownclouduuid={{.OpaqueId}}*))"
+#bind_username = "cn=idp,ou=sysusers,dc=ocis,dc=test"
+#bind_username = "cn=idp,ou=sysusers,dc=example,dc=org"
+bind_username = "uid=reva,ou=sysusers,o=libregraph-idm"
+#bind_password = "idp"
+bind_password = "reva"
+
+[grpc.services.userprovider.drivers.ldap.schema]
+uid="uid"
+displayName="displayName"
+dn="dn"
+cn="cn"
+mail="mail"
+
+[grpc.services.groupprovider]
+driver = "ldap"
+
+[grpc.services.groupprovider.drivers.ldap]
+hostname="sciencebox-ocis-idp.default.svc.cluster.local"
+port = 9636
+insecure = true
+#base_dn = "dc=ocis,dc=test"
+#base_dn = "dc=example,dc=org"
+base_dn = "o=libregraph-idm"
+#groupfilter="(&(objectclass=posixGroup)(cn=%s))"
+groupfilter="(&(objectclass=groupOfNames)(objectclass=owncloud)(ownclouduuid={{.OpaqueId}}*))"
+findfilter="(&(objectclass=posixGroup)(|(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)))"
+attributefilter="(&(objectclass=posixGroup)({{attr}}={{value}}))"
+memberfilter="(&(objectclass=posixAccount)(cn={{.OpaqueId}}))"
+#bind_username = "cn=idp,ou=sysusers,dc=ocis,dc=test"
+#bind_username = "cn=idp,ou=sysusers,dc=example,dc=org"
+bind_username = "uid=reva,ou=sysusers,o=libregraph-idm"
+#bind_password = "idp"
+bind_password = "reva"
+
+[grpc.services.groupprovider.drivers.ldap.schema]
+gid="cn"
+displayName="cn"
+dn="dn"
+cn="cn"
+
+[grpc.services.storageregistry]
+driver = "static"
+
+[grpc.services.storageregistry.drivers.static]
+home_provider = "/home"
+
+[grpc.services.storageregistry.drivers.static.rules]
+"/home" = { address = "sciencebox-storageprovider-home:18000" }
+"/eos/user" = { address = "sciencebox-storageprovider-user:16000" }
+"eos" = { address = "sciencebox-storageprovider-user:16000" }
+"/public" = { address = "sciencebox-storageprovider-public:9278" }
+"public-storage" = { address = "sciencebox-storageprovider-public:9278" }
+
+[http]
+address = "0.0.0.0:9143"
+
+[http.services.datagateway]
+transfer_shared_secret = "replace-me-with-a-transfer-secret"
+timeout = 86400
+insecure = true
+prefix = "data"
+
+[http.services.ocdav]
+files_namespace = "/eos/{{substr 0 1 .Username}}"
+timeout = 86400
+insecure = true
+
+[http.services.ocs]
+share_prefix = "/"
+home_namespace = "/"
+
+[http.services.ocs.config]
+version = "1.8"
+website = "reva"
+host = "https://reva-gateway"
+contact = "admin@localhost"
+ssl = "false"
