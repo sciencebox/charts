@@ -80,6 +80,12 @@ ldap-instance-config:
   image:
     repository: *ldapImageRepo
     tag: *ldapImageTag
+  # TODO: The following params should be guessed:
+  protocol: ldap
+  hostname: sciencebox-ldap
+  port: 389
+  bindDn: cn=admin,dc=owncloud,dc=com
+  bindPassword: admin
   ldifFiles:
     # As per https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_ldap/config/ldap/ldif
     users.ldif: |-
