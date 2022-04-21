@@ -43,10 +43,11 @@ global:
 # OpenLdap
 #
 openldap:
+  adminPassword: admin
+  configPassword: config
   env:
     LDAP_DOMAIN: owncloud.com
     LDAP_ORGANISATION: ownCloud
-    LDAP_ADMIN_PASSWORD: admin
     LDAP_TLS_VERIFY_CLIENT: never
     LDAP_RFC2307BIS_SCHEMA: "true"
     LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
@@ -61,7 +62,6 @@ openldap:
     ingress:
       enabled: false
 
-  adminPassword: admin
   customLdifFiles:
     10_owncloud_schema.ldif: |-
       # This LDIF files describes the ownCloud schema and can be used to
