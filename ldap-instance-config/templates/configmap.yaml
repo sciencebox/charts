@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ldap-instance-config.fullname" . }}-script
+  labels:
+    {{- include "ldap-instance-config.labels" . | nindent 4 }}
+data:
+  instance_config.sh: |
+    #!/bin/bash
+    set -x
+    shopt -s expand_aliases
+
+    init_probe() {
+      local cmd=$@
+      local max_wait=60
+      local sleep=5
+      start_time=$(date +%s)
+      rc=-1
+      while [ $rc -ne 0 ];
+      do
+        timeout --preserve-status $sleep $cmd >/dev/null 2>&1
+        rc=$?
+
+        # Bail out after max_wait
+        tot_wait=$(($(date +%s)-start_time))
+        echo "        $tot_wait seconds... (timeout at $max_wait)"
+        if [ $tot_wait -ge $max_wait ]; then
+          echo "ERROR: cmd \`$cmd\` failed after $tot_wait secs. Giving up."
+          exit 1
+        fi
+        sleep $sleep
+      done
+    }
+
+    # Define the LDAP_URI to connect to (proto+hostname+port)
+    export LDAP_URI=$LDAP_PROTOCOL://$LDAP_HOSTNAME:$LDAP_PORT
+
+    # Dump the environment for debug
+    echo "INFO: Dumping environment..."
+    env | sort
+
+    # Wait for the LDAP server to be online
+    echo "INFO: Checking the LDAP server is online..."
+    init_probe ldapwhoami -x -H $LDAP_URI -D $LDAP_BIND_DN -w $LDAP_BIND_PASSWORD
+    echo "INFO: LDAP server is online."
+
+    # ldapadd all the ldif files in /root/ldif-files
+    for ldif in $(find /root/ldif-files -type l -name "*.ldif")  # k8s configMaps are projected as links
+    do
+      echo "INFO: Found $ldif -- Adding to ldap..."
+      ldapadd -x -H $LDAP_URI -D $LDAP_BIND_DN -w $LDAP_BIND_PASSWORD -f $ldif
+      sleep 3
+    done
+    echo "INFO: No other ldif files found..."
+    echo "INFO: Done!"
+
+    exit 0
+
+---
+
+{{- if .Values.ldifFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ldap-instance-config.fullname" . }}-ldif-files
+  labels:
+    {{- include "ldap-instance-config.labels" . | nindent 4 }}
+data:
+{{- range $key, $val := .Values.ldifFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end }}

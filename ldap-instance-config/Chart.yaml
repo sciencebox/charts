@@ -1,0 +1,9 @@
+apiVersion: v2
+#
+name: ldap-instance-config
+type: application
+version: 0.0.1
+appVersion: 1.5.0
+#
+description: The Chart to configure OpenLDAP for ScienceBox
+icon: https://www.openldap.org/images/headers/LDAPworm.gif

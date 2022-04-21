@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ldap-instance-config.fullname" . }}
+  labels:
+    {{- include "ldap-instance-config.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "ldap-instance-config.selectorLabels" . | nindent 8 }}
+        {{- toYaml .Values.customLabels | nindent 8 }}
+    spec:
+      {{- if .Values.podAssignment.enableNodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.customLabels | nindent 8 }}
+      {{- end }}
+      {{- if .Values.podAssignment.enableLdapColocation }}
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                  - ldap
+              topologyKey: "kubernetes.io/hostname"
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+        - name: ldap-instance-config
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
+          command: ["/bin/bash", "/root/instance_config.sh"]
+          env:
+            - name: LDAP_PROTOCOL
+              value: {{ .Values.protocol }}
+            - name: LDAP_HOSTNAME
+              value: {{ .Values.hostname }}
+            - name: LDAP_PORT
+              value: !!integer {{ .Values.port }}
+            - name: LDAP_BIND_DN
+              value: {{ .Values.bindDn }}
+            - name: LDAP_BIND_PASSWORD
+              value: {{ .Values.bindPassword }}
+          volumeMounts:
+            - name: ldap-instance-config-script
+              mountPath: /root/instance_config.sh
+              subPath: instance_config.sh
+            - name: ldap-ldif-files
+              mountPath: /root/ldif-files
+      volumes:
+        - name: ldap-instance-config-script
+          configMap:
+            name: {{ include "ldap-instance-config.fullname" . }}-script
+            defaultMode: 0755
+        - name: ldap-ldif-files
+          configMap:
+            name: {{ include "ldap-instance-config.fullname" . }}-ldif-files

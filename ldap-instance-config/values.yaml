@@ -1,0 +1,43 @@
+image:
+  repository: osixia/openldap
+  tag: 1.5.0
+  pullPolicy: Always
+
+#
+# Prefer colocation with OpenLDAP pod
+#   Assign weight 100 to colocation with 'component: ldap' as per custom labels.
+#   The idea is to re-use the openldap container image available on the node running the actual LDAP server.
+#
+podAssignment:
+  enableLdapColocation: true
+  enableNodeSelector: false     # Requires a node labeled as per customLabels
+
+#
+# Custom labels to identify eos-instance-config pod.
+#
+# They are used by node selection, if enabled (see above).
+# Label nodes accordingly to avoid scheduling problems.
+#
+customLabels:
+  service: ldap
+  component: ldap
+
+
+#
+# The actual configuration for OpenLDAP
+#
+# Parameters:
+#   - protocol:     The protocol to be used, either ldap or ldaps
+#   - hostname:     The hostname at which the LDAP server is reachable
+#   - port:         The port to which the LDAP server listens
+#                     Typically 389 for ldap andd 636 for ldaps.
+#   - bindDn:       The distinguished name to bind to the LDAP server
+#   - bindPassword: The password for the distinguished name used to bind
+protocol: ldap
+hostname: ldap
+port: 389
+bindDn: cn=admin,dc=example,dc=org
+bindPassword: admin
+ldifFiles:
+  readme: |-
+    # This is a README file.
