@@ -57,6 +57,7 @@ openldap:
   configPassword: config
   env:
     LDAP_ORGANISATION: ownCloud
+    LDAP_DOMAIN: owncloud.com
     LDAP_BASE_DN: dc=owncloud,dc=com
     LDAP_READONLY_USER: "true"
     LDAP_READONLY_USER_USERNAME: readuser
