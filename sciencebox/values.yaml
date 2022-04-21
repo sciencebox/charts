@@ -65,6 +65,17 @@ openldap:
     LDAP_TLS_VERIFY_CLIENT: try
     LDAP_RFC2307BIS_SCHEMA: "true"
     LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+  customLdifFiles:
+    readme: |-
+      # The customLdifFiles implementation in osixia/openldap and related helm chart is buggy.
+      # See comment at https://github.com/osixia/docker-openldap/issues/547#issuecomment-805686473
+      # ... and open issues upstream:
+      #   - https://github.com/osixia/docker-openldap/issues/320
+      #   - https://github.com/osixia/docker-openldap/issues/433
+      #   - https://github.com/osixia/docker-openldap/issues/538
+      #
+      # In addition, the Helm chart is buggy when no customLdifFiles are defined and the no persistency is used.
+      # Please, leave this comment so to mount this readme file and circumvent the bug.
 
   phpldapadmin:
     enabled: false
