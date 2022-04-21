@@ -46,6 +46,8 @@ openldap:
   replicaCount: 1
   replication:
     enabled: false
+  persistence:
+    enabled: false
   adminPassword: admin
   configPassword: config
   env:
