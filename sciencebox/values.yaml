@@ -42,7 +42,6 @@ global:
 #
 # LDAP -- OpenLDAP
 #
-#
 #   The LDAP server chart
 ldap:
   image:
@@ -330,6 +329,7 @@ ldap-instance-config:
       uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+
 
 #
 # OCIS-IDP
