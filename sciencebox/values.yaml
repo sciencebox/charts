@@ -42,10 +42,12 @@ global:
 #
 # OpenLdap
 #
+#
+#   The LDAP server chart
 openldap:
   image:
-    repository: osixia/openldap
-    tag: 1.5.0
+    repository: &ldapImageRepo osixia/openldap
+    tag: &ldapImageTag 1.5.0
   replicaCount: 1
   replication:
     enabled: false
@@ -72,22 +74,19 @@ openldap:
     enabled: false
     ingress:
       enabled: false
-
-  customLdifFiles:
-    10_owncloud_schema.ldif: |-
-      # This LDIF files describes the ownCloud schema and can be used to
-      # add two optional attributes: ownCloudQuota and ownCloudUUID
-      # The ownCloudUUID is used to store a unique, non-reassignable, persistent identifier for users and groups
-      dn: cn=owncloud,cn=schema,cn=config
-      objectClass: olcSchemaConfig
-      cn: owncloud
-      olcAttributeTypes: ( 1.3.6.1.4.1.39430.1.1.1 NAME 'ownCloudQuota' DESC 'User Quota (e.g. 2 GB)' EQUALITY caseExactMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )
-      olcAttributeTypes: ( 1.3.6.1.4.1.39430.1.1.2 NAME 'ownCloudUUID' DESC 'A non-reassignable and persistent account ID)' EQUALITY uuidMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.1.16.1 SINGLE-VALUE )
-      olcObjectClasses: ( 1.3.6.1.4.1.39430.1.2.1 NAME 'ownCloud' DESC 'ownCloud LDAP Schema' AUXILIARY MAY ( ownCloudQuota $ ownCloudUUID ) )
-    20_users.ldif: |-
+#
+# The ldap-instance-config chart to populare the LDAP server with custom users and groups.
+ldap-instance-config:
+  image:
+    repository: *ldapImageRepo
+    tag: *ldapImageTag
+  ldifFiles:
+    # As per https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_ldap/config/ldap/ldif
+    users.ldif: |-
       dn: ou=users,dc=owncloud,dc=com
       objectClass: organizationalUnit
       ou: users
+
       # Start dn with uid (user identifier / login), not cn (Firstname + Surname)
       dn: uid=einstein,ou=users,dc=owncloud,dc=com
       objectClass: inetOrgPerson
@@ -108,6 +107,7 @@ openldap:
       homeDirectory: /home/einstein
       ownCloudUUID:: NGM1MTBhZGEtYzg2Yi00ODE1LTg4MjAtNDJjZGY4MmMzZDUx
       userPassword:: e1NTSEF9TXJEcXpFNGdKbXZxbVRVTGhvWEZ1VzJBbkV3NWFLK3J3WTIvbHc9PQ==
+
       dn: uid=marie,ou=users,dc=owncloud,dc=com
       objectClass: inetOrgPerson
       objectClass: organizationalPerson
@@ -127,6 +127,7 @@ openldap:
       homeDirectory: /home/marie
       ownCloudUUID:: ZjdmYmY4YzgtMTM5Yi00Mzc2LWIzMDctY2YwYThjMmQwZDlj
       userPassword:: e1NTSEF9UmFvQWs3TU9jRHBIUWY3bXN3MGhHNnVraFZQWnRIRlhOSUNNZEE9PQ==
+
       dn: uid=richard,ou=users,dc=owncloud,dc=com
       objectClass: inetOrgPerson
       objectClass: organizationalPerson
@@ -146,6 +147,7 @@ openldap:
       homeDirectory: /home/richard
       ownCloudUUID:: OTMyYjQ1NDAtOGQxNi00ODFlLThlZjQtNTg4ZTRiNmIxNTFj
       userPassword:: e1NTSEF9Z05LZTRreHdmOGRUREY5eHlhSmpySTZ3MGxSVUM1d1RGcWROTVE9PQ==
+
       dn: uid=moss,ou=users,dc=owncloud,dc=com
       objectClass: inetOrgPerson
       objectClass: organizationalPerson
@@ -165,6 +167,7 @@ openldap:
       homeDirectory: /home/moss
       ownCloudUUID:: MDU4YmZmOTUtNjcwOC00ZmU1LTkxZTQtOWVhM2QzNzc1ODhi
       userPassword:: e1NTSEF9N0hEdTRoMkFDVExFWWt4U0RtSDZVQjhmUlpKRExDZDc=
+
       dn: uid=admin,ou=users,dc=owncloud,dc=com
       objectClass: inetOrgPerson
       objectClass: organizationalPerson
@@ -184,10 +187,12 @@ openldap:
       homeDirectory: /home/admin
       ownCloudUUID:: ZGRjMjAwNGMtMDk3Ny0xMWViLTlkM2YtYTc5Mzg4OGNkMGY4
       userPassword:: e1NTSEF9UWhmaFB3dERydTUydURoWFFObDRMbzVIckI3TkI5Nmo=
-    30_groups.ldif: |-
+
+    groups.ldif: |-
       dn: ou=groups,dc=owncloud,dc=com
       objectClass: organizationalUnit
       ou: groups
+
       dn: cn=users,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -202,6 +207,7 @@ openldap:
       uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=moss,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=admin,ou=users,dc=owncloud,dc=com
+
       dn: cn=sailing-lovers,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -212,6 +218,7 @@ openldap:
       gidNumber: 30001
       ownCloudUUID:: NjA0MGFhMTctOWM2NC00ZmVmLTliZDAtNzcyMzRkNzFiYWQw
       uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+
       dn: cn=violin-haters,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -222,6 +229,7 @@ openldap:
       gidNumber: 30002
       ownCloudUUID:: ZGQ1OGU1ZWMtODQyZS00OThiLTg4MDAtNjFmMmVjNmY5MTFm
       uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+
       dn: cn=radium-lovers,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -232,6 +240,7 @@ openldap:
       gidNumber: 30003
       ownCloudUUID:: N2I4N2ZkNDktMjg2ZS00YTVmLWJhZmQtYzUzNWQ1ZGQ5OTdh
       uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+
       dn: cn=polonium-lovers,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -242,6 +251,7 @@ openldap:
       gidNumber: 30004
       ownCloudUUID:: Y2VkYzIxYWEtNDA3Mi00NjE0LTg2NzYtZmE5MTY1ZjU5OGZm
       uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+
       dn: cn=quantum-lovers,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -252,6 +262,7 @@ openldap:
       gidNumber: 30005
       ownCloudUUID:: YTE3MjYxMDgtMDFmOC00YzMwLTg4ZGYtMmIxYTlkMWNiYTFh
       uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+
       dn: cn=philosophy-haters,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -262,6 +273,7 @@ openldap:
       gidNumber: 30006
       ownCloudUUID:: MTY3Y2JlZTItMDUxOC00NTVhLWJmYjItMDMxZmUwNjIxZTVk
       uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+
       dn: cn=physics-lovers,ou=groups,dc=owncloud,dc=com
       objectClass: groupOfUniqueNames
       objectClass: posixGroup
@@ -274,7 +286,6 @@ openldap:
       uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
-
 
 #
 # OCIS-IDP
