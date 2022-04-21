@@ -56,6 +56,9 @@ openldap:
   env:
     LDAP_DOMAIN: owncloud.com
     LDAP_ORGANISATION: ownCloud
+    LDAP_READONLY_USER: true
+    LDAP_READONLY_USER_USERNAME: readuser
+    LDAP_READONLY_USER_PASSWORD: readuser
     LDAP_TLS_VERIFY_CLIENT: never
     LDAP_RFC2307BIS_SCHEMA: "true"
     LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
