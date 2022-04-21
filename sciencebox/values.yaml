@@ -40,6 +40,230 @@ global:
 
 
 #
+# OpenLdap
+#
+openldap:
+  env:
+    LDAP_DOMAIN: owncloud.com
+    LDAP_ORGANISATION: ownCloud
+    LDAP_ADMIN_PASSWORD: admin
+    LDAP_TLS_VERIFY_CLIENT: never
+    LDAP_RFC2307BIS_SCHEMA: "true"
+    LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+
+  phpldapadmin:
+    ingress:
+      enabled: false
+
+  ltb-passwd:
+    ingress:
+      enabled: false
+
+  adminPassword: admin
+  customLdifFiles:
+    10_owncloud_schema.ldif: |-
+      # This LDIF files describes the ownCloud schema and can be used to
+      # add two optional attributes: ownCloudQuota and ownCloudUUID
+      # The ownCloudUUID is used to store a unique, non-reassignable, persistent identifier for users and groups
+      dn: cn=owncloud,cn=schema,cn=config
+      objectClass: olcSchemaConfig
+      cn: owncloud
+      olcAttributeTypes: ( 1.3.6.1.4.1.39430.1.1.1 NAME 'ownCloudQuota' DESC 'User Quota (e.g. 2 GB)' EQUALITY caseExactMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE )
+      olcAttributeTypes: ( 1.3.6.1.4.1.39430.1.1.2 NAME 'ownCloudUUID' DESC 'A non-reassignable and persistent account ID)' EQUALITY uuidMatch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.1.16.1 SINGLE-VALUE )
+      olcObjectClasses: ( 1.3.6.1.4.1.39430.1.2.1 NAME 'ownCloud' DESC 'ownCloud LDAP Schema' AUXILIARY MAY ( ownCloudQuota $ ownCloudUUID ) )
+    20_users.ldif: |-
+      dn: ou=users,dc=owncloud,dc=com
+      objectClass: organizationalUnit
+      ou: users
+      # Start dn with uid (user identifier / login), not cn (Firstname + Surname)
+      dn: uid=einstein,ou=users,dc=owncloud,dc=com
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: ownCloud
+      objectClass: person
+      objectClass: posixAccount
+      objectClass: top
+      uid: einstein
+      givenName: Albert
+      sn: Einstein
+      cn: einstein
+      displayName: Albert Einstein
+      description: A German-born theoretical physicist who developed the theory of relativity, one of the two pillars of modern physics (alongside quantum mechanics).
+      mail: einstein@example.org
+      uidNumber: 20000
+      gidNumber: 30000
+      homeDirectory: /home/einstein
+      ownCloudUUID:: NGM1MTBhZGEtYzg2Yi00ODE1LTg4MjAtNDJjZGY4MmMzZDUx
+      userPassword:: e1NTSEF9TXJEcXpFNGdKbXZxbVRVTGhvWEZ1VzJBbkV3NWFLK3J3WTIvbHc9PQ==
+      dn: uid=marie,ou=users,dc=owncloud,dc=com
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: ownCloud
+      objectClass: person
+      objectClass: posixAccount
+      objectClass: top
+      uid: marie
+      givenName: Marie
+      sn: Curie
+      cn: marie
+      displayName: Marie Skłodowska Curie
+      description: A Polish and naturalized-French physicist and chemist who conducted pioneering research on radioactivity.
+      mail: marie@example.org
+      uidNumber: 20001
+      gidNumber: 30000
+      homeDirectory: /home/marie
+      ownCloudUUID:: ZjdmYmY4YzgtMTM5Yi00Mzc2LWIzMDctY2YwYThjMmQwZDlj
+      userPassword:: e1NTSEF9UmFvQWs3TU9jRHBIUWY3bXN3MGhHNnVraFZQWnRIRlhOSUNNZEE9PQ==
+      dn: uid=richard,ou=users,dc=owncloud,dc=com
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: ownCloud
+      objectClass: person
+      objectClass: posixAccount
+      objectClass: top
+      uid: richard
+      givenName: Richard
+      sn: Feynman
+      cn: richard
+      displayName: Richard Phillips Feynman
+      description: An American theoretical physicist, known for his work in the path integral formulation of quantum mechanics, the theory of quantum electrodynamics, the physics of the superfluidity of supercooled liquid helium, as well as his work in particle physics for which he proposed the parton model.
+      mail: richard@example.org
+      uidNumber: 20002
+      gidNumber: 30000
+      homeDirectory: /home/richard
+      ownCloudUUID:: OTMyYjQ1NDAtOGQxNi00ODFlLThlZjQtNTg4ZTRiNmIxNTFj
+      userPassword:: e1NTSEF9Z05LZTRreHdmOGRUREY5eHlhSmpySTZ3MGxSVUM1d1RGcWROTVE9PQ==
+      dn: uid=moss,ou=users,dc=owncloud,dc=com
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: ownCloud
+      objectClass: person
+      objectClass: posixAccount
+      objectClass: top
+      uid: moss
+      givenName: Maurice
+      sn: Moss
+      cn: moss
+      displayName: Maurice Moss
+      description: A worker in the IT Department of Reynholm Industries. Of all the working staff in the IT Department, he is the most hard-working, the most experienced, and the most capable of doing his job well. He puts a lot of effort into his work, however he does not get the credit he deserves.
+      mail: moss@example.org
+      uidNumber: 20003
+      gidNumber: 30000
+      homeDirectory: /home/moss
+      ownCloudUUID:: MDU4YmZmOTUtNjcwOC00ZmU1LTkxZTQtOWVhM2QzNzc1ODhi
+      userPassword:: e1NTSEF9N0hEdTRoMkFDVExFWWt4U0RtSDZVQjhmUlpKRExDZDc=
+      dn: uid=admin,ou=users,dc=owncloud,dc=com
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: ownCloud
+      objectClass: person
+      objectClass: posixAccount
+      objectClass: top
+      uid: admin
+      givenName: Admin
+      sn: Admin
+      cn: admin
+      displayName: Admin
+      description: An admin for this oCIS instance.
+      mail: admin@example.org
+      uidNumber: 20004
+      gidNumber: 30000
+      homeDirectory: /home/admin
+      ownCloudUUID:: ZGRjMjAwNGMtMDk3Ny0xMWViLTlkM2YtYTc5Mzg4OGNkMGY4
+      userPassword:: e1NTSEF9UWhmaFB3dERydTUydURoWFFObDRMbzVIckI3TkI5Nmo=
+    30_groups.ldif: |-
+      dn: ou=groups,dc=owncloud,dc=com
+      objectClass: organizationalUnit
+      ou: groups
+      dn: cn=users,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: users
+      description: Users
+      gidNumber: 30000
+      ownCloudUUID:: NTA5YTlkY2QtYmIzNy00ZjRmLWEwMWEtMTlkY2EyN2Q5Y2Zh
+      uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+      uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+      uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+      uniqueMember: uid=moss,ou=users,dc=owncloud,dc=com
+      uniqueMember: uid=admin,ou=users,dc=owncloud,dc=com
+      dn: cn=sailing-lovers,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: sailing-lovers
+      description: Sailing lovers
+      gidNumber: 30001
+      ownCloudUUID:: NjA0MGFhMTctOWM2NC00ZmVmLTliZDAtNzcyMzRkNzFiYWQw
+      uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+      dn: cn=violin-haters,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: violin-haters
+      description: Violin haters
+      gidNumber: 30002
+      ownCloudUUID:: ZGQ1OGU1ZWMtODQyZS00OThiLTg4MDAtNjFmMmVjNmY5MTFm
+      uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+      dn: cn=radium-lovers,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: radium-lovers
+      description: Radium lovers
+      gidNumber: 30003
+      ownCloudUUID:: N2I4N2ZkNDktMjg2ZS00YTVmLWJhZmQtYzUzNWQ1ZGQ5OTdh
+      uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+      dn: cn=polonium-lovers,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: polonium-lovers
+      description: Polonium lovers
+      gidNumber: 30004
+      ownCloudUUID:: Y2VkYzIxYWEtNDA3Mi00NjE0LTg2NzYtZmE5MTY1ZjU5OGZm
+      uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+      dn: cn=quantum-lovers,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: quantum-lovers
+      description: Quantum lovers
+      gidNumber: 30005
+      ownCloudUUID:: YTE3MjYxMDgtMDFmOC00YzMwLTg4ZGYtMmIxYTlkMWNiYTFh
+      uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+      dn: cn=philosophy-haters,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: philosophy-haters
+      description: Philosophy haters
+      gidNumber: 30006
+      ownCloudUUID:: MTY3Y2JlZTItMDUxOC00NTVhLWJmYjItMDMxZmUwNjIxZTVk
+      uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+      dn: cn=physics-lovers,ou=groups,dc=owncloud,dc=com
+      objectClass: groupOfUniqueNames
+      objectClass: posixGroup
+      objectClass: ownCloud
+      objectClass: top
+      cn: physics-lovers
+      description: Physics lovers
+      gidNumber: 30007
+      ownCloudUUID:: MjYyOTgyYzEtMjM2Mi00YWZhLWJmZGYtOGNiZmVmNjRhMDZl
+      uniqueMember: uid=einstein,ou=users,dc=owncloud,dc=com
+      uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
+      uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
+
+
+#
 # OCIS-IDP
 #
 ocis-idp:
@@ -273,3 +497,61 @@ nginx:
   service:
     type: ClusterIP
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
+
+# values for revad-gateway service
+gateway:
+  image:
+    repository: jimil749/revad
+    tag: latest
+  service:
+    grpc:
+      port: 9142
+    http:
+      port: 9143
+  env:
+    XrdSecPROTOCOL: unix
+  configFiles:
+    revad.toml:
+
+# values for revad-storage provider home service
+storageprovider-home:
+  image:
+    repository: jimil749/revad-eos
+    tag: latest
+  service:
+    grpc:
+      port: 18000
+    http:
+      port: 17000
+  env:
+    XrdSecPROTOCOL: unix
+# values for revad-storage provider public service
+storageprovider-public:
+  image:
+    repository: jimil749/revad
+    tag: latest
+  service:
+    grpc:
+      port: 9278
+  env:
+    XrdSecPROTOCOL: unix
+# values for revad-storage provider user service
+storageprovider-user:
+  image:
+    repository: jimil749/revad
+    tag: latest
+  service:
+    grpc:
+      port: 16000
+    http:
+      port: 15000
+  env:
+    XrdSecPROTOCOL: unix
+# values for revad-auth provider machine service
+authprovider-machine:
+  image:
+    repository: jimil749/revad-new
+    tag: latest
+  service:
+    grpc:
+      port: 9166
