@@ -52,10 +52,12 @@ openldap:
     LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
 
   phpldapadmin:
+    enabled: false
     ingress:
       enabled: false
 
   ltb-passwd:
+    enabled: false
     ingress:
       enabled: false
 
