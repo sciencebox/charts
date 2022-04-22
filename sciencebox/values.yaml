@@ -48,9 +48,6 @@ ldap:
   image:
     repository: &ldapImageRepo osixia/openldap
     tag: &ldapImageTag 1.5.0
-  replicaCount: 1
-  replication:
-    enabled: false
   persistence:
     enabled: false
   adminPassword: &ldapAdminPassword admin
