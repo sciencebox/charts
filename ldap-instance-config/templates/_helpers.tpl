@@ -61,28 +61,3 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
-
-{{/*
-MGM hostname definition
-  Used to set the hostname of the MGM (short format) where:
-  - Global value '.Values.global.hostnames.mgm' has highest priority
-  - Local value '.Values.eosMgmUrl' has lower priority
-  - Default values uses .Release.Name
-
-  - It does not support inferring components name's when not using an umbrella chart
-    A previous version was supporting this by using  the release name and appending '-mgm' to it
-    The one liner is:
-      {{- $mgmDefault := printf "%s-mgm" (splitList "-" .Release.Name | initial | join "-") -}}
-*/}}
-{{- define "mgm.hostname" -}}
-{{- $mgmDefault := printf "%s-mgm" .Release.Name -}}
-{{- $mgmLocal := "" -}}
-{{- $mgmGlobal := "" -}}
-{{- if .Values.eosMgmUrl -}}
-  {{ $mgmLocal = .Values.eosMgmUrl }}
-{{- end }}
-{{- if .Values.global -}}
-  {{- $mgmGlobal = dig "hostnames" "mgm" "" .Values.global -}}
-{{- end }}
-{{- coalesce $mgmGlobal $mgmLocal $mgmDefault }}
-{{- end }}
