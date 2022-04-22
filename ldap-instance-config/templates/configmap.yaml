@@ -32,9 +32,6 @@ data:
       done
     }
 
-    # Define the LDAP_URI to connect to (proto+hostname+port)
-    export LDAP_URI=$LDAP_PROTOCOL://$LDAP_HOSTNAME:$LDAP_PORT
-
     # Dump the environment for debug
     echo "INFO: Dumping environment..."
     env | sort

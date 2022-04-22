@@ -36,16 +36,12 @@ spec:
           imagePullPolicy: {{ default "Always" .Values.image.pullPolicy }}
           command: ["/bin/bash", "/root/instance_config.sh"]
           env:
-            - name: LDAP_PROTOCOL
-              value: {{ .Values.protocol }}
-            - name: LDAP_HOSTNAME
-              value: {{ .Values.hostname }}
-            - name: LDAP_PORT
-              value: !!integer {{ .Values.port }}
+            - name: LDAP_URI
+              value: {{ .Values.ldap_uri }}
             - name: LDAP_BIND_DN
-              value: {{ .Values.bindDn }}
+              value: {{ .Values.ldap_binddn }}
             - name: LDAP_BIND_PASSWORD
-              value: {{ .Values.bindPassword }}
+              value: {{ .Values.ldap_bindpw }}
           volumeMounts:
             - name: ldap-instance-config-script
               mountPath: /root/instance_config.sh

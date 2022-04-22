@@ -13,7 +13,7 @@ podAssignment:
   enableNodeSelector: false     # Requires a node labeled as per customLabels
 
 #
-# Custom labels to identify eos-instance-config pod.
+# Custom labels to identify ldap-instance-config pod.
 #
 # They are used by node selection, if enabled (see above).
 # Label nodes accordingly to avoid scheduling problems.
@@ -27,17 +27,14 @@ customLabels:
 # The actual configuration for OpenLDAP
 #
 # Parameters:
-#   - protocol:     The protocol to be used, either ldap or ldaps
-#   - hostname:     The hostname at which the LDAP server is reachable
-#   - port:         The port to which the LDAP server listens
-#                     Typically 389 for ldap andd 636 for ldaps.
-#   - bindDn:       The distinguished name to bind to the LDAP server
-#   - bindPassword: The password for the distinguished name used to bind
-protocol: ldap
-hostname: ldap
-port: 389
-bindDn: cn=admin,dc=example,dc=org
-bindPassword: admin
+#   - ldap_uri:     The URL (protocol + hostname + port) at which the LDAP server is reachable.
+#                     Example: ldap://plainldapserver.example.com:389
+#                              ldaps://secureldap.example.com:636
+#   - ldap_binddn:  The distinguished name to bind to the LDAP server, likely with admin privileges.
+#   - ldap_bindpw:  The password for the distinguished name used to bind
+ldap_uri: ldap://plainldapserver.example.com:389
+ldap_binddn: cn=admin,dc=example,dc=org
+ldap_bindpw: admin
 ldifFiles:
   readme: |-
     # This is a README file.
