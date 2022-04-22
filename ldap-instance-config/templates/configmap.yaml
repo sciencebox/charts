@@ -42,7 +42,7 @@ data:
     echo "INFO: LDAP server is online."
 
     # ldapadd all the ldif files in /root/ldif-files
-    for ldif in $(find /root/ldif-files -type l -name "*.ldif")  # k8s configMaps are projected as links
+    for ldif in $(find /root/ldif-files -type l -name "*.ldif" | sort)  # k8s configMaps are projected as links
     do
       echo "INFO: Found $ldif -- Adding to ldap..."
       ldapadd -x -H $LDAP_URI -D $LDAP_BIND_DN -w $LDAP_BIND_PASSWORD -f $ldif
