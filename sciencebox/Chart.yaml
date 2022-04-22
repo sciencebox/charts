@@ -15,20 +15,23 @@ dependencies:
 - name: ldap-instance-config
   version: 0.0.1
   repository: "file://../ldap-instance-config/"
+#
 - name: server
   alias: eos
   version: 0.1.3
   repository: "https://registry.cern.ch/chartrepo/eos"
+- name: eos-instance-config
+  version: 0.0.5
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
+#
 - name: swan
   version: 0.1.9
   repository: "https://registry.cern.ch/chartrepo/swan"
 #
-- name: eos-instance-config
-  version: 0.0.5
-  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 - name: ocis-idp
   version: 0.0.4
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
+#
 - name: nginx
   version: 9.9.3
   repository: "https://charts.bitnami.com/bitnami"
