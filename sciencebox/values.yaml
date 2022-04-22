@@ -53,15 +53,15 @@ ldap:
     enabled: false
   persistence:
     enabled: false
-  adminPassword: admin
+  adminPassword: &ldapAdminPassword admin
   configPassword: config
   env:
     LDAP_ORGANISATION: ownCloud
     LDAP_DOMAIN: owncloud.com
-    LDAP_BASE_DN: dc=owncloud,dc=com
+    LDAP_BASE_DN: &ldapBaseDn dc=owncloud,dc=com
     LDAP_READONLY_USER: "true"
-    LDAP_READONLY_USER_USERNAME: readuser
-    LDAP_READONLY_USER_PASSWORD: readuser
+    LDAP_READONLY_USER_USERNAME: &ldapReadonlyUsername readuser
+    LDAP_READONLY_USER_PASSWORD: &ldapReadonlyPassword readuser
     LDAP_TLS_VERIFY_CLIENT: try
     LDAP_RFC2307BIS_SCHEMA: "true"
     LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
@@ -106,11 +106,9 @@ ldap-instance-config:
     repository: *ldapImageRepo
     tag: *ldapImageTag
   # TODO: The following params should be guessed:
-  protocol: ldap
-  hostname: sciencebox-ldap
-  port: 389
-  bindDn: cn=admin,dc=owncloud,dc=com
-  bindPassword: admin
+  ldap_uri: &ldapUri ldap://sciencebox-ldap:389
+  ldap_binddn: cn=admin,dc=owncloud,dc=com
+  ldap_bindpw: *ldapAdminPassword
   ldifFiles:
     # As per https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_ldap/config/ldap/ldif
     users.ldif: |-
@@ -354,10 +352,10 @@ eos:
       enable: true
       nslcd:
        config:
-         ldap_uri: ldap://sciencebox-ldap:389
-         ldap_base: dc=owncloud,dc=com
+         ldap_uri: *ldapUri
+         ldap_base: *ldapBaseDn
          ldap_binddn: cn=readuser,dc=owncloud,dc=com
-         ldap_bindpw: readuser
+         ldap_bindpw: *ldapReadonlyPassword
          ldap_user_search_base: ou=users,dc=owncloud,dc=com
          ldap_group_search_base: ou=groups,dc=owncloud,dc=com
          ldap_filter_passwd: (objectClass=posixAccount)
