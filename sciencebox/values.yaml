@@ -354,14 +354,14 @@ eos:
       enable: true
       nslcd:
        config:
-         ldap_uri: ldap://sciencebox-ocis-idp.default.svc.cluster.local:9389
-         ldap_base: ou=users,dc=example,dc=org
-         ldap_binddn: cn=idp,ou=sysusers,dc=example,dc=org
-         ldap_bindpw: idp
-         ldap_user_search_base: dc=example,dc=org
-         ldap_group_search_base: ou=groups,dc=example,dc=org
+         ldap_uri: ldap://sciencebox-ldap:389
+         ldap_base: dc=owncloud,dc=com
+         ldap_binddn: cn=readuser,dc=owncloud,dc=com
+         ldap_bindpw: readuser
+         ldap_user_search_base: ou=users,dc=owncloud,dc=com
+         ldap_group_search_base: ou=groups,dc=owncloud,dc=com
          ldap_filter_passwd: (objectClass=posixAccount)
-         ldap_filter_group: (objectClass=group)
+         ldap_filter_group: (objectClass=posixGroup)
   fst:
     replicaCount: 4
 #
