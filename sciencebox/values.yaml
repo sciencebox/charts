@@ -111,7 +111,7 @@ ldap-instance-config:
   ldap_bindpw: *ldapAdminPassword
   ldifFiles:
     # As per https://github.com/owncloud/ocis/tree/master/deployments/examples/ocis_ldap/config/ldap/ldif
-    users.ldif: |-
+    10_users.ldif: |-
       dn: ou=users,dc=owncloud,dc=com
       objectClass: organizationalUnit
       ou: users
@@ -217,7 +217,7 @@ ldap-instance-config:
       ownCloudUUID:: ZGRjMjAwNGMtMDk3Ny0xMWViLTlkM2YtYTc5Mzg4OGNkMGY4
       userPassword:: e1NTSEF9UWhmaFB3dERydTUydURoWFFObDRMbzVIckI3TkI5Nmo=
 
-    groups.ldif: |-
+    20_groups.ldif: |-
       dn: ou=groups,dc=owncloud,dc=com
       objectClass: organizationalUnit
       ou: groups
