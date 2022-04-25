@@ -14,7 +14,7 @@ dependencies:
   repository: "https://jp-gouin.github.io/helm-openldap/"
 - name: ldap-instance-config
   version: 0.0.1
-  repository: "file://../ldap-instance-config/"
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 #
 - name: server
   alias: eos
