@@ -212,6 +212,26 @@ ldap-instance-config:
       ownCloudUUID:: ZGRjMjAwNGMtMDk3Ny0xMWViLTlkM2YtYTc5Mzg4OGNkMGY4
       userPassword:: e1NTSEF9UWhmaFB3dERydTUydURoWFFObDRMbzVIckI3TkI5Nmo=
 
+      dn: uid=reva,ou=users,dc=owncloud,dc=com
+      objectClass: inetOrgPerson
+      objectClass: organizationalPerson
+      objectClass: ownCloud
+      objectClass: person
+      objectClass: posixAccount
+      objectClass: top
+      uid: reva
+      givenName: reva
+      sn: Reva
+      cn: reva
+      displayName: Reva
+      description: The reva user for this oCIS instance.
+      mail: reva@example.org
+      uidNumber: 10001
+      gidNumber: 15000
+      homeDirectory: /home/reva
+      ownCloudUUID:: NzJmMjM3ZGMtNjViNi00ZTIwLTkzZTEtNzRhYjY1ZjRjM2Iz
+      userPassword:: e1NTSEF9ZTRQUEFpSUtxQ3JERWcrc2Y3MlZBRTU1Nk1FcGZVN1UK
+
     20_groups.ldif: |-
       dn: ou=groups,dc=owncloud,dc=com
       objectClass: organizationalUnit
