@@ -66,15 +66,13 @@ ldap:
     readme.warning: |-
       #
       # WARNING:
-      #   The customLdifFiles implementation for users and groups in osixia/openldap is buggy.
+      #   The ability to "seed LDAP database with ldif" (https://github.com/osixia/docker-openldap#seed-ldap-database-with-ldif) in osixia/docker-openldap is buggy,
+      #   and so is the resulting `customLdifFiles` in the OpenLDAP Helm Chart --> https://github.com/jp-gouin/helm-openldap#boostrap-custom-ldif.
       #
-      # See comment at https://github.com/osixia/docker-openldap/issues/547#issuecomment-805686473
-      # ... and open issues upstream:
-      #   - https://github.com/osixia/docker-openldap/issues/320
-      #   - https://github.com/osixia/docker-openldap/issues/433
-      #   - https://github.com/osixia/docker-openldap/issues/538
+      #   Please, don't waste your time trying to make it work.
       #
-      # Please, don't waste your time further until the upstream container // chart have been fixed.
+      #   The ldap-instance-config chart (https://github.com/sciencebox/charts/tree/master/ldap-instance-config) was created to workaround this problem.
+      #   Check its README for further details and pointers to upstream issues.
       #
     10_owncloud_schema.ldif: |-
       # This LDIF files describes the ownCloud schema and can be used to add two optional attributes: ownCloudQuota and ownCloudUUID
