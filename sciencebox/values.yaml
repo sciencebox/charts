@@ -367,7 +367,7 @@ ocis-idp:
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
     IDP_ISS: https://idp.hostname # This is overridden by etc/deploy.sh in mboxed
     # IDM_LDAPS_ADDR: 0.0.0.0:9235
-    # IDP_INSECURE: true
+    IDP_INSECURE: true
     # PROXY_TLS: true
     REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
     # OCIS_INSECURE: true
@@ -399,10 +399,10 @@ ocis-idp:
     # GRAPH_LDAP_BIND_PASSWORD: idm
     # GRAPH_LDAP_SERVER_WRITE_ENABLED: "true"
     # GRAPH_IDENTITY_BACKEND: ldap    
-    LDAP_URI: ldap://sciencebox-openldap:389
+    LDAP_URI: ldaps://sciencebox-ldap:636
     LDAP_INSECURE: true
-    LDAP_BIND_DN: "cn=admin,dc=owncloud,dc=com"
-    LDAP_BIND_PASSWORD: admin
+    LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
+    LDAP_BIND_PASSWORD: readuser
     LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
     LDAP_GROUPFILTER: "(objectclass=owncloud)"
     LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
@@ -449,10 +449,119 @@ ocis-idp:
             - https://localhost:9200/oidc-silent-redirect.html
           origins:
             - https://localhost:9200  
-  ingress:
-    enabled: true
-    hosts:
-    exposeIdp: true
+    proxy.yaml: |
+      policies:
+      - name: ocis
+        routes:
+        - type: ""
+          endpoint: /
+          backend: http://localhost:9100
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /.well-known/
+          backend: http://localhost:9130
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /konnect/
+          backend: http://localhost:9130
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /signin/
+          backend: http://localhost:9130
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /archiver # gateway
+          backend: http://localhost:9140
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /ocs/
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: query
+          endpoint: /remote.php/?preview=1 # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /remote.php/ # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /dav/ # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /webdav/ # gateway
+          backend: http://sciencebox-gateway:9143 
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /status.php # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /index.php/
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /apps/
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /data
+          backend: http://localhost:9140
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /app/
+          backend: http://localhost:9140
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /graph/
+          backend: http://localhost:9120
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /graph-explorer
+          backend: http://localhost:9135
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /api/v0/accounts
+          backend: http://localhost:9181
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /accounts.js
+          backend: http://localhost:9181
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /api/v0/settings
+          backend: http://localhost:9190
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /settings.js
+          backend: http://localhost:9190
+          service: ""
+          apache-vhost: false
+        ingress:
+          enabled: true
+          hosts:
+          exposeIdp: true
 
 #
 # EOS
@@ -688,7 +797,7 @@ gateway:
 # values for revad-storage provider home service
 storageprovider-home:
   image:
-    repository: jimil749/revad-eos
+    repository: jimil749/revad-master-debug
     tag: latest
   service:
     grpc:
@@ -700,7 +809,7 @@ storageprovider-home:
 # values for revad-storage provider public service
 storageprovider-public:
   image:
-    repository: jimil749/revad
+    repository: jimil749/revad-master-debug
     tag: latest
   service:
     grpc:
@@ -710,7 +819,7 @@ storageprovider-public:
 # values for revad-storage provider user service
 storageprovider-user:
   image:
-    repository: jimil749/revad
+    repository: jimil749/revad-master-debug
     tag: latest
   service:
     grpc:
@@ -719,7 +828,7 @@ storageprovider-user:
       port: 15000
   env:
     XrdSecPROTOCOL: unix
-# values for revad-auth provider machine service
+#values for revad-auth provider machine service
 authprovider-machine:
   image:
     repository: jimil749/revad-new

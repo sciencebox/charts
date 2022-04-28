@@ -1,5 +1,5 @@
 [shared]
-gatewaysvc = "localhost:9142"
+gatewaysvc = "sciencebox-gateway:9142"
 jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
 
 [grpc]
