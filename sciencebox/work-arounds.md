@@ -90,7 +90,8 @@ $ ocis kill glauth
     }
   ],
   "options": {
-    "hideSearchBar": true
+    "hideSearchBar": true,
+    "homeFolder": "/eos/user/{{substr 0 1 .Id}}/{{.Id}}"
   }
 }
 ```

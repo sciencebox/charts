@@ -782,7 +782,8 @@ nginx:
 # values for revad-gateway service
 gateway:
   image:
-    repository: jimil749/revad
+    #repository: jimil749/revad
+    repository: jimil749/revad-master-debug
     tag: latest
   service:
     grpc:
