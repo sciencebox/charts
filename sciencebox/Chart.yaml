@@ -23,10 +23,10 @@ dependencies:
 - name: eos-instance-config
   version: 0.0.5
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
-#
-- name: swan
-  version: 0.1.9
-  repository: "https://registry.cern.ch/chartrepo/swan"
+## #
+## - name: swan
+##   version: 0.1.9
+##   repository: "https://registry.cern.ch/chartrepo/swan"
 #
 #ideally should point to iop charts, but currently idk how to pass values to sub-sub charts
 - name: revad
