@@ -61,3 +61,7 @@ dependencies:
 - name: nginx
   version: 9.9.3
   repository: "https://charts.bitnami.com/bitnami"
+#
+- name: mariadb
+  version: 11.0.2
+  repository: "https://charts.bitnami.com/bitnami"

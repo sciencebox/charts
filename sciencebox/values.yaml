@@ -364,7 +364,7 @@ ocis-idp:
   env:
     # Set access token expiration to 8hrs (=28800s) until the auto-renewal is fixed
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://idp.hostname # This is overridden by etc/deploy.sh in mboxed
+    IDP_ISS: https://localhost:9200 # This is overridden by etc/deploy.sh in mboxed
     # IDM_LDAPS_ADDR: 0.0.0.0:9235
     IDP_INSECURE: true
     # PROXY_TLS: true
@@ -782,7 +782,7 @@ nginx:
 gateway:
   image:
     #repository: jimil749/revad
-    repository: jimil749/revad-master-debug
+    repository: cs3org/revad
     tag: latest
   service:
     grpc:
@@ -797,8 +797,9 @@ gateway:
 # values for revad-storage provider home service
 storageprovider-home:
   image:
-    repository: jimil749/revad-master-debug
-    tag: latest
+    #repository: jimil749/revad-master-debug
+    repository: cs3org/revad
+    tag: latest-eos
   service:
     grpc:
       port: 18000
@@ -806,21 +807,48 @@ storageprovider-home:
       port: 17000
   env:
     XrdSecPROTOCOL: unix
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
 # values for revad-storage provider public service
 storageprovider-public:
   image:
-    repository: jimil749/revad-master-debug
-    tag: latest
+    repository: cs3org/revad
+    tag: latest-eos
   service:
     grpc:
       port: 9278
   env:
     XrdSecPROTOCOL: unix
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
 # values for revad-storage provider user service
 storageprovider-user:
   image:
-    repository: jimil749/revad-master-debug
-    tag: latest
+    #repository: jimil749/revad-master-debug
+    repository: cs3org/revad
+    tag: latest-eos
   service:
     grpc:
       port: 16000
@@ -828,11 +856,31 @@ storageprovider-user:
       port: 15000
   env:
     XrdSecPROTOCOL: unix
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
 #values for revad-auth provider machine service
 authprovider-machine:
   image:
-    repository: jimil749/revad-new
+    repository: cs3org/revad
     tag: latest
   service:
     grpc:
       port: 9166
+# values for mariadb
+mariadb:
+  auth:
+    rootPassword: reva
+    database: my_database
+    username: reva
+    password: reva

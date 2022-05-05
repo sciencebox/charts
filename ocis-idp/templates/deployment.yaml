@@ -32,6 +32,8 @@ spec:
             - name: ocis-data
               mountPath: "{{ .Values.persistentVolume.mountPath }}"
               subPath: "{{ .Values.persistentVolume.subPath }}"
+            - name: ocis-config
+              mountPath: "/var/tmp/ocis/.config/"
           env:
           {{- range $name, $value := .Values.env }}
             - name: "{{ $name }}"
@@ -53,6 +55,9 @@ spec:
         - name: ocis-supervisord-procs
           configMap:
             name: {{ include "ocis.fullname" . }}-supervisord-procs
+        - name: ocis-config
+          configMap:
+            name: {{ include "ocis.fullname" . }}-config
         - name: ocis-data
         {{- if .Values.persistentVolume.enabled }}
           persistentVolumeClaim:
