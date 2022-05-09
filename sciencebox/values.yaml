@@ -339,15 +339,15 @@ ocis-idp:
   image:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
-  # extensions:
-  #   - web
-  #   - proxy
-  #   - settings
-  #   - storage-metadata
-  #   - storage-userprovider
-  #   - storage-groupprovider
-  #   - idm
-  #   - idp
+  extensions:
+    - web
+    - proxy
+    - settings
+    - storage-metadata
+    - storage-userprovider
+    - storage-groupprovider
+    - idm
+    - idp
   #   #- ocs
   #   #- store
   #   #- webdav
