@@ -790,7 +790,7 @@ gateway:
     http:
       port: 9143
   env:
-    XrdSecPROTOCOL: unix
+    XrdSecPROTOCOL: sss
   configFiles:
     revad.toml:
 
@@ -806,12 +806,13 @@ storageprovider-home:
     http:
       port: 17000
   env:
-    XrdSecPROTOCOL: unix
+    XrdSecPROTOCOL: sss
   extraVolumes:
     - name: tmp-volume
       emptyDir: {}
     - name: eos-keytab
       secret:
+        defaultMode: 256
         secretName: sciencebox-eos-sss-keytab
   extraVolumeMounts:
     - name: tmp-volume
@@ -829,7 +830,7 @@ storageprovider-public:
     grpc:
       port: 9278
   env:
-    XrdSecPROTOCOL: unix
+    XrdSecPROTOCOL: sss
   extraVolumes:
     - name: tmp-volume
       emptyDir: {}
@@ -855,12 +856,13 @@ storageprovider-user:
     http:
       port: 15000
   env:
-    XrdSecPROTOCOL: unix
+    XrdSecPROTOCOL: sss
   extraVolumes:
     - name: tmp-volume
       emptyDir: {}
     - name: eos-keytab
       secret:
+        defaultMode: 256
         secretName: sciencebox-eos-sss-keytab
   extraVolumeMounts:
     - name: tmp-volume

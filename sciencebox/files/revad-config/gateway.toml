@@ -62,7 +62,7 @@ insecure = true
 #base_dn = "o=libregraph-idm"
 base_dn = "dc=owncloud,dc=com"
 #userfilter="(&(objectclass=posixAccount)(cn=%s))"
-userfilter="(objectclass=owncloud)"
+userfilter="(&(objectclass=owncloud)(cn=%s))"
 #findfilter="(&(objectclass=posixAccount)(|(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)))"
 findfilter="(&(objectclass=owncloud)(|(uid={{query}}*)(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)(description={{query}}*)))"
 #attributefilter="(&(objectclass=posixAccount)({{attr}}={{value}}))"

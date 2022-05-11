@@ -21,7 +21,7 @@ xrdcopy_binary = "/opt/eos/xrootd/bin/xrdcopy"
 cache_directory = "/tmp/reva"
 use_keytab = true
 keytab = "/etc/eos.keytab"
-sec_protocol = "unix"
+sec_protocol = "sss"
 
 [http]
 address = "0.0.0.0:17000"
@@ -39,4 +39,4 @@ xrdcopy_binary = "/opt/eos/xrootd/bin/xrdcopy"
 cache_directory = "/tmp/reva"
 use_keytab = true
 keytab = "/etc/eos.keytab"
-sec_protocol = "unix"
+sec_protocol = "sss"
