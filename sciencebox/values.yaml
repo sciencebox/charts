@@ -881,6 +881,41 @@ authprovider-machine:
       port: 9166
 # values for mariadb
 mariadb:
+  initdbScripts:
+    my_init_script.sql: |
+      CREATE TABLE `oc_share` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `share_type` smallint(6) NOT NULL DEFAULT '0',
+      `share_with` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `uid_owner` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+      `uid_initiator` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+      `parent` int(11) DEFAULT NULL,
+      `item_type` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+      `item_source` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `item_target` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `file_source` bigint(20) unsigned DEFAULT NULL,
+      `file_target` varchar(512) COLLATE utf8_bin DEFAULT NULL,
+      `permissions` smallint(6) NOT NULL DEFAULT '0',
+      `stime` bigint(20) NOT NULL DEFAULT '0',
+      `accepted` smallint(6) NOT NULL DEFAULT '0',
+      `expiration` datetime DEFAULT NULL,
+      `token` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+      `mail_send` smallint(6) NOT NULL DEFAULT '0',
+      `fileid_prefix` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `orphan` tinyint(4) DEFAULT NULL,
+      `share_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `item_share_type_index` (`item_type`,`share_type`),
+      KEY `file_source_index` (`file_source`),
+      KEY `token_index` (`token`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=333566 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+    
+      CREATE TABLE `oc_share_status` (
+      `id` int(11) NOT NULL,
+      `recipient` varchar(255) NOT NULL,
+      `state` int(11) DEFAULT '0',
+      PRIMARY KEY (`id`,`recipient`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
   auth:
     rootPassword: reva
     database: my_database
