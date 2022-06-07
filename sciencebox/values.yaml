@@ -336,6 +336,13 @@ ldap-instance-config:
 # OCIS-IDP
 #
 ocis-idp:
+  ingress:
+    enabled: true
+    exposeIdp: true
+    hosts:
+    - sciencebox.local
+    annotations:
+      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
   image:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
@@ -343,10 +350,6 @@ ocis-idp:
     - web
     - proxy
     - settings
-    - storage-metadata
-    - storage-userprovider
-    - storage-groupprovider
-    - idm
     - idp
   #   #- ocs
   #   #- store
@@ -364,7 +367,7 @@ ocis-idp:
   env:
     # Set access token expiration to 8hrs (=28800s) until the auto-renewal is fixed
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://localhost:9200 # This is overridden by etc/deploy.sh in mboxed
+    IDP_ISS: https://sciencebox.local # This is overridden by etc/deploy.sh in mboxed
     # IDM_LDAPS_ADDR: 0.0.0.0:9235
     IDP_INSECURE: true
     # PROXY_TLS: true
@@ -415,8 +418,8 @@ ocis-idp:
     PROXY_ACCOUNT_BACKEND_TYPE: cs3
     # web ui
     WEB_UI_CONFIG: "/var/tmp/ocis/.config/web-config.json"
-    # General oCIS config
-    OCIS_URL: https://localhost:9200
+    # idp url (for the proxy)
+    OCIS_URL: https://sciencebox.local
     #OCIS_DOMAIN: ocis.owncloud.test
     OCIS_LOG_LEVEL: debug # make oCIS less verbose
     PROXY_TLS: true # do not use SSL between Traefik and oCIS
@@ -443,11 +446,14 @@ ocis-idp:
           name: ownCloud web app
           trusted: yes
           redirect_uris:
-            - https://localhost:9200/
-            - https://localhost:9200/oidc-callback.html
-            - https://localhost:9200/oidc-silent-redirect.html
+            - https://sciencebox.local/
+            - https://sciencebox.local/oidc-callback.html
+            - https://sciencebox.local/oidc-silent-redirect.html
           origins:
-            - https://localhost:9200  
+            - https://sciencebox.local  
+    # point an ingress object to this proxy
+    # require a k8s service
+    # https://sciencebox.local/ -> ingress -> sciencebox-ocis proxy -> localhost:9200
     proxy.yaml: |
       policies:
       - name: ocis
