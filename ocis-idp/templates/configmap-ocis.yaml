@@ -5,12 +5,12 @@ metadata:
 data:
   web-config.json: |-
     {
-      "server": "https://localhost:9200",
+      "server": "https://sciencebox.local",
       "theme": "owncloud",
       "version": "0.1.0",
       "openIdConnect": {
-        "metadata_url": "https://localhost:9200/.well-known/openid-configuration",
-        "authority": "https://localhost:9200",
+        "metadata_url": "https://sciencebox-idp.local/.well-known/openid-configuration",
+        "authority": "https://sciencebox-idp.local",
         "client_id": "web",
         "response_type": "code",
         "scope": "openid profile email"

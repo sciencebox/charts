@@ -17,7 +17,9 @@ services:
   idp:
     port: 9130
     targetPort: 9130
-
+  proxy:
+    port: 443
+    targetPort: 9200
 # oCIS IDP config defaults from https://owncloud.dev/extensions/idp/configuration/
 # env:
 #   #IDP_LDAP_URI: "ldap://localhost:9125"
