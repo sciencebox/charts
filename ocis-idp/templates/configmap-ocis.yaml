@@ -5,12 +5,12 @@ metadata:
 data:
   web-config.json: |-
     {
-      "server": {{ .Values.config.server }},
+      "server": {{ quote .Values.config.server }},
       "theme": "owncloud",
       "version": "0.1.0",
       "openIdConnect": {
-        "metadata_url": {{ .Values.config.metadata_url }},
-        "authority": {{ .Values.config.authority }},
+        "metadata_url": {{ quote .Values.config.metadata_url }},
+        "authority": {{ quote .Values.config.authority }},
         "client_id": "web",
         "response_type": "code",
         "scope": "openid profile email"
