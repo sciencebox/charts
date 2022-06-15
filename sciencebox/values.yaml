@@ -351,56 +351,11 @@ ocis-idp:
     - proxy
     - settings
     - idp
-  #   #- ocs
-  #   #- store
-  #   #- webdav
-  #   #- storage-frontend
-  #   #- storage-gateway
-  #   #- storage-authbasic
-  #   #- storage-authmachine
-  #   #- storage-users
-  #   #- storage-shares
-  #   #- storage-public-link
-  #   #- storage-appprovider
-  #   #- storage-sharing
-  #   #- nats
   env:
-    # Set access token expiration to 8hrs (=28800s) until the auto-renewal is fixed
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://sciencebox.local # This is overridden by etc/deploy.sh in mboxed
-    # IDM_LDAPS_ADDR: 0.0.0.0:9235
+    IDP_ISS: https://sciencebox.local
     IDP_INSECURE: true
-    # PROXY_TLS: true
     REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
-    # OCIS_INSECURE: true
-    # PROXY_INSECURE_BACKENDS: true
-    # #WEB_OIDC_AUTHORITY: https://localhost:9200
-    # #PROXY_USER_OIDC_CLAIM: name
-    # PROXY_ACCOUNT_BACKEND_TYPE: cs3
-    # OCS_ACCOUNT_BACKEND_TYPE: cs3
-    # #PROXY_AUTOPROVISION_ACCOUNTS: true
-    # OCIS_LOG_LEVEL: debug
-    # OCIS_RUN_EXTENSIONS: settings,storage-metadata,web,storage-userprovider,storage-groupprovider,idp,idm,proxy
-    # #PROXY_USER_CS3_CLAIM: mail
-    # STORAGE_LDAP_HOSTNAME: localhost
-    # STORAGE_LDAP_PORT: 9235
-    # STORAGE_LDAP_INSECURE: true
-    # STORAGE_LDAP_BASE_DN: "o=libregraph-idm"
-    # STORAGE_LDAP_BIND_DN: "uid=reva,ou=sysusers,o=libregraph-idm"
-    # STORAGE_LDAP_BIND_PASSWORD: reva
-    # STORAGE_LDAP_LOGINFILTER: '(&(objectclass=inetOrgPerson)(objectclass=owncloud)(|(uid={{login}})(mail={{login}})))'
-    # STORAGE_LDAP_USERFILTER: '(&(objectclass=inetOrgPerson)(objectclass=owncloud)(|(ownclouduuid={{.OpaqueId}})(uid={{.OpaqueId}})))'
-    # STORAGE_LDAP_USERATTRIBUTEFILTER: '(&(objectclass=owncloud)({{attr}}={{value}}))'
-    # STORAGE_LDAP_USERFINDFILTER: '(&(objectclass=owncloud)(|(uid={{query}}*)(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)(description={{query}}*)))'
-    # STORAGE_LDAP_USERGROUPFILER: '(&(objectclass=groupOfNames)(member={{query}}*))'
-    # STORAGE_LDAP_GROUPFILTER: '(&(objectclass=groupOfNames)(objectclass=owncloud)(ownclouduuid={{.OpaqueId}}*))'
-    # # this does not do ANYTHING
-    # OCIS_MACHINE_AUTH_API_KEY: 'random_api_key'
-    # STORAGE_AUTH_MACHINE_AUTH_API_KEY: 'random_api_key'
-    # GRAPH_LDAP_BIND_DN: "uid=libregraph,ou=sysusers,o=libregraph-idm"
-    # GRAPH_LDAP_BIND_PASSWORD: idm
-    # GRAPH_LDAP_SERVER_WRITE_ENABLED: "true"
-    # GRAPH_IDENTITY_BACKEND: ldap    
     LDAP_URI: ldaps://sciencebox-ldap:636
     LDAP_INSECURE: true
     LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
@@ -416,23 +371,16 @@ ocis-idp:
     IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
     IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
     PROXY_ACCOUNT_BACKEND_TYPE: cs3
-    # web ui
     WEB_UI_CONFIG: "/var/tmp/ocis/.config/web-config.json"
-    # idp url (for the proxy)
     OCIS_URL: https://sciencebox.local
-    #OCIS_DOMAIN: ocis.owncloud.test
-    OCIS_LOG_LEVEL: debug # make oCIS less verbose
-    PROXY_TLS: true # do not use SSL between Traefik and oCIS
-    # change default secrets
+    OCIS_LOG_LEVEL: debug 
+    PROXY_TLS: true 
     OCIS_JWT_SECRET: Pive-Fumkiu4
     STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
     OCIS_MACHINE_AUTH_API_KEY: random_api_key
-    # INSECURE: needed if oCIS / Traefik is using self generated certificates
     OCIS_INSECURE: true
-    # basic auth (not recommended, but needed for eg. WebDav clients that do not support OpenID Connect)
     PROXY_ENABLE_BASIC_AUTH: false
-    # demo users
-    ACCOUNTS_DEMO_USERS_AND_GROUPS: false  # deprecated, remove after switching to LibreIDM
+    ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
     IDM_CREATE_DEMO_USERS: false      
 
   configFiles:
@@ -787,7 +735,6 @@ nginx:
 # values for revad-gateway service
 gateway:
   image:
-    #repository: jimil749/revad
     repository: cs3org/revad
     tag: latest
   service:
@@ -803,7 +750,6 @@ gateway:
 # values for revad-storage provider home service
 storageprovider-home:
   image:
-    #repository: jimil749/revad-master-debug
     repository: cs3org/revad
     tag: latest-eos
   service:
@@ -853,7 +799,6 @@ storageprovider-public:
 # values for revad-storage provider user service
 storageprovider-user:
   image:
-    #repository: jimil749/revad-master-debug
     repository: cs3org/revad
     tag: latest-eos
   service:
