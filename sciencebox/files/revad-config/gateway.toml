@@ -25,17 +25,9 @@ auth_manager = "ldap"
 hostname = "sciencebox-ldap"
 port = 636
 insecure = true
-#base_dn = "ou=users,dc=ocis,dc=test"
-#base_dn = "ou=users,dc=example,dc=org"
-#base_dn = "o=libregraph-idm"
 base_dn = "dc=owncloud,dc=com"
 loginfilter = "(&(objectclass=inetOrgPerson)(objectclass=owncloud)(|(uid={{login}})(mail={{login}})))"
-#bind_username = "cn=idp,ou=sysusers,dc=ocis,dc=test"
-#bind_username = "cn=idp,ou=sysusers,dc=example,dc=org"
-#bind_username = "uid=reva,ou=sysusers,o=libregraph-idm"
 bind_username = "cn=readuser,dc=owncloud,dc=com"
-#bind_password = "idp"
-#bind_password = "reva"
 bind_password = "readuser"
 schema = { dn = "dn", uid = "cn", mail = "mail", displayName = "displayname", cn = "cn" }
 gatewaysvc = "localhost:9142"
@@ -52,31 +44,15 @@ machine = "sciencebox-authprovider-machine:9166"
 driver = "ldap"
 
 [grpc.services.userprovider.drivers.ldap]
-# hostname="sciencebox-ocis-idp.default.svc.cluster.local"
-# port = 9636
 hostname="sciencebox-ldap"
 port = 636
 insecure = true
-#base_dn = "dc=ocis,dc=test"
-#base_dn = "ou=users,dc=example,dc=org"
-#base_dn = "o=libregraph-idm"
 base_dn = "dc=owncloud,dc=com"
-#userfilter="(&(objectclass=posixAccount)(cn=%s))"
 userfilter="(&(objectclass=owncloud)(cn=%s))"
-#findfilter="(&(objectclass=posixAccount)(|(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)))"
 findfilter="(&(objectclass=owncloud)(|(uid={{query}}*)(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)(description={{query}}*)))"
-#attributefilter="(&(objectclass=posixAccount)({{attr}}={{value}}))"
 attributefilter="(&(objectclass=owncloud)({{attr}}={{value}}))"
-#groupfilter="(&(objectclass=posixGroup)(cn=*)(memberuid={{.OpaqueId}}))"
-#groupfilter="(&(objectclass=posixGroup)(memberuid={{.OpaqueId}}))"
-# real one:
-#groupfilter="(&(objectclass=posixGroup)(objectclass=owncloud)(ownclouduuid={{.OpaqueId}}*))"
 groupfilter="(objectclass=owncloud)"
-#bind_username = "cn=idp,ou=sysusers,dc=ocis,dc=test"
-#bind_username = "cn=idp,ou=sysusers,dc=example,dc=org"
-#bind_username = "uid=reva,ou=sysusers,o=libregraph-idm"
 bind_username = "cn=readuser,dc=owncloud,dc=com"
-#bind_password = "idp"
 bind_password = "readuser"
 
 [grpc.services.userprovider.drivers.ldap.schema]
@@ -90,26 +66,16 @@ mail="mail"
 driver = "ldap"
 
 [grpc.services.groupprovider.drivers.ldap]
-# hostname="sciencebox-ocis-idp.default.svc.cluster.local"
-# port = 9636
 hostname="sciencebox-ldap"
 port = 636
 insecure = true
-#base_dn = "dc=ocis,dc=test"
-#base_dn = "dc=example,dc=org"
 base_dn = "dc=owncloud,dc=com"
-#groupfilter="(&(objectclass=posixGroup)(cn=%s))"
 groupfilter="(objectclass=owncloud)"
 findfilter="(&(objectclass=posixGroup)(|(cn={{query}}*)(displayname={{query}}*)(mail={{query}}*)))"
 attributefilter="(&(objectclass=posixGroup)({{attr}}={{value}}))"
 memberfilter="(&(objectclass=posixAccount)(cn={{.OpaqueId}}))"
-#bind_username = "cn=idp,ou=sysusers,dc=ocis,dc=test"
-#bind_username = "cn=idp,ou=sysusers,dc=example,dc=org"
-#bind_username = "uid=reva,ou=sysusers,o=libregraph-idm"
 bind_username = "cn=readuser,dc=owncloud,dc=com"
 idp = "https://sciencebox.local"
-#bind_password = "idp"
-#bind_password = "reva"
 bind_password = "readuser"
 
 [grpc.services.groupprovider.drivers.ldap.schema]

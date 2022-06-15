@@ -7,51 +7,14 @@ image:
 
 services:
   type: ClusterIP
-  # ldap:
-  #   port: 9389
-  #   targetPort: 9125
-  # ldaps:
-  #   port: 9636
-  #   #targetPort: 9126
-  #   targetPort: 9235
   idp:
     port: 9130
     targetPort: 9130
   proxy:
     port: 443
     targetPort: 9200
-# oCIS IDP config defaults from https://owncloud.dev/extensions/idp/configuration/
-# env:
-#   #IDP_LDAP_URI: "ldap://localhost:9125"
-#   IDP_LDAP_URI: "ldaps://localhost:9235"
-#   #IDP_LDAP_BIND_DN: "cn=idp,ou=sysusers,dc=example,dc=org"
-#   IDP_LDAP_BIND_DN: "uid=idp,ou=sysusers,o=libregraph-idm"
-#   IDP_LDAP_BIND_PASSWORD: "idp"
-#   #IDP_LDAP_BASE_DN: "ou=users,dc=example,dc=org"
-#   IDP_LDAP_BASE_DN: "ou=users,o=libregraph-idm"
-#   #IDP_LDAP_SCOPE: "sub"
-#   #IDP_LDAP_LOGIN_ATTRIBUTE: "cn"
-#   IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
-#   #IDP_LDAP_EMAIL_ATTRIBUTE: "email"
-#   #IDP_LDAP_NAME_ATTRIBUTE: "sn"
-#   #IDP_LDAP_UUID_ATTRIBUTE: "uid"
-#   IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
-#   #IDP_LDAP_UUID_ATTRIBUTE_TYPE: "text"
-#   IDP_LDAP_UUID_ATTRIBUTE_TYPE: "binary"
-#   #IDP_LDAP_FILTER: "(objectClass=posixaccount)"
-#   IDP_LDAP_FILTER: "(&(objectclass=inetOrgPerson)(objectClass=owncloud))"
-#   IDP_IDENTIFIER_REGISTRATION_CONF: /etc/ocis/identifier_registration.yaml
 
 extraEnv: []
-
-# extensions:
-#   - settings
-#   - storage-metadata
-#   - storage-userprovider
-#   - storage-groupprovider
-#   - accounts
-#   - glauth
-#   - idp
 
 configFiles:
   identifier_registration.yaml: |
