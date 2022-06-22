@@ -23,45 +23,45 @@ dependencies:
 - name: eos-instance-config
   version: 0.0.5
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
-## #
-## - name: swan
-##   version: 0.1.9
-##   repository: "https://registry.cern.ch/chartrepo/swan"
+#
+- name: swan
+  version: 0.1.9
+  repository: "https://registry.cern.ch/chartrepo/swan"
 #
 #ideally should point to iop charts, but currently idk how to pass values to sub-sub charts
-- name: revad
-  version: "1.3.3"
-  alias: gateway
-  repository: "https://cs3org.github.io/charts"
-#
-- name: revad
-  version: "1.3.3"
-  alias: storageprovider-home
-  repository: "https://cs3org.github.io/charts"
-#
-- name: revad
-  version: "1.3.3"
-  alias: storageprovider-user
-  repository: "https://cs3org.github.io/charts"
-#
-- name: revad
-  version: "1.3.3"
-  alias: storageprovider-public
-  repository: "https://cs3org.github.io/charts"
-#
-- name: revad
-  version: "1.3.3"
-  alias: authprovider-machine
-  repository: "https://cs3org.github.io/charts"
+# - name: revad
+#   version: "1.3.3"
+#   alias: gateway
+#   repository: "https://cs3org.github.io/charts"
+# #
+# - name: revad
+#   version: "1.3.3"
+#   alias: storageprovider-home
+#   repository: "https://cs3org.github.io/charts"
+# #
+# - name: revad
+#   version: "1.3.3"
+#   alias: storageprovider-user
+#   repository: "https://cs3org.github.io/charts"
+# #
+# - name: revad
+#   version: "1.3.3"
+#   alias: storageprovider-public
+#   repository: "https://cs3org.github.io/charts"
+# #
+# - name: revad
+#   version: "1.3.3"
+#   alias: authprovider-machine
+#   repository: "https://cs3org.github.io/charts"
 #
 - name: ocis-idp
   version: 0.0.4
   repository: "file://../ocis-idp"
-#
-- name: nginx
-  version: 9.9.3
-  repository: "https://charts.bitnami.com/bitnami"
-#
-- name: mariadb
-  version: 11.0.2
-  repository: "https://charts.bitnami.com/bitnami"
+# #
+# - name: nginx
+#   version: 9.9.3
+#   repository: "https://charts.bitnami.com/bitnami"
+# #
+# - name: mariadb
+#   version: 11.0.2
+#   repository: "https://charts.bitnami.com/bitnami"

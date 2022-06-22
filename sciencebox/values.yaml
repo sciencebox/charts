@@ -341,20 +341,18 @@ ocis-idp:
     exposeIdp: true
     hosts:
     - sciencebox.local
-    annotations:
-      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+    # annotations:
+    #   "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
   image:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
   extensions:
-    - web
-    - proxy
-    - settings
     - idp
   env:
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
     IDP_ISS: https://sciencebox.local
     IDP_INSECURE: true
+    IDP_HTTP_ADDR: 0.0.0.0:9130
     REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
     LDAP_URI: ldaps://sciencebox-ldap:636
     LDAP_INSECURE: true
@@ -569,156 +567,156 @@ eos-instance-config:
           gid: 30000
 
 
-## #
-## # SWAN
-## #
-## swan:
-##   #
-##   # CVMFS mounts
-##   cvmfs:
-##     deployDaemonSet: &cvmfsDeployDS true
-##     deployCsiDriver: &cvmfsDeployCSI false
-##     useCsiDriver: &cvmfsUseCSI false
-##     repositories: &cvmfsRepos
-##       - cvmfs-config.cern.ch
-##       - sft.cern.ch
-##       - sft-nightlies.cern.ch
-##   #
-##   # EOS Fusex mount
-##   eos:
-##     deployDaemonSet: &eosDeployDS true
-##     deployCsiDriver: &eosDeployCSI false
-##     useCsiDriver: &eosUseCSI false
-##   fusex:
-##     checkMgmOnline:
-##       enabled: true
-##       eosMgmUrlAuto: true
-##     fusex:
-##       keytab:
-##         secret: *sssKeytabName
-##       hostMountpoint: /var/eos
-##       config:
-##         oauth2: 1
-##         eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
-##   #
-##   # JupyterHub
-##   jupyterhub:
-##     proxy:
-##       secretToken: 11df35dab7527b3798de5224f06458db1e0526fa65700e81e18f17f89822e0cf
-##     hub:
-##       image:
-##         name: "gitlab-registry.cern.ch/sciencebox/hotfixes/jupyterhub"
-##         tag: "v1.18-20220314"
-##         pullPolicy: "Always"
-##       # The default (pvc) is not working in openstack...
-##       # TODO: Add some persistency here
-##       db:
-##         type: sqlite-memory
-##       extraEnv:
-##         JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
-##       cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
-##       config:
-##         SwanKubeSpawner:
-##           local_home: False     # Use the homedir on EOS
-##         KeyCloakAuthenticator:
-##           oidc_issuer: https://idp.hostname
-##           client_id: swan
-##           client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
-##           oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
-##           tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
-##           scope:
-##             - openid
-##             - email
-##             - profile
-##             - offline_access
-##           jwt_signing_algorithms:
-##             - HS256
-##             - RS256
-##             - PS256
-##           # With the CERN SSO we will get a valid token for EOS. If the eosxd supports oauth,
-##           # we will be able to use it from the terminal, even with local_home=True.
-##           # The oCIS idp probably doesn't support exchanging tokens, but we will be able to re-use
-##           # the swan token with EOS if needed (although we shouldn't)
-##           exchange_tokens:
-##           ##   - eos-service
-##           ##   - cernbox-service
-##         JupyterHub:
-##           # We should expose cernbox and swan from the same url to simplify the deployment
-##           # We can do that by using different base url's for each.
-##           # I hope this simplifies the ScienceBox ingress as well
-##           base_url: /swan
-##       extraConfig:
-##         # TODO change the config to use the oCIS idp
-##         # Might need fixes on the swan code cause we break if we don't set user_roles (at least when using GPU).
-##         00-authConf: |
-##           def pre_spawn_hook(authenticator, spawner, auth_state):
-##             spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
-##             spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
-##             spawner.user_uid = str(1000) # Fake value -- Nobody uses this.
-##             decoded_token = authenticator._decode_token(auth_state['access_token'])
-##             spawner.user_roles = authenticator.claim_roles_key(authenticator, decoded_token)
-##           c.KeyCloakAuthenticator.pre_spawn_hook = pre_spawn_hook
-##         02-spawnError: |
-##           cernbox_url = 'CHANGE_ME' #TODO: This should come from the ScienceBox config !! If necessary, this can come as an env var
-## 
-##           SPAWN_ERROR_MESSAGE = f"""SWAN could not start a session for your user, please try again. If the problem persists, please check:
-##           <ul>
-##               <li>Do you have a CERNBox account? If not, click <a href="{cernbox_url}" target="_blank">here</a>.</li>
-##               <li>Check with the service manager that SWAN is running properly.</li>
-##           </ul>"""
-##           c.SpawnHandlersConfigs.spawn_error_message = SPAWN_ERROR_MESSAGE
-##         03-simpleForm: |
-##           # Remove this to enable the full form
-##           c.SwanSpawner.options_form = open('/srv/jupyterhub/jupyterhub_form.html').read()
-##     singleuser:
-##       cpu:
-##         limit: .5
-##         guarantee: .5
-##       extraEnv:
-##         # The sharing functionality won't work because we are deploying oCIS and not oc10
-##         # This will be replaced in the future with the CS3 APIs
-##         # SHARE_CBOX_API_DOMAIN: LOCAL_CBOX_URL__CHANGE_ME
-##         # SHARE_CBOX_API_BASE: /cernbox/swanapi/v1
-##         HELP_ENDPOINT: https://raw.githubusercontent.com/swan-cern/help/up2u/
-##         # FIXME Create a galery for ScienceBox? Or the normal one should redirect to different instances?
-##         # GALLERY_URL: https://swan-gallery.web.cern.ch/
-## 
-##     # TODO For some reason this is not working... We're still debugging
-##     prePuller:
-##       hook:
-##         enabled: false
-## 
-##     ingress:
-##       annotations:
-##         kubernetes.io/ingress.class: nginx
-##         nginx.ingress.kubernetes.io/ssl-redirect: "true"
-##         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-##         #nginx.ingress.kubernetes.io/rewrite-target: /
-##         #nginx.ingress.kubernetes.io/secure-backends: "true"
-##       hosts:
-##       # tls:
-##       #   - secretName: swan-tls-cert
-##       #     hosts:
-##       #       - test.mydomain
-##     custom:
-##       cvmfs:
-##         deployDaemonSet: *cvmfsDeployDS
-##         deployCsiDriver: *cvmfsDeployCSI
-##         useCsiDriver: *cvmfsUseCSI
-##         repositories: *cvmfsRepos
-##       eos:
-##         deployDaemonSet: *eosDeployDS
-##         deployCsiDriver: *eosDeployCSI
-##         useCsiDriver: *eosUseCSI
-## 
-## 
-##     # To decide if we keep this or we manage the tls secret differently
-##     # If we keep it, maybe should change the name from swan.secrets.ingress to smth else
-##     # swan:
-##     #   secrets:
-##     #     ingress:
-##     #       cert:
-##     #       key:
+#
+# SWAN
+#
+swan:
+  #
+  # CVMFS mounts
+  cvmfs:
+    deployDaemonSet: &cvmfsDeployDS true
+    deployCsiDriver: &cvmfsDeployCSI false
+    useCsiDriver: &cvmfsUseCSI false
+    repositories: &cvmfsRepos
+      - cvmfs-config.cern.ch
+      - sft.cern.ch
+      - sft-nightlies.cern.ch
+  #
+  # EOS Fusex mount
+  eos:
+    deployDaemonSet: &eosDeployDS true
+    deployCsiDriver: &eosDeployCSI false
+    useCsiDriver: &eosUseCSI false
+  fusex:
+    checkMgmOnline:
+      enabled: true
+      eosMgmUrlAuto: true
+    fusex:
+      keytab:
+        secret: *sssKeytabName
+      hostMountpoint: /var/eos
+      config:
+        oauth2: 1
+        eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
+  #
+  # JupyterHub
+  jupyterhub:
+    proxy:
+      secretToken: 11df35dab7527b3798de5224f06458db1e0526fa65700e81e18f17f89822e0cf
+    hub:
+      image:
+        name: "gitlab-registry.cern.ch/sciencebox/hotfixes/jupyterhub"
+        tag: "v1.18-20220314"
+        pullPolicy: "Always"
+      # The default (pvc) is not working in openstack...
+      # TODO: Add some persistency here
+      db:
+        type: sqlite-memory
+      extraEnv:
+        JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
+      cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
+      config:
+        SwanKubeSpawner:
+          local_home: False     # Use the homedir on EOS
+        KeyCloakAuthenticator:
+          oidc_issuer: https://sciencebox.local
+          client_id: swan
+          client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
+          oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
+          tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
+          scope:
+            - openid
+            - email
+            - profile
+            - offline_access
+          jwt_signing_algorithms:
+            - HS256
+            - RS256
+            - PS256
+          # With the CERN SSO we will get a valid token for EOS. If the eosxd supports oauth,
+          # we will be able to use it from the terminal, even with local_home=True.
+          # The oCIS idp probably doesn't support exchanging tokens, but we will be able to re-use
+          # the swan token with EOS if needed (although we shouldn't)
+          exchange_tokens:
+          ##   - eos-service
+          ##   - cernbox-service
+        JupyterHub:
+          # We should expose cernbox and swan from the same url to simplify the deployment
+          # We can do that by using different base url's for each.
+          # I hope this simplifies the ScienceBox ingress as well
+          base_url: /swan
+      extraConfig:
+        # TODO change the config to use the oCIS idp
+        # Might need fixes on the swan code cause we break if we don't set user_roles (at least when using GPU).
+        00-authConf: |
+          def pre_spawn_hook(authenticator, spawner, auth_state):
+            spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
+            spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
+            spawner.user_uid = str(1000) # Fake value -- Nobody uses this.
+            decoded_token = authenticator._decode_token(auth_state['access_token'])
+            spawner.user_roles = authenticator.claim_roles_key(authenticator, decoded_token)
+          c.KeyCloakAuthenticator.pre_spawn_hook = pre_spawn_hook
+        02-spawnError: |
+          cernbox_url = 'CHANGE_ME' #TODO: This should come from the ScienceBox config !! If necessary, this can come as an env var
+
+          SPAWN_ERROR_MESSAGE = f"""SWAN could not start a session for your user, please try again. If the problem persists, please check:
+          <ul>
+              <li>Do you have a CERNBox account? If not, click <a href="{cernbox_url}" target="_blank">here</a>.</li>
+              <li>Check with the service manager that SWAN is running properly.</li>
+          </ul>"""
+          c.SpawnHandlersConfigs.spawn_error_message = SPAWN_ERROR_MESSAGE
+        03-simpleForm: |
+          # Remove this to enable the full form
+          c.SwanSpawner.options_form = open('/srv/jupyterhub/jupyterhub_form.html').read()
+    singleuser:
+      cpu:
+        limit: .5
+        guarantee: .5
+      extraEnv:
+        # The sharing functionality won't work because we are deploying oCIS and not oc10
+        # This will be replaced in the future with the CS3 APIs
+        # SHARE_CBOX_API_DOMAIN: LOCAL_CBOX_URL__CHANGE_ME
+        # SHARE_CBOX_API_BASE: /cernbox/swanapi/v1
+        HELP_ENDPOINT: https://raw.githubusercontent.com/swan-cern/help/up2u/
+        # FIXME Create a galery for ScienceBox? Or the normal one should redirect to different instances?
+        # GALLERY_URL: https://swan-gallery.web.cern.ch/
+
+    # TODO For some reason this is not working... We're still debugging
+    prePuller:
+      hook:
+        enabled: false
+
+    ingress:
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        #nginx.ingress.kubernetes.io/rewrite-target: /
+        #nginx.ingress.kubernetes.io/secure-backends: "true"
+      hosts:
+      # tls:
+      #   - secretName: swan-tls-cert
+      #     hosts:
+      #       - test.mydomain
+    custom:
+      cvmfs:
+        deployDaemonSet: *cvmfsDeployDS
+        deployCsiDriver: *cvmfsDeployCSI
+        useCsiDriver: *cvmfsUseCSI
+        repositories: *cvmfsRepos
+      eos:
+        deployDaemonSet: *eosDeployDS
+        deployCsiDriver: *eosDeployCSI
+        useCsiDriver: *eosUseCSI
+
+
+    # To decide if we keep this or we manage the tls secret differently
+    # If we keep it, maybe should change the name from swan.secrets.ingress to smth else
+    # swan:
+    #   secrets:
+    #     ingress:
+    #       cert:
+    #       key:
 
 #
 # NGINX
