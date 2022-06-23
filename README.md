@@ -10,3 +10,22 @@ This repository hosts a collection of Helm charts for stand-alone ScienceBox dep
 Charts for other services part of ScienceBox are hosted on dedicated repositories:
 - EOS --> https://github.com/cern-eos/eos-charts
 - SWAN --> https://github.com/swan-cern/swan-charts
+
+
+## Deploying on Minikube
+
+Before, deploying the helm charts, run the following commands to update the helm dependencies:
+
+```
+git clone https://github.com/sciencebox/charts.git
+git checkout devel-2
+cd sciencebox
+helm dep update
+```
+
+After updating the dependencies, in order to deploy the charts on minikube we have the installation scripts available [here](https://github.com/sciencebox/mboxed/tree/test-openldap#quick-setup) in a dedicated repository. 
+
+
+## Work-Around
+
+Currently, the `redirect_uris` in the [identifier_registration.yaml](https://github.com/sciencebox/charts/blob/devel-2/sciencebox/values.yaml#L393) file are hardcorded and not yet templated. They should be replaced with the `${HOSTNAME}` of the machine running the minikube cluster, because the ingress is configured to route the hostname.
