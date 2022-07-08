@@ -331,14 +331,58 @@ ldap-instance-config:
       uniqueMember: uid=marie,ou=users,dc=owncloud,dc=com
       uniqueMember: uid=richard,ou=users,dc=owncloud,dc=com
 
+
 #
 # OCIS-IDP
 #
 ocis-idp:
+  ingress:
+    enabled: true
+    exposeIdp: true
+    hosts:
+    - sciencebox.local
+    annotations:
+      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+  image:
+    repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+    tag: 1.20.0
+  extensions:
+    - web
+    - proxy
+    - settings
+    - idp
   env:
-    # Set access token expiration to 8hrs (=28800s) until the auto-renewal is fixed
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://idp.hostname
+    IDP_ISS: https://sciencebox.local
+    IDP_INSECURE: true
+    REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
+    LDAP_URI: ldaps://sciencebox-ldap:636
+    LDAP_INSECURE: true
+    LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
+    LDAP_BIND_PASSWORD: readuser
+    LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
+    LDAP_GROUPFILTER: "(objectclass=owncloud)"
+    LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
+    LDAP_USER_BASE_DN: "dc=owncloud,dc=com"
+    LDAP_USERFILTER: "(objectclass=owncloud)"
+    LDAP_USER_OBEJECTCLASS: "inetOrgPerson"
+    LDAP_LOGIN_ATTRIBUTES: "uid,mail"
+    IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
+    IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
+    IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
+    PROXY_ACCOUNT_BACKEND_TYPE: cs3
+    WEB_UI_CONFIG: "/var/tmp/ocis/.config/web-config.json"
+    OCIS_URL: https://sciencebox.local
+    OCIS_LOG_LEVEL: debug 
+    PROXY_TLS: true 
+    OCIS_JWT_SECRET: Pive-Fumkiu4
+    STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
+    OCIS_MACHINE_AUTH_API_KEY: random_api_key
+    OCIS_INSECURE: true
+    PROXY_ENABLE_BASIC_AUTH: false
+    ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
+    IDM_CREATE_DEMO_USERS: false      
+
   configFiles:
     identifier_registration.yaml: |
       clients:
@@ -346,10 +390,131 @@ ocis-idp:
           secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
           name: SWAN
           application_type: native
-  ingress:
-    enabled: true
-    hosts:
-    exposeIdp: true
+        - id: web
+          name: ownCloud web app
+          trusted: yes
+          redirect_uris:
+            - https://sciencebox.local/
+            - https://sciencebox.local/oidc-callback.html
+            - https://sciencebox.local/oidc-silent-redirect.html
+          origins:
+            - https://sciencebox.local  
+    # point an ingress object to this proxy
+    # require a k8s service
+    # https://sciencebox.local/ -> ingress -> sciencebox-ocis proxy -> localhost:9200
+    proxy.yaml: |
+      policies:
+      - name: ocis
+        routes:
+        - type: ""
+          endpoint: /
+          backend: http://localhost:9100
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /.well-known/
+          backend: http://localhost:9130
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /konnect/
+          backend: http://localhost:9130
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /signin/
+          backend: http://localhost:9130
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /archiver # gateway
+          backend: http://localhost:9140
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /ocs/
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: query
+          endpoint: /remote.php/?preview=1 # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /remote.php/ # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /dav/ # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /webdav/ # gateway
+          backend: http://sciencebox-gateway:9143 
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /status.php # gateway
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /index.php/
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /apps/
+          backend: http://sciencebox-gateway:9143
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /data
+          backend: http://localhost:9140
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /app/
+          backend: http://localhost:9140
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /graph/
+          backend: http://localhost:9120
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /graph-explorer
+          backend: http://localhost:9135
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /api/v0/accounts
+          backend: http://localhost:9181
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /accounts.js
+          backend: http://localhost:9181
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /api/v0/settings
+          backend: http://localhost:9190
+          service: ""
+          apache-vhost: false
+        - type: ""
+          endpoint: /settings.js
+          backend: http://localhost:9190
+          service: ""
+          apache-vhost: false
+        ingress:
+          enabled: true
+          hosts:
+          exposeIdp: true
 
 #
 # EOS
@@ -404,156 +569,156 @@ eos-instance-config:
           gid: 30000
 
 
-#
-# SWAN
-#
-swan:
-  #
-  # CVMFS mounts
-  cvmfs:
-    deployDaemonSet: &cvmfsDeployDS true
-    deployCsiDriver: &cvmfsDeployCSI false
-    useCsiDriver: &cvmfsUseCSI false
-    repositories: &cvmfsRepos
-      - cvmfs-config.cern.ch
-      - sft.cern.ch
-      - sft-nightlies.cern.ch
-  #
-  # EOS Fusex mount
-  eos:
-    deployDaemonSet: &eosDeployDS true
-    deployCsiDriver: &eosDeployCSI false
-    useCsiDriver: &eosUseCSI false
-  fusex:
-    checkMgmOnline:
-      enabled: true
-      eosMgmUrlAuto: true
-    fusex:
-      keytab:
-        secret: *sssKeytabName
-      hostMountpoint: /var/eos
-      config:
-        oauth2: 1
-        eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
-  #
-  # JupyterHub
-  jupyterhub:
-    proxy:
-      secretToken: 11df35dab7527b3798de5224f06458db1e0526fa65700e81e18f17f89822e0cf
-    hub:
-      image:
-        name: "gitlab-registry.cern.ch/sciencebox/hotfixes/jupyterhub"
-        tag: "v1.18-20220314"
-        pullPolicy: "Always"
-      # The default (pvc) is not working in openstack...
-      # TODO: Add some persistency here
-      db:
-        type: sqlite-memory
-      extraEnv:
-        JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
-      cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
-      config:
-        SwanKubeSpawner:
-          local_home: False     # Use the homedir on EOS
-        KeyCloakAuthenticator:
-          oidc_issuer: https://idp.hostname
-          client_id: swan
-          client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
-          oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
-          tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
-          scope:
-            - openid
-            - email
-            - profile
-            - offline_access
-          jwt_signing_algorithms:
-            - HS256
-            - RS256
-            - PS256
-          # With the CERN SSO we will get a valid token for EOS. If the eosxd supports oauth,
-          # we will be able to use it from the terminal, even with local_home=True.
-          # The oCIS idp probably doesn't support exchanging tokens, but we will be able to re-use
-          # the swan token with EOS if needed (although we shouldn't)
-          exchange_tokens:
-          ##   - eos-service
-          ##   - cernbox-service
-        JupyterHub:
-          # We should expose cernbox and swan from the same url to simplify the deployment
-          # We can do that by using different base url's for each.
-          # I hope this simplifies the ScienceBox ingress as well
-          base_url: /swan
-      extraConfig:
-        # TODO change the config to use the oCIS idp
-        # Might need fixes on the swan code cause we break if we don't set user_roles (at least when using GPU).
-        00-authConf: |
-          def pre_spawn_hook(authenticator, spawner, auth_state):
-            spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
-            spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
-            spawner.user_uid = str(1000) # Fake value -- Nobody uses this.
-            decoded_token = authenticator._decode_token(auth_state['access_token'])
-            spawner.user_roles = authenticator.claim_roles_key(authenticator, decoded_token)
-          c.KeyCloakAuthenticator.pre_spawn_hook = pre_spawn_hook
-        02-spawnError: |
-          cernbox_url = 'CHANGE_ME' #TODO: This should come from the ScienceBox config !! If necessary, this can come as an env var
-
-          SPAWN_ERROR_MESSAGE = f"""SWAN could not start a session for your user, please try again. If the problem persists, please check:
-          <ul>
-              <li>Do you have a CERNBox account? If not, click <a href="{cernbox_url}" target="_blank">here</a>.</li>
-              <li>Check with the service manager that SWAN is running properly.</li>
-          </ul>"""
-          c.SpawnHandlersConfigs.spawn_error_message = SPAWN_ERROR_MESSAGE
-        03-simpleForm: |
-          # Remove this to enable the full form
-          c.SwanSpawner.options_form = open('/srv/jupyterhub/jupyterhub_form.html').read()
-    singleuser:
-      cpu:
-        limit: .5
-        guarantee: .5
-      extraEnv:
-        # The sharing functionality won't work because we are deploying oCIS and not oc10
-        # This will be replaced in the future with the CS3 APIs
-        # SHARE_CBOX_API_DOMAIN: LOCAL_CBOX_URL__CHANGE_ME
-        # SHARE_CBOX_API_BASE: /cernbox/swanapi/v1
-        HELP_ENDPOINT: https://raw.githubusercontent.com/swan-cern/help/up2u/
-        # FIXME Create a galery for ScienceBox? Or the normal one should redirect to different instances?
-        # GALLERY_URL: https://swan-gallery.web.cern.ch/
-
-    # TODO For some reason this is not working... We're still debugging
-    prePuller:
-      hook:
-        enabled: false
-
-    ingress:
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        #nginx.ingress.kubernetes.io/rewrite-target: /
-        #nginx.ingress.kubernetes.io/secure-backends: "true"
-      hosts:
-      # tls:
-      #   - secretName: swan-tls-cert
-      #     hosts:
-      #       - test.mydomain
-    custom:
-      cvmfs:
-        deployDaemonSet: *cvmfsDeployDS
-        deployCsiDriver: *cvmfsDeployCSI
-        useCsiDriver: *cvmfsUseCSI
-        repositories: *cvmfsRepos
-      eos:
-        deployDaemonSet: *eosDeployDS
-        deployCsiDriver: *eosDeployCSI
-        useCsiDriver: *eosUseCSI
-
-
-  # To decide if we keep this or we manage the tls secret differently
-  # If we keep it, maybe should change the name from swan.secrets.ingress to smth else
-  # swan:
-  #   secrets:
-  #     ingress:
-  #       cert:
-  #       key:
+## #
+## # SWAN
+## #
+## swan:
+##   #
+##   # CVMFS mounts
+##   cvmfs:
+##     deployDaemonSet: &cvmfsDeployDS true
+##     deployCsiDriver: &cvmfsDeployCSI false
+##     useCsiDriver: &cvmfsUseCSI false
+##     repositories: &cvmfsRepos
+##       - cvmfs-config.cern.ch
+##       - sft.cern.ch
+##       - sft-nightlies.cern.ch
+##   #
+##   # EOS Fusex mount
+##   eos:
+##     deployDaemonSet: &eosDeployDS true
+##     deployCsiDriver: &eosDeployCSI false
+##     useCsiDriver: &eosUseCSI false
+##   fusex:
+##     checkMgmOnline:
+##       enabled: true
+##       eosMgmUrlAuto: true
+##     fusex:
+##       keytab:
+##         secret: *sssKeytabName
+##       hostMountpoint: /var/eos
+##       config:
+##         oauth2: 1
+##         eos_mgm_alias: "sciencebox-mgm.default.svc.cluster.local"
+##   #
+##   # JupyterHub
+##   jupyterhub:
+##     proxy:
+##       secretToken: 11df35dab7527b3798de5224f06458db1e0526fa65700e81e18f17f89822e0cf
+##     hub:
+##       image:
+##         name: "gitlab-registry.cern.ch/sciencebox/hotfixes/jupyterhub"
+##         tag: "v1.18-20220314"
+##         pullPolicy: "Always"
+##       # The default (pvc) is not working in openstack...
+##       # TODO: Add some persistency here
+##       db:
+##         type: sqlite-memory
+##       extraEnv:
+##         JUPYTERHUB_CRYPT_KEY: 8b9fa8fc38c56eb4b3194d875924bb27062635b038b75ffbc91d9a6212bd3e55
+##       cookieSecret: 07006b4975f06166c988122e78603740788e93846265b0aec791c387a9a83925
+##       config:
+##         SwanKubeSpawner:
+##           local_home: False     # Use the homedir on EOS
+##         KeyCloakAuthenticator:
+##           oidc_issuer: https://idp.hostname
+##           client_id: swan
+##           client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
+##           oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
+##           tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
+##           scope:
+##             - openid
+##             - email
+##             - profile
+##             - offline_access
+##           jwt_signing_algorithms:
+##             - HS256
+##             - RS256
+##             - PS256
+##           # With the CERN SSO we will get a valid token for EOS. If the eosxd supports oauth,
+##           # we will be able to use it from the terminal, even with local_home=True.
+##           # The oCIS idp probably doesn't support exchanging tokens, but we will be able to re-use
+##           # the swan token with EOS if needed (although we shouldn't)
+##           exchange_tokens:
+##           ##   - eos-service
+##           ##   - cernbox-service
+##         JupyterHub:
+##           # We should expose cernbox and swan from the same url to simplify the deployment
+##           # We can do that by using different base url's for each.
+##           # I hope this simplifies the ScienceBox ingress as well
+##           base_url: /swan
+##       extraConfig:
+##         # TODO change the config to use the oCIS idp
+##         # Might need fixes on the swan code cause we break if we don't set user_roles (at least when using GPU).
+##         00-authConf: |
+##           def pre_spawn_hook(authenticator, spawner, auth_state):
+##             spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
+##             spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
+##             spawner.user_uid = str(1000) # Fake value -- Nobody uses this.
+##             decoded_token = authenticator._decode_token(auth_state['access_token'])
+##             spawner.user_roles = authenticator.claim_roles_key(authenticator, decoded_token)
+##           c.KeyCloakAuthenticator.pre_spawn_hook = pre_spawn_hook
+##         02-spawnError: |
+##           cernbox_url = 'CHANGE_ME' #TODO: This should come from the ScienceBox config !! If necessary, this can come as an env var
+## 
+##           SPAWN_ERROR_MESSAGE = f"""SWAN could not start a session for your user, please try again. If the problem persists, please check:
+##           <ul>
+##               <li>Do you have a CERNBox account? If not, click <a href="{cernbox_url}" target="_blank">here</a>.</li>
+##               <li>Check with the service manager that SWAN is running properly.</li>
+##           </ul>"""
+##           c.SpawnHandlersConfigs.spawn_error_message = SPAWN_ERROR_MESSAGE
+##         03-simpleForm: |
+##           # Remove this to enable the full form
+##           c.SwanSpawner.options_form = open('/srv/jupyterhub/jupyterhub_form.html').read()
+##     singleuser:
+##       cpu:
+##         limit: .5
+##         guarantee: .5
+##       extraEnv:
+##         # The sharing functionality won't work because we are deploying oCIS and not oc10
+##         # This will be replaced in the future with the CS3 APIs
+##         # SHARE_CBOX_API_DOMAIN: LOCAL_CBOX_URL__CHANGE_ME
+##         # SHARE_CBOX_API_BASE: /cernbox/swanapi/v1
+##         HELP_ENDPOINT: https://raw.githubusercontent.com/swan-cern/help/up2u/
+##         # FIXME Create a galery for ScienceBox? Or the normal one should redirect to different instances?
+##         # GALLERY_URL: https://swan-gallery.web.cern.ch/
+## 
+##     # TODO For some reason this is not working... We're still debugging
+##     prePuller:
+##       hook:
+##         enabled: false
+## 
+##     ingress:
+##       annotations:
+##         kubernetes.io/ingress.class: nginx
+##         nginx.ingress.kubernetes.io/ssl-redirect: "true"
+##         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+##         #nginx.ingress.kubernetes.io/rewrite-target: /
+##         #nginx.ingress.kubernetes.io/secure-backends: "true"
+##       hosts:
+##       # tls:
+##       #   - secretName: swan-tls-cert
+##       #     hosts:
+##       #       - test.mydomain
+##     custom:
+##       cvmfs:
+##         deployDaemonSet: *cvmfsDeployDS
+##         deployCsiDriver: *cvmfsDeployCSI
+##         useCsiDriver: *cvmfsUseCSI
+##         repositories: *cvmfsRepos
+##       eos:
+##         deployDaemonSet: *eosDeployDS
+##         deployCsiDriver: *eosDeployCSI
+##         useCsiDriver: *eosUseCSI
+## 
+## 
+##     # To decide if we keep this or we manage the tls secret differently
+##     # If we keep it, maybe should change the name from swan.secrets.ingress to smth else
+##     # swan:
+##     #   secrets:
+##     #     ingress:
+##     #       cert:
+##     #       key:
 
 #
 # NGINX
@@ -566,3 +731,144 @@ nginx:
     type: ClusterIP
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
 
+
+# values for revad-gateway service
+gateway:
+  image:
+    repository: cs3org/revad
+    tag: latest
+  service:
+    grpc:
+      port: 9142
+    http:
+      port: 9143
+  env:
+    XrdSecPROTOCOL: sss
+  configFiles:
+    revad.toml:
+
+# values for revad-storage provider home service
+storageprovider-home:
+  image:
+    repository: cs3org/revad
+    tag: latest-eos
+  service:
+    grpc:
+      port: 18000
+    http:
+      port: 17000
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        defaultMode: 256
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
+# values for revad-storage provider public service
+storageprovider-public:
+  image:
+    repository: cs3org/revad
+    tag: latest-eos
+  service:
+    grpc:
+      port: 9278
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
+# values for revad-storage provider user service
+storageprovider-user:
+  image:
+    repository: cs3org/revad
+    tag: latest-eos
+  service:
+    grpc:
+      port: 16000
+    http:
+      port: 15000
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        defaultMode: 256
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
+#values for revad-auth provider machine service
+authprovider-machine:
+  image:
+    repository: cs3org/revad
+    tag: latest
+  service:
+    grpc:
+      port: 9166
+# values for mariadb
+mariadb:
+  initdbScripts:
+    my_init_script.sql: |
+      CREATE TABLE `oc_share` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `share_type` smallint(6) NOT NULL DEFAULT '0',
+      `share_with` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `uid_owner` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+      `uid_initiator` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+      `parent` int(11) DEFAULT NULL,
+      `item_type` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+      `item_source` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `item_target` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `file_source` bigint(20) unsigned DEFAULT NULL,
+      `file_target` varchar(512) COLLATE utf8_bin DEFAULT NULL,
+      `permissions` smallint(6) NOT NULL DEFAULT '0',
+      `stime` bigint(20) NOT NULL DEFAULT '0',
+      `accepted` smallint(6) NOT NULL DEFAULT '0',
+      `expiration` datetime DEFAULT NULL,
+      `token` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+      `mail_send` smallint(6) NOT NULL DEFAULT '0',
+      `fileid_prefix` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `orphan` tinyint(4) DEFAULT NULL,
+      `share_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `item_share_type_index` (`item_type`,`share_type`),
+      KEY `file_source_index` (`file_source`),
+      KEY `token_index` (`token`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=333566 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+    
+      CREATE TABLE `oc_share_status` (
+      `id` int(11) NOT NULL,
+      `recipient` varchar(255) NOT NULL,
+      `state` int(11) DEFAULT '0',
+      PRIMARY KEY (`id`,`recipient`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  auth:
+    rootPassword: reva
+    database: my_database
+    username: reva
+    password: reva

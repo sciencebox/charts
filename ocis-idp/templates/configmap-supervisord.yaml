@@ -11,7 +11,7 @@ data:
     ;logfile=/var/log/supervisor/supervisord.log ; (main log file;default $CWD/supervisord.log)
     ;logfile_maxbytes=50MB                       ; (max main logfile bytes b4 rotation;default 50MB)
     ;logfile_backups=10                          ; (num of main logfile rotation backups;default 10)
-    ;loglevel=info                               ; (log level;default info; others: debug,warn,trace)
+    loglevel=debug                               ; (log level;default info; others: debug,warn,trace)
     pidfile=/var/run/supervisord.pid             ; (supervisord pidfile;default supervisord.pid)
     nodaemon=true                                ; (start in foreground if true;default false)
     minfds=1024                                  ; (min. avail startup file descriptors;default 1024)
@@ -61,13 +61,13 @@ data:
   {{- range .Values.extensions }}
   ocis-{{ . }}.ini: |
     [program:ocis-{{ . }}]
-    command=/usr/bin/ocis {{ . }}
+    command=/usr/bin/ocis {{ . }} server
     startsecs=10
     startretries=5
     ;exitcodes=0,2
     ;stopsignal=QUIT
     ;stopwaitsecs=10
-    user=ocis-user
+    user=root
     redirect_stderr=true
     stdout_logfile=/var/log/ocis-{{ . }}.log
     stdout_logfile_maxbytes=10MB
