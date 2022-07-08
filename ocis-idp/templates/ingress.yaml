@@ -36,6 +36,43 @@ spec:
 {{- end }}
 
 ---
+{{- if and .Values.ingress.enabled .Values.ingress.exposeIdp -}}
+{{- $fullName := include "ocis.fullname" . -}}
+{{- $proxyPort := .Values.services.proxy.port -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-https
+  labels:
+    {{- include "ocis.labels" . | nindent 4 }}
+  {{- if .Values.ingress.annotation }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotation }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $proxyPort }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
+{{- end }}
+
+
+---
 {{- if and .Values.ingress.enabled .Values.ingress.grpc -}}
 {{- $fullName := include "ocis.fullname" . -}}
 {{- $grpcServicePort := .Values.service.grpc.port -}}

@@ -5,9 +5,131 @@ metadata:
   labels:
     {{- include "ocis.labels" . | nindent 4 }}
 data:
-{{- if .Values.configFiles }}
-{{- range $filename, $fileContents := .Values.configFiles }}
-  {{ $filename }}: |-
-{{ $fileContents | indent 4 }}
-{{- end }}
-{{- end }}
+  identifier_registration.yaml: |-
+      clients:
+        - id: swan
+          secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
+          name: SWAN
+          application_type: native
+        - id: web
+          name: ownCloud web app
+          trusted: yes
+          redirect_uris:
+            - https://{{ .Values.config.server }}
+            - https://{{ .Values.config.server }}/oidc-callback.html
+            - https://{{ .Values.config.server }}/oidc-silent-redirect.html
+          origins:
+            - https://{{ .Values.config.server }}
+  proxy.yaml:  |-
+    policies:  
+    - name: ocis
+      routes:
+      - type: ""
+        endpoint: /
+        backend: http://localhost:9100
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /.well-known/
+        backend: http://localhost:9130
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /konnect/
+        backend: http://localhost:9130
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /signin/
+        backend: http://localhost:9130
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /archiver # gateway
+        backend: http://localhost:9140
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /ocs/
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: query
+        endpoint: /remote.php/?preview=1 # gateway
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /remote.php/ # gateway
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /dav/ # gateway
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /webdav/ # gateway
+        backend: http://sciencebox-gateway:9143 
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /status.php # gateway
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /index.php/
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /apps/
+        backend: http://sciencebox-gateway:9143
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /data
+        backend: http://localhost:9140
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /app/
+        backend: http://localhost:9140
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /graph/
+        backend: http://localhost:9120
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /graph-explorer
+        backend: http://localhost:9135
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /api/v0/accounts
+        backend: http://localhost:9181
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /accounts.js
+        backend: http://localhost:9181
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /api/v0/settings
+        backend: http://localhost:9190
+        service: ""
+        apache-vhost: false
+      - type: ""
+        endpoint: /settings.js
+        backend: http://localhost:9190
+        service: ""
+        apache-vhost: false
+      ingress:
+        enabled: true
+        hosts:
+        exposeIdp: true     
