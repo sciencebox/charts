@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis-idp
-  tag: latest
+  repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+  tag: 1.20.0
   pullPolicy: Always
 
 services:
