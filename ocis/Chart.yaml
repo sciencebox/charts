@@ -2,8 +2,8 @@ apiVersion: v2
 #
 name: ocis
 type: application
-version: 0.0.4
-appVersion: 1.11.0
+version: 0.0.5
+appVersion: 1.20.0
 #
-description: oCIS (ownCloud Infinite Scale) opinionated Identity Provider
+description: oCIS (ownCloud Infinite Scale) extensions 
 icon: https://owncloud.dev/media/is.png
