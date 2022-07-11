@@ -53,9 +53,9 @@ dependencies:
   alias: authprovider-machine
   repository: "https://cs3org.github.io/charts"
 
-- name: ocis-idp
+- name: ocis
   version: 0.0.4
-  repository: "file://../ocis-idp"
+  repository: "file://../ocis"
 # #
 - name: nginx
   version: 13.0.0

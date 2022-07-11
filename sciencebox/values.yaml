@@ -333,9 +333,9 @@ ldap-instance-config:
 
 
 #
-# OCIS-IDP
+# OCIS
 #
-ocis-idp:
+ocis:
   ingress:
     enabled: true
     exposeIdp: true
@@ -350,7 +350,6 @@ ocis-idp:
   extensions:
     - web
     - proxy
-    - settings
     - idp
   env:
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
