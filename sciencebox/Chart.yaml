@@ -69,5 +69,5 @@ dependencies:
   repository: "https://cs3org.github.io/charts"
 
 - name: ocis
-  version: 0.0.4
-  repository: "file://../ocis"
+  version: 0.0.5
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
