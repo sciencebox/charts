@@ -61,7 +61,7 @@ The only difference between the used image and the official image is the logging
 
 ### oCIS Charts
 
-- Chart Used: Local Chart. Path: `../ocis-idp`
+- Chart Used: Local Chart. Path: `../ocis`
 - Image Used: owncloud/ocis:latest (https://hub.docker.com/r/owncloud/ocis) (Official Image)
 
 #### Work-Around/Manual steps:
@@ -113,4 +113,4 @@ $ ocis kill glauth
 
 ### Charts Dependencies
 
-Currently, the `ocis-idp` charts and the `ldap-instance-config` charts use local charts as the chart repositories, we need to tag and push the charts to a Cloud Registry.
+Currently, the `ocis` charts and the `ldap-instance-config` charts use local charts as the chart repositories, we need to tag and push the charts to a Cloud Registry.

@@ -1,6 +1,6 @@
 apiVersion: v2
 #
-name: ocis-idp
+name: ocis
 type: application
 version: 0.0.4
 appVersion: 1.11.0
