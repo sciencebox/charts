@@ -1,3 +1,3 @@
-# ScienceBox Identity Provider
+# ocis: OwnCloud Infinite Scale
 
-Based on `owncloud/ocis` IDP (Konnectd) and LDAP (glauth) microservices.
+The Helm chart for the ocis extensions
