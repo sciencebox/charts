@@ -6,7 +6,6 @@ data:
   web-config.json: |-
     {
       "server": {{ quote .Values.config.server }},
-      "theme": "owncloud",
       "version": "0.1.0",
       "openIdConnect": {
         "metadata_url": {{ quote .Values.config.metadata_url }},

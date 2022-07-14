@@ -75,7 +75,8 @@ findfilter="(&(objectclass=posixGroup)(|(cn={{query}}*)(displayname={{query}}*)(
 attributefilter="(&(objectclass=posixGroup)({{attr}}={{value}}))"
 memberfilter="(&(objectclass=posixAccount)(cn={{.OpaqueId}}))"
 bind_username = "cn=readuser,dc=owncloud,dc=com"
-idp = "https://sciencebox.local"
+# needs to be templated (for local dev purposes, idp should be ${HOSTNAME})
+idp = "https://jimil-nuc.dyndns.cern.ch"
 bind_password = "readuser"
 
 [grpc.services.groupprovider.drivers.ldap.schema]
@@ -146,7 +147,8 @@ home_namespace = "/"
 [http.services.ocs.config]
 version = "1.8"
 website = "reva"
-host = "https://sciencebox.local"
+# needs to templated
+host = "https://jimil-nuc.dyndns.cern.ch"
 contact = "admin@localhost"
 ssl = "false"
 

@@ -339,8 +339,6 @@ ocis:
   ingress:
     enabled: true
     exposeIdp: true
-    hosts:
-    - sciencebox.local
     annotation:
       "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
       
@@ -383,6 +381,8 @@ ocis:
     PROXY_ENABLE_BASIC_AUTH: false
     ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
     IDM_CREATE_DEMO_USERS: false 
+    WEB_UI_THEME_SERVER: https://jimil-nuc.dyndns.cern.ch
+    WEB_UI_THEME_PATH: /cernbox-theme/theme.json
 #
 # EOS
 #
@@ -598,6 +598,7 @@ nginx:
     path: /sciencebox
   service:
     type: ClusterIP
+  # should be templated?
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
   serverBlock: |-
     server {
@@ -607,6 +608,22 @@ nginx:
       }
     }
 
+## cernbox-theme
+cernbox-theme:
+  ingress:
+    enabled: true
+    path: /cernbox-theme
+  service:
+    type: ClusterIP
+  # should be templated?
+  staticSiteConfigmap: sciencebox-cernbox-theme
+  serverBlock: |-
+    server {
+      listen 8080;
+      location /cernbox-theme {
+        alias /app/;
+      }
+    }
 
 # values for revad-gateway service
 gateway:
