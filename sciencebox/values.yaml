@@ -591,13 +591,12 @@ swan:
 # NGINX
 #   This is a simple nginx web server to provide a landing page to ScienceBox users.
 #
-nginx:
+nginx-welcome-page:
   ingress:
     enabled: true
     path: /sciencebox
   service:
     type: ClusterIP
-  # should be templated?
   staticSiteConfigmap: sciencebox-landing-page-cfgmap
   serverBlock: |-
     server {
@@ -608,13 +607,12 @@ nginx:
     }
 
 ## cernbox-theme
-cernbox-theme:
+nginx-cernbox-theme:
   ingress:
     enabled: true
     path: /cernbox-theme
   service:
     type: ClusterIP
-  # should be templated?
   staticSiteConfigmap: sciencebox-cernbox-theme
   serverBlock: |-
     server {

@@ -25,6 +25,7 @@ dependencies:
 #
 # ScienceBox welcome page
 - name: nginx
+  alias: nginx-welcome-page
   version: 13.0.0
   repository: "https://charts.bitnami.com/bitnami"
 #
@@ -75,6 +76,6 @@ dependencies:
 #
 # CERNBox theming
 - name: nginx
-  alias: cernbox-theme
+  alias: nginx-cernbox-theme
   version: 13.0.0
   repository: "https://charts.bitnami.com/bitnami"
