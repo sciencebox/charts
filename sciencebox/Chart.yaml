@@ -70,7 +70,7 @@ dependencies:
 
 - name: ocis
   version: 0.0.5
-  repository: "file://../ocis"
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 
 #
 # CERNBox theming
