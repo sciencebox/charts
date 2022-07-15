@@ -381,7 +381,6 @@ ocis:
     PROXY_ENABLE_BASIC_AUTH: false
     ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
     IDM_CREATE_DEMO_USERS: false 
-    WEB_UI_THEME_SERVER: https://jimil-nuc.dyndns.cern.ch
     WEB_UI_THEME_PATH: /cernbox-theme/theme.json
 #
 # EOS
@@ -717,7 +716,6 @@ gateway:
       memberfilter="(&(objectclass=posixAccount)(cn={{.OpaqueId}}))"
       bind_username = "cn=readuser,dc=owncloud,dc=com"
       # needs to be templated (for local dev purposes, idp should be ${HOSTNAME})
-      idp = "https://jimil-nuc.dyndns.cern.ch"
       bind_password = "readuser"
 
       [grpc.services.groupprovider.drivers.ldap.schema]
@@ -789,7 +787,7 @@ gateway:
       version = "1.8"
       website = "reva"
       # needs to templated
-      host = "https://jimil-nuc.dyndns.cern.ch"
+      # host = "https://jimil-nuc.dyndns.cern.ch"
       contact = "admin@localhost"
       ssl = "false"
 
