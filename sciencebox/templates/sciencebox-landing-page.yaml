@@ -6,3 +6,12 @@ metadata:
 data:
   index.html: |-
     {{ .Files.Get "files/sciencebox.html" | nindent 4 }}
+# binaryData:
+#   logo-cern-large.png: |-
+#     {{ .Files.Get "files/logos/logo-cern-large.png" | b64enc }}
+#   logo-cernbox.png: |-
+#     {{ .Files.Get "files/logos/logo-cernbox.png" | b64enc }}
+#   logo-eos.png: |-
+#     {{ .Files.Get "files/logos/logo-eos.png" | b64enc }}    
+#   logo-swan.png: |-
+#     {{ .Files.Get "files/logos/logo-swan.png" | b64enc }}
