@@ -13,16 +13,25 @@ image:
 replicas: 1
 
 #
+# Squid pod resource requests and limits (CPU, RAM, etc.)
+#
+resources: {}
+
+#
+# priorityClassName, recommended for high-occupancy clusters to prioritize squid over other pods.
+#
+priorityClassName: ""
+
+#
 # Assign frontier-squid pod(s) to a node with a specific label
 #   and distribute them on different nodes to avoid single points of failure.
-#
 #
 podAssignment:
   # If true, requires a node labeled as per customLabels.
   enableNodeSelector: false
-  # If true, shard the stateful set on as many nodes as possible.
-  #   Relevant only when running multiple replicas
-  #   Highly recommended for production scenarios
+  # If true, run the pods on separate nodes if possible.
+  #   Relevant only when running multiple replicas.
+  #   Highly recommended for production scenarios.
   enablePodAntiAffinity: false
 
 #
