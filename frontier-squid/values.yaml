@@ -70,3 +70,11 @@ config:
     diskMaxSize: "1 GB"         # Maximum object size to be cached on disk
     memorySpace: "256 MB"
     memoryMaxSize: "32 KB"      # Maximum object size to be cached in memory
+
+service:
+  type: ClusterIP
+  ports:
+    - port: 3128
+      targetPort: 3128
+      protocol: TCP
+      name: squid
