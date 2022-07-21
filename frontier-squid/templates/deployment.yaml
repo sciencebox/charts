@@ -76,7 +76,7 @@ spec:
               - /dev/null
               - --proxy
               - http://127.0.0.1:3128
-              - http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json
+              - {{ .Values.probes.readinessUrl }}
           initialDelaySeconds: 5
           periodSeconds: 30
         {{- end }}

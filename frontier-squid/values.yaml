@@ -53,14 +53,19 @@ customLabels:
 #   The frontier-squid container will be restarted after 3 failures.
 #
 # Readiness Probe:
-#   Checks every 30 seconds whether 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json' is alive using the squid in the pod as proxy.
+#   Checks every 30 seconds whether the readinessUrl is reachable using the squid in the pod as proxy.
 #   If unreachable, the failing frontier-squid pod will be removed from the service load-balanced alias.
+#
+#   Readiness Url:
+#     The URL used by the readiness probe to check the squid in the pod works as expected.
+#     Defaults to 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json'
 #
 # Default: All probes enabled.
 #
 probes:
   liveness: true
   readiness: true
+  readinessUrl: 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json'
 
 #
 # Squid configuration
