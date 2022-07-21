@@ -25,7 +25,6 @@ Before, deploying the helm charts, run the following commands to update the helm
 
 ```
 git clone https://github.com/sciencebox/charts.git
-git checkout devel-2
 cd sciencebox
 helm dep update
 ```
