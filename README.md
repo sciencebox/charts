@@ -29,7 +29,7 @@ cd sciencebox
 helm dep update
 ```
 
-After updating the dependencies, in order to deploy the charts on minikube we have the installation scripts available [here](https://github.com/sciencebox/mboxed/tree/test-openldap#quick-setup) in a dedicated repository. 
+After updating the dependencies, in order to deploy the charts on minikube we have the installation scripts available [here](https://github.com/sciencebox/mboxed#quick-setup) in a dedicated repository. 
 
 
 ## Work-Around
