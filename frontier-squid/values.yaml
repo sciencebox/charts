@@ -85,6 +85,10 @@ config:
     memorySpace: "256 MB"
     memoryMaxSize: "32 KB"      # Maximum object size to be cached in memory
 
+#
+# Network Service Specs
+#   Docs: https://kubernetes.io/docs/concepts/services-networking/service/
+#
 service:
   type: ClusterIP
   ports:
