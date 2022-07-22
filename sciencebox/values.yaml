@@ -351,7 +351,6 @@ ocis:
     - idp
   env:
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://sciencebox.local
     IDP_INSECURE: true
     IDP_HTTP_ADDR: 0.0.0.0:9130
     REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
@@ -371,7 +370,6 @@ ocis:
     IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
     PROXY_ACCOUNT_BACKEND_TYPE: cs3
     WEB_UI_CONFIG: "/var/tmp/ocis/.config/web-config.json"
-    OCIS_URL: https://sciencebox.local
     OCIS_LOG_LEVEL: debug 
     PROXY_TLS: true 
     OCIS_JWT_SECRET: Pive-Fumkiu4
@@ -487,10 +485,8 @@ swan:
         SwanKubeSpawner:
           local_home: False     # Use the homedir on EOS
         KeyCloakAuthenticator:
-          oidc_issuer: https://sciencebox.local
           client_id: swan
           client_secret: 4a045535-6b99-49d3-bf41-8b410cd965a6
-          oauth_callback_url: https://sciencebox.hostname/swan/hub/oauth_callback
           tls_verify: false     # Accept self-signed/invalid certificate from OCIS IDP
           scope:
             - openid
@@ -1022,29 +1018,6 @@ storageprovider-user:
       use_keytab = true
       keytab = "/etc/eos.keytab"
       sec_protocol = "sss"
-#values for revad-auth provider machine service
-authprovider-machine:
-  image:
-    repository: cs3org/revad
-    tag: latest
-  service:
-    grpc:
-      port: 9166
-  configFiles:
-    revad.toml: |
-      [shared]
-      gatewaysvc = "localhost:9142"
-      jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
-
-      [grpc]
-      address = "0.0.0.0:9166"
-
-      [grpc.services.authprovider]
-      auth_manager = "machine"
-
-      [grpc.services.authprovider.auth_managers.machine]
-      api_key = "random_api_key"
-      gateway_addr = "sciencebox-gateway:9142"
 
 # values for mariadb
 mariadb:
