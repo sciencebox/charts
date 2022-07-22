@@ -79,7 +79,7 @@ data:
     acl stratum_ones url_regex ^http://cvmfsrep.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs02.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.ihep.ac.cn
-    acl stratum_ones dstdom_regex ^cvmfs-s1.*\.computecanada\.(ca|net)$
+    acl stratum_ones url_regex ^http://cvmfs-s1.*\.computecanada\.(ca|net)$
 
     # ACL fragment for osgstorage
     acl osgstorage url_regex ^http://osgxroot.usatlas.bnl.gov
