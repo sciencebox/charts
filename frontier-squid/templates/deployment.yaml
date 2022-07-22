@@ -35,10 +35,6 @@ spec:
                 {{- end }}
               topologyKey: "kubernetes.io/hostname"
       {{- end }}
-      securityContext:
-        runAsUser: 5000
-        runAsGroup: 5000
-        fsGroup: 5000
       initContainers:
         - name: frontier-squid-init0-makedirs
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
