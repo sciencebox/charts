@@ -346,7 +346,6 @@ ocis:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
   extensions:
-    - web
     - proxy
     - idp
   env:
@@ -370,8 +369,6 @@ ocis:
     IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
     IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
     PROXY_ACCOUNT_BACKEND_TYPE: cs3
-    WEB_UI_CONFIG: "/var/tmp/ocis/.config/web-config.json"
-    OCIS_URL: https://sciencebox.local
     OCIS_LOG_LEVEL: debug 
     PROXY_TLS: true 
     OCIS_JWT_SECRET: Pive-Fumkiu4
@@ -381,7 +378,6 @@ ocis:
     PROXY_ENABLE_BASIC_AUTH: false
     ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
     IDM_CREATE_DEMO_USERS: false 
-    WEB_UI_THEME_PATH: /cernbox-theme/theme.json
 #
 # EOS
 #
@@ -587,6 +583,42 @@ swan:
     #       cert:
     #       key:
 
+## cbox web
+cernbox-web:
+  # we cannot mount the web tar as configmap - size is too big
+  # maybe we should use extra volume?
+  # staticSiteConfigmap: sciencebox-cernbox-web
+  # # serverblock mounts the thing on /app
+  serverBlock: |-
+    server {
+      location / {
+        root /var/www/web;
+        gzip_static on;
+      }
+    }
+  initContainers:
+    - name: install-web
+      image: busybox
+      command:
+      - wget
+      - "-O"
+      - "/var/www/web/web-tar.gz"
+      - https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz
+      volumeMounts:
+      - name: web
+        mountPath: "/var/www/web"
+  extraVolumeMounts:
+    - name: web-config
+      mountPath: /etc/ocis/
+    - name: web
+      mountPath: /var/www/web
+  # need to mount the web config.json on the nginx pod
+  extraVolumes:
+    - name: web-config
+      configMap:
+        name: web-config
+    - name: web
+      emptyDir: {}
 #
 # NGINX
 #   This is a simple nginx web server to provide a landing page to ScienceBox users.

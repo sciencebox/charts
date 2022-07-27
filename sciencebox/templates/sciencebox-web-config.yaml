@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "ocis.fullname" . }}-config
+  name: web-config
 data:
   web-config.json: |-
     {
-      "server": {{ quote .Values.config.server }},
+      "server": {{ quote .Values.sciencebox.config.server }},
       "version": "0.1.0",
       "openIdConnect": {
-        "metadata_url": {{ quote .Values.config.metadata_url }},
-        "authority": {{ quote .Values.config.authority }},
+        "metadata_url": {{ quote .Values.sciencebox.config.metadata_url }},
+        "authority": {{ quote .Values.sciencebox.config.authority }},
         "client_id": "web",
         "response_type": "code",
         "scope": "openid profile email"
