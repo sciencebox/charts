@@ -3,13 +3,13 @@ kind: ConfigMap
 metadata:
   name: web-config
 data:
-  web-config.json: |-
+  config.json: |-
     {
-      "server": {{ quote .Values.sciencebox.config.server }},
+      "server": "https://jimil-laptop.dyndns.cern.ch/",
       "version": "0.1.0",
       "openIdConnect": {
-        "metadata_url": {{ quote .Values.sciencebox.config.metadata_url }},
-        "authority": {{ quote .Values.sciencebox.config.authority }},
+        "metadata_url": "https://jimil-laptop.dyndns.cern.ch/.well-known/openid-configuration",
+        "authority": "https://jimil-laptop.dyndns.cern.ch/",
         "client_id": "web",
         "response_type": "code",
         "scope": "openid profile email"
