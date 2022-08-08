@@ -1,6 +1,6 @@
 image:
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/frontier-squid
-  tag: 4.17-1.1
+  tag: 4.17-1.1-2
   pullPolicy: IfNotPresent
 
 #
