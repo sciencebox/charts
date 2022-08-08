@@ -69,16 +69,12 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /usr/bin/curl
-              - --silent
-              - --fail
-              - --output
-              - /dev/null
-              - --proxy
-              - http://127.0.0.1:3128
-              - {{ .Values.probes.readinessUrl }}
+            - "/bin/sh"
+            - "-c"
+            - "/usr/bin/curl --silent --fail --output /dev/null --proxy http://127.0.0.1:3128 {{ .Values.probes.readinessUrl1 }} || /usr/bin/curl --silent --fail --output /dev/null --proxy http://127.0.0.1:3128 {{ .Values.probes.readinessUrl2 }}"
           initialDelaySeconds: 5
           periodSeconds: 30
+          timeoutSeconds: 5
         {{- end }}
         volumeMounts:
           - name: frontier-squid-config
