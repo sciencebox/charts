@@ -1,6 +1,6 @@
 image:
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/frontier-squid
-  tag: 4.17-1.1
+  tag: 4.17-1.1-2
   pullPolicy: IfNotPresent
 
 #
@@ -56,16 +56,17 @@ customLabels:
 #   Checks every 30 seconds whether the readinessUrl is reachable using the squid in the pod as proxy.
 #   If unreachable, the failing frontier-squid pod will be removed from the service load-balanced alias.
 #
-#   Readiness Url:
-#     The URL used by the readiness probe to check the squid in the pod works as expected.
-#     Defaults to 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json'
+#   Readiness Urls:
+#     The URLs used by the readiness probe to check the squid in the pod works as expected.
+#     Two URLs are used as backups for each other, to avoid marking the pods unready if one external server is unavailable.
 #
 # Default: All probes enabled.
 #
 probes:
   liveness: true
   readiness: true
-  readinessUrl: 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json'
+  readinessUrl1: 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json'
+  readinessUrl2: 'http://cvmfs.fnal.gov/cvmfs/info/v1/meta.json'
 
 #
 # Squid configuration
