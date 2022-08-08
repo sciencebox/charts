@@ -87,6 +87,15 @@ config:
     memoryMaxSize: "32 KB"      # Maximum object size to be cached in memory
 
 #
+# List of squid ACLs to enable via 'http_access allow' (see configmap for ACL definitions)
+#
+httpAccessAllow:
+  - stratum_ones
+  - osgstorage
+  - misc
+  - grid_ca
+
+#
 # Network Service Specs
 #   Docs: https://kubernetes.io/docs/concepts/services-networking/service/
 #
