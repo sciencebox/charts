@@ -29,7 +29,7 @@ data:
     {{- end }}
 
     # Logs
-    access_log daemon:/var/log/squid/access.log squid
+    access_log stdio:/dev/stdout rotate=0
     cache_log /var/log/squid/cache.log
     strip_query_terms off
 
