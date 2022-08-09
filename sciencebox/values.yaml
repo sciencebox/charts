@@ -585,12 +585,11 @@ swan:
 
 ## cbox web
 cernbox-web:
-  # just mount the custom tar file onto the nginx pod?
   initContainers:
     - name: install-web
       image: busybox
       command: ["/bin/sh", "-c"]
-      args: ["wget -O /var/www/web/web-tar.gz https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz && tar -xf /var/www/web/web-tar.gz -C /var/www/web/ && rm -rf /var/www/web/web.tar.gz"]
+      args: ["wget -O /var/www/web/web-tar.gz https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz && tar -xf /var/www/web/web-tar.gz -C /var/www/web/ && rm -rf /var/www/web/web.tar.gz && wget -O /var/www/web/theme.json https://new.cernbox.cern.ch/cernbox/theme-cernbox-0.1.7/theme.json"]
       volumeMounts:
       - name: web
         mountPath: "/var/www/web/"
@@ -688,6 +687,10 @@ cernbox-web:
                       etag on;
                       gzip_static on;
                       try_files $uri /index.html;
+                  }
+
+                  location /cernbox-theme {
+                    root /var/www/web;
                   }
               }
           }
