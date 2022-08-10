@@ -49,9 +49,9 @@ data:
     negative_ttl 1 minute
     collapsed_forwarding on
     cache_miss_revalidate off
-    # Prevent squid PTR lookups (as per http://lists.squid-cache.org/pipermail/squid-users/2016-February/009115.html)
-    url_rewrite_extras "%>a %un %>rm myip=%la myport=%lp"
-    store_id_extras "%>a %un %>rm myip=%la myport=%lp"
+    # Prevent squid PTR lookups (as per https://bugs.squid-cache.org/show_bug.cgi?id=4575)
+    url_rewrite_extras XXX
+    store_id_extras XXX
 
     # ACL fragments
     # ACL fragment for safe_ports: Will deny not safe_ports
@@ -115,17 +115,14 @@ data:
     
     
     # Allow/Deny Directives
-    # Allow directives
-    http_access allow localhost
+    http_access deny !safe_ports
+    http_access deny CONNECT !ssl_ports
     http_access allow localhost manager
+    http_access deny manager
     http_access allow stratum_ones
     http_access allow osgstorage
     http_access allow misc
     http_access allow grid_ca
-    
-    # Deny directives
-    http_access deny !safe_ports
-    http_access deny CONNECT !ssl_ports
-    http_access deny manager
+    http_access allow localhost
     http_access deny all
 {{- end -}}
