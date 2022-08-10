@@ -589,7 +589,14 @@ cernbox-web:
     - name: install-web
       image: busybox
       command: ["/bin/sh", "-c"]
-      args: ["wget -O /var/www/web/web-tar.gz https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz && tar -xf /var/www/web/web-tar.gz -C /var/www/web/ && rm -rf /var/www/web/web.tar.gz && wget -O /var/www/web/theme.json https://new.cernbox.cern.ch/cernbox/theme-cernbox-0.1.7/theme.json"]
+      args: 
+        - wget -O /var/www/web/web-tar.gz https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz;
+          tar -xf /var/www/web/web-tar.gz -C /var/www/web/;
+          rm -rf /var/www/web/web.tar.gz;
+          wget -O /var/www/web/theme.json https://new.cernbox.cern.ch/cernbox/theme-cernbox-0.1.7/theme.json;
+          mkdir -p /var/www/web/cernbox/theme-cernbox-0.1.7/assets;
+          wget -O /var/www/web/cernbox/theme-cernbox-0.1.7/assets/cernbox-abstract.svg https://raw.githubusercontent.com/cernbox/branding/master/cernbox-abstract.svg;
+          wget -O /var/www/web/cernbox/theme-cernbox-0.1.7/assets/cernbox-lrg.svg https://raw.githubusercontent.com/cernbox/branding/master/cernbox-lrg.svg;
       volumeMounts:
       - name: web
         mountPath: "/var/www/web/"
@@ -687,10 +694,6 @@ cernbox-web:
                       etag on;
                       gzip_static on;
                       try_files $uri /index.html;
-                  }
-
-                  location /cernbox-theme {
-                    root /var/www/web;
                   }
               }
           }

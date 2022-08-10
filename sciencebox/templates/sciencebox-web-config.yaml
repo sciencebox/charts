@@ -5,11 +5,12 @@ metadata:
 data:
   config.json: |-
     {
-      "server": "https://jimil-laptop.dyndns.cern.ch/",
+      "server": {{ quote .Values.sciencebox.config.server }},
       "version": "0.1.0",
+      "theme": "{{ .Values.sciencebox.config.server }}/theme.json",
       "openIdConnect": {
-        "metadata_url": "https://jimil-laptop.dyndns.cern.ch/.well-known/openid-configuration",
-        "authority": "https://jimil-laptop.dyndns.cern.ch/",
+        "metadata_url": "{{ .Values.sciencebox.config.server }}/.well-known/openid-configuration",
+        "authority": {{ quote .Values.sciencebox.config.server }},
         "client_id": "web",
         "response_type": "code",
         "scope": "openid profile email"
