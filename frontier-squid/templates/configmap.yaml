@@ -62,7 +62,7 @@ data:
     acl CONNECT method connect
     acl ssl_ports port 443
     
-    # ACL fragment for stratum_ones
+    # ACL fragment for stratum_ones (for reference see MAJOR_CVMFS from frontier-squid package)
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.cern.ch
     acl stratum_ones url_regex ^http://cernvmfs.gridpp.rl.ac.uk
     acl stratum_ones url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
