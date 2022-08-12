@@ -63,6 +63,8 @@ data:
     acl ssl_ports port 443
     
     # ACL fragment for stratum_ones (for reference see MAJOR_CVMFS from frontier-squid package)
+    #   - Release notes: http://frontier.cern.ch/dist/rpms/frontier-squidRELEASE_NOTES
+    #   - Tarball (check `squid/files/postinstall/squid.conf.proto`): http://frontier.cern.ch/dist/frontier-squid-<version>.tar.gz
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.cern.ch
     acl stratum_ones url_regex ^http://cernvmfs.gridpp.rl.ac.uk
     acl stratum_ones url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
