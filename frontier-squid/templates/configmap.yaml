@@ -49,11 +49,9 @@ data:
     negative_ttl 1 minute
     collapsed_forwarding on
     cache_miss_revalidate off
-    # Prevent squid PTR lookups (as per http://lists.squid-cache.org/pipermail/squid-users/2016-February/009115.html)
-    url_rewrite_extras "%>a %un %>rm myip=%la myport=%lp"
-    store_id_extras "%>a %un %>rm myip=%la myport=%lp"
-    # Send response header as Apache
-    acl apache rep_header Server ^Apache
+    # Prevent squid PTR lookups (as per https://bugs.squid-cache.org/show_bug.cgi?id=4575)
+    url_rewrite_extras XXX
+    store_id_extras XXX
 
     # ACL fragments
     # ACL fragment for safe_ports: Will deny not safe_ports
@@ -64,7 +62,7 @@ data:
     acl CONNECT method connect
     acl ssl_ports port 443
     
-    # ACL fragment for stratum_ones
+    # ACL fragment for stratum_ones (for reference see MAJOR_CVMFS from frontier-squid package)
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.cern.ch
     acl stratum_ones url_regex ^http://cernvmfs.gridpp.rl.ac.uk
     acl stratum_ones url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
@@ -81,6 +79,7 @@ data:
     acl stratum_ones url_regex ^http://cvmfsrep.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs02.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.ihep.ac.cn
+    acl stratum_ones url_regex ^http://cvmfs-s1.*\.computecanada\.(ca|net)
 
     # ACL fragment for osgstorage
     acl osgstorage url_regex ^http://osgxroot.usatlas.bnl.gov
@@ -116,16 +115,13 @@ data:
     
     
     # Allow/Deny Directives
-    # Allow directives
-    http_access allow localhost
+    http_access deny !safe_ports
+    http_access deny CONNECT !ssl_ports
     http_access allow localhost manager
+    http_access deny manager
     {{- range .Values.httpAccessAllow }}
     http_access allow {{ . }}
     {{- end }}
-    
-    # Deny directives
-    http_access deny !safe_ports
-    http_access deny CONNECT !ssl_ports
-    http_access deny manager
+    http_access allow localhost
     http_access deny all
 {{- end -}}
