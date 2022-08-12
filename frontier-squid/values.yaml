@@ -94,6 +94,8 @@ httpAccessAllow:
   - osgstorage
   - misc
   - grid_ca
+#  - atlas_frontier
+#  - cms_frontier
 
 #
 # Network Service Specs

@@ -81,6 +81,12 @@ data:
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.ihep.ac.cn
     acl stratum_ones url_regex ^http://cvmfs-s1.*\.computecanada\.(ca|net)
 
+    # ACL for ATLAS Frontier (for reference see ATLAS_FRONTIER from frontier-squid package)
+    acl atlas_frontier dstdom_regex ^(frontier.*\.racf\.bnl\.gov|atlas.*frontier.*\.cern\.ch|cc.*\.in2p3\.fr|lcg.*\.gridpp\.rl\.ac\.uk|(.*frontier.*|tier1nfs)\.triumf\.ca|atlas.*frontier\.openhtc\.io)$
+
+    # ACL for CMS Frontier (for reference see CMS_FRONTIER from frontier-squid package)
+    acl cms_frontier dstdom_regex ^(cmsfrontier.*\.cern\.ch|cms.*frontier\.openhtc\.io)$
+
     # ACL fragment for osgstorage
     acl osgstorage url_regex ^http://osgxroot.usatlas.bnl.gov
     acl osgstorage url_regex ^http://xrd-cache-1.t2.ucsd.edu
