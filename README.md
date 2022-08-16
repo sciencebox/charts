@@ -31,4 +31,6 @@ helm dep update
 
 After updating the dependencies, in order to deploy the charts on minikube we have the installation scripts available [here](https://github.com/sciencebox/mboxed#quick-setup) in a dedicated repository. 
 
+## CERNBox Work-around
 
+With the current deployment scenario, the TOML configuration files are not templated and hence the OIDC Issuer URL is hardcoded [here](https://github.com/sciencebox/charts/blob/cbox-web/sciencebox/values.yaml#L1165). In order to run CERNBox, one needs to replace the URLs to the OIDC issuer hostname.
