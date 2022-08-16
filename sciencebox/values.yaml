@@ -609,7 +609,6 @@ cernbox-web:
     - name: nginx-conf
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
-  # need to mount the web config.json on the nginx pod
   extraVolumes:
     - name: web-config
       configMap:
@@ -621,8 +620,6 @@ cernbox-web:
         name: nginx-conf
   command: ["/opt/bitnami/nginx/sbin/nginx"]
   args: ["-c", "/etc/nginx/nginx.conf"]
-  ## command: ["/bin/sleep"]
-  ## args: ["infinity"]
   livenessProbe:
     enabled: false
   readinessProbe:
@@ -774,6 +771,7 @@ gateway:
       basic = "localhost:9142"
       publicshares = "sciencebox-storageprovider-public:9278"
       machine = "sciencebox-authprovider-machine:9166"
+      bearer = "sciencebox-authprovider-bearer:9158"
 
       [grpc.services.userprovider]
       driver = "ldap"
@@ -1143,6 +1141,32 @@ authprovider-machine:
       api_key = "random_api_key"
       gateway_addr = "sciencebox-gateway:9142"
 
+authprovider-bearer:
+  image:
+    repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
+    tag: latest-20220815
+  service:
+    grpc:
+      port: 9158
+  configFiles:
+    revad.toml: |
+      [shared]
+      gatewaysvc = "sciencebox-gateway:9142"
+      jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
+
+      [grpc]
+      address = "0.0.0.0:9158"
+
+      [grpc.services.authprovider]
+      auth_manager = "oidc"
+
+      [grpc.services.authprovider.auth_managers.oidc]
+      insecure = true
+      issuer = "https://jimil-laptop.dyndns.cern.ch"
+      id_claim = "name"
+      uid_claim = "uid"
+      gid_claim = "gid"
+      gatewaysvc = "sciencebox-gateway:9142"
 # values for mariadb
 mariadb:
   initdbScripts:

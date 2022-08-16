@@ -69,9 +69,14 @@ dependencies:
   alias: authprovider-machine
   repository: "https://cs3org.github.io/charts"
 
+- name: revad
+  version: "1.3.3"
+  alias: authprovider-bearer
+  repository: "https://cs3org.github.io/charts"
+
 - name: ocis
   version: 0.0.6
-  repository: "file://../ocis"
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 
 - name: nginx
   alias: cernbox-web
