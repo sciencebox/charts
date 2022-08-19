@@ -19,6 +19,8 @@ sciencebox:
     secretName: &sssKeytabName sciencebox-eos-sss-keytab
     fromFile: files/eos.keytab
     #fromValue:
+  web_asset: https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz
+  web_theme: https://github.com/cernbox/web-extensions/releases/download/theme-cernbox/v0.1.7/theme-cernbox.tar.gz
 
 #
 # Global values
@@ -589,6 +591,9 @@ cernbox-web:
     - name: install-web
       image: busybox
       command: ["/bin/sh", "/root/cbox_init.sh"]
+      envFrom:
+        - configMapRef:
+            name: cbox-cfgmap-init
       volumeMounts:
       - name: web
         mountPath: "/var/www/web/"
