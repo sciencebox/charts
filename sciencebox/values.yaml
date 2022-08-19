@@ -588,18 +588,13 @@ cernbox-web:
   initContainers:
     - name: install-web
       image: busybox
-      command: ["/bin/sh", "-c"]
-      args: 
-        - wget -O /var/www/web/web-tar.gz https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz;
-          tar -xf /var/www/web/web-tar.gz -C /var/www/web/;
-          rm -rf /var/www/web/web-tar.gz;
-          wget -O /var/www/web/theme-cernbox.tar.gz https://github.com/cernbox/web-extensions/releases/download/theme-cernbox/v0.1.7/theme-cernbox.tar.gz;
-          tar -xf /var/www/web/theme-cernbox.tar.gz -C /var/www/web/;
-          mkdir -p /var/www/web/cernbox/theme-cernbox/;
-          mv /var/www/web/assets /var/www/web/cernbox/theme-cernbox/assets;
+      command: ["/bin/sh", "/root/cbox_init.sh"]
       volumeMounts:
       - name: web
         mountPath: "/var/www/web/"
+      - name: cbox-cfgmap-init
+        mountPath: /root/cbox_init.sh
+        subPath: cbox_init.sh
   extraVolumeMounts:
     - name: web-config
       mountPath: /var/www/web/config.json
@@ -618,6 +613,10 @@ cernbox-web:
     - name: nginx-conf
       configMap:
         name: nginx-conf
+    - name: cbox-cfgmap-init
+      configMap:
+        name: cbox-cfgmap-init
+        defaultMode: 0755
   command: ["/opt/bitnami/nginx/sbin/nginx"]
   args: ["-c", "/etc/nginx/nginx.conf"]
   livenessProbe:
