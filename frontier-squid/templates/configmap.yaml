@@ -55,9 +55,16 @@ data:
 
     # ACL fragments
     # ACL fragment for safe_ports: Will deny not safe_ports
-    acl safe_ports port 80
-    acl safe_ports port 3128
-    acl safe_ports port 8000
+    acl safe_ports port 80		# http
+    acl safe_ports port 21		# ftp
+    acl safe_ports port 443		# https
+    acl safe_ports port 70		# gopher
+    acl safe_ports port 210		# wais
+    acl safe_ports port 1025-65535	# unregistered ports - including 8000 for CVMFS/Frontier
+    acl safe_ports port 280		# http-mgmt
+    acl safe_ports port 488		# gss-http
+    acl safe_ports port 591		# filemaker
+    acl safe_ports port 777		# multiling http
     
     # ACL fragment for ssl_ports: Will deny connect method for not ssl_ports
     acl CONNECT method connect
