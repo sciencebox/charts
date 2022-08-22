@@ -60,7 +60,7 @@ data:
     acl safe_ports port 443		# https
     acl safe_ports port 70		# gopher
     acl safe_ports port 210		# wais
-    acl safe_ports port 1025-65535	# unregistered ports - including 8000 for CVMFS/Frontier
+    acl safe_ports port 1025-65535	# unregistered ports: including 3128 for local squidclient mgmt, 8000 for CVMFS/Frontier
     acl safe_ports port 280		# http-mgmt
     acl safe_ports port 488		# gss-http
     acl safe_ports port 591		# filemaker
