@@ -19,6 +19,8 @@ sciencebox:
     secretName: &sssKeytabName sciencebox-eos-sss-keytab
     fromFile: files/eos.keytab
     #fromValue:
+  web_asset: https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz
+  web_theme: https://github.com/cernbox/web-extensions/releases/download/theme-cernbox/v0.1.7/theme-cernbox.tar.gz
 
 #
 # Global values
@@ -346,7 +348,6 @@ ocis:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
   extensions:
-    - web
     - proxy
     - idp
   env:
@@ -370,8 +371,6 @@ ocis:
     IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
     IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
     PROXY_ACCOUNT_BACKEND_TYPE: cs3
-    WEB_UI_CONFIG: "/var/tmp/ocis/.config/web-config.json"
-    OCIS_URL: https://sciencebox.local
     OCIS_LOG_LEVEL: debug 
     PROXY_TLS: true 
     OCIS_JWT_SECRET: Pive-Fumkiu4
@@ -381,7 +380,6 @@ ocis:
     PROXY_ENABLE_BASIC_AUTH: false
     ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
     IDM_CREATE_DEMO_USERS: false 
-    WEB_UI_THEME_PATH: /cernbox-theme/theme.json
 #
 # EOS
 #
@@ -587,6 +585,122 @@ swan:
     #       cert:
     #       key:
 
+## cbox web
+cernbox-web:
+  initContainers:
+    - name: install-web
+      image: busybox
+      command: ["/bin/sh", "/root/cbox_init.sh"]
+      envFrom:
+        - configMapRef:
+            name: cbox-cfgmap-init
+      volumeMounts:
+      - name: web
+        mountPath: "/var/www/web/"
+      - name: cbox-cfgmap-init
+        mountPath: /root/cbox_init.sh
+        subPath: cbox_init.sh
+  extraVolumeMounts:
+    - name: web-config
+      mountPath: /var/www/web/config.json
+      subPath: config.json
+    - name: web
+      mountPath: /var/www/web/
+    - name: nginx-conf
+      mountPath: /etc/nginx/nginx.conf
+      subPath: nginx.conf
+  extraVolumes:
+    - name: web-config
+      configMap:
+        name: web-config
+    - name: web
+      emptyDir: {}
+    - name: nginx-conf
+      configMap:
+        name: nginx-conf
+    - name: cbox-cfgmap-init
+      configMap:
+        name: cbox-cfgmap-init
+        defaultMode: 0755
+  command: ["/opt/bitnami/nginx/sbin/nginx"]
+  args: ["-c", "/etc/nginx/nginx.conf"]
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+  extraDeploy:
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: nginx-conf
+      data:
+        nginx.conf: |-
+          daemon off;
+          worker_processes  auto;
+
+          error_log  /opt/bitnami/nginx/logs/error.log debug; 
+          pid        /opt/bitnami/nginx/tmp/nginx.pid;
+
+          events {
+              worker_connections  1024;
+          }
+
+          http {
+              include       /opt/bitnami/nginx/conf/mime.types;
+              default_type  application/octet-stream;
+              log_format    main '$remote_addr - $remote_user [$time_local] '
+                                 '"$request" $status  $body_bytes_sent "$http_referer" '
+                                 '"$http_user_agent" "$http_x_forwarded_for"';
+              access_log    "/opt/bitnami/nginx/logs/access.log" main;
+              add_header    X-Frame-Options SAMEORIGIN;
+          
+              client_body_temp_path  "/opt/bitnami/nginx/tmp/client_body" 1 2;
+              proxy_temp_path        "/opt/bitnami/nginx/tmp/proxy" 1 2;
+              fastcgi_temp_path      "/opt/bitnami/nginx/tmp/fastcgi" 1 2;
+              scgi_temp_path         "/opt/bitnami/nginx/tmp/scgi" 1 2;
+              uwsgi_temp_path        "/opt/bitnami/nginx/tmp/uwsgi" 1 2;
+          
+              sendfile           on;
+              tcp_nopush         on;
+              tcp_nodelay        off;
+              gzip               on;
+              gzip_http_version  1.0;
+              gzip_comp_level    2;
+              gzip_proxied       any;
+              gzip_types         text/plain text/css application/javascript text/xml application/xml+rss;
+              keepalive_timeout  65;
+              ssl_protocols      TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+              ssl_ciphers        HIGH:!aNULL:!MD5;
+              client_max_body_size 80M;
+              server_tokens off;
+          
+              absolute_redirect  off;
+              port_in_redirect   off;
+          
+              server {
+                  listen 8080;
+
+                  location ~ ^/(js|css)/
+                  {
+                      root /var/www/web;
+                      add_header Cache-Control "public, max-age=31536000, immutable";
+                      etag off;
+                      gzip_static on;
+                  }
+          
+                  location / 
+                  {
+                      root /var/www/web;
+                      add_header Cache-Control "no-cache";
+                      etag on;
+                      gzip_static on;
+                      try_files $uri /index.html;
+                  }
+              }
+          }
+
+
+
 #
 # NGINX
 #   This is a simple nginx web server to provide a landing page to ScienceBox users.
@@ -602,22 +716,6 @@ nginx-welcome-page:
     server {
       listen 8080;
       location /sciencebox {
-        alias /app/;
-      }
-    }
-
-## cernbox-theme
-nginx-cernbox-theme:
-  ingress:
-    enabled: true
-    path: /cernbox-theme
-  service:
-    type: ClusterIP
-  staticSiteConfigmap: sciencebox-cernbox-theme
-  serverBlock: |-
-    server {
-      listen 8080;
-      location /cernbox-theme {
         alias /app/;
       }
     }
@@ -677,6 +775,7 @@ gateway:
       basic = "localhost:9142"
       publicshares = "sciencebox-storageprovider-public:9278"
       machine = "sciencebox-authprovider-machine:9166"
+      bearer = "sciencebox-authprovider-bearer:9158"
 
       [grpc.services.userprovider]
       driver = "ldap"
@@ -1046,6 +1145,32 @@ authprovider-machine:
       api_key = "random_api_key"
       gateway_addr = "sciencebox-gateway:9142"
 
+authprovider-bearer:
+  image:
+    repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
+    tag: latest-20220815
+  service:
+    grpc:
+      port: 9158
+  configFiles:
+    revad.toml: |
+      [shared]
+      gatewaysvc = "sciencebox-gateway:9142"
+      jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
+
+      [grpc]
+      address = "0.0.0.0:9158"
+
+      [grpc.services.authprovider]
+      auth_manager = "oidc"
+
+      [grpc.services.authprovider.auth_managers.oidc]
+      insecure = true
+      issuer = "https://jimil-laptop.dyndns.cern.ch"
+      id_claim = "name"
+      uid_claim = "uid"
+      gid_claim = "gid"
+      gatewaysvc = "sciencebox-gateway:9142"
 # values for mariadb
 mariadb:
   initdbScripts:
