@@ -45,9 +45,9 @@ metadata:
   name: {{ $fullName }}-https
   labels:
     {{- include "ocis.labels" . | nindent 4 }}
-  {{- if .Values.ingress.annotation }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotation }}
+    {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}
