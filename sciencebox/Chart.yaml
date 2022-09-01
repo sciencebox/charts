@@ -76,7 +76,8 @@ dependencies:
 
 - name: ocis
   version: 0.0.6
-  repository: "https://registry.cern.ch/chartrepo/sciencebox"
+  ##repository: "https://registry.cern.ch/chartrepo/sciencebox"
+  repository: "file://../ocis"
 
 - name: nginx
   alias: cernbox-web
