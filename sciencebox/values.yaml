@@ -335,51 +335,52 @@ ldap-instance-config:
 
 
 #
-# OCIS
+# MariaDB
 #
-ocis:
-  ingress:
-    enabled: true
-    exposeIdp: true
-    annotation:
-      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
-      
-  image:
-    repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
-    tag: 1.20.0
-  extensions:
-    - proxy
-    - idp
-  env:
-    IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://sciencebox.local
-    IDP_INSECURE: true
-    IDP_HTTP_ADDR: 0.0.0.0:9130
-    REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
-    LDAP_URI: ldaps://sciencebox-ldap:636
-    LDAP_INSECURE: true
-    LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
-    LDAP_BIND_PASSWORD: readuser
-    LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
-    LDAP_GROUPFILTER: "(objectclass=owncloud)"
-    LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
-    LDAP_USER_BASE_DN: "dc=owncloud,dc=com"
-    LDAP_USERFILTER: "(objectclass=owncloud)"
-    LDAP_USER_OBEJECTCLASS: "inetOrgPerson"
-    LDAP_LOGIN_ATTRIBUTES: "uid,mail"
-    IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
-    IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
-    IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
-    PROXY_ACCOUNT_BACKEND_TYPE: cs3
-    OCIS_LOG_LEVEL: debug 
-    PROXY_TLS: true 
-    OCIS_JWT_SECRET: Pive-Fumkiu4
-    STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
-    OCIS_MACHINE_AUTH_API_KEY: random_api_key
-    OCIS_INSECURE: true
-    PROXY_ENABLE_BASIC_AUTH: false
-    ACCOUNTS_DEMO_USERS_AND_GROUPS: false 
-    IDM_CREATE_DEMO_USERS: false 
+#   values for mariadb
+mariadb:
+  initdbScripts:
+    my_init_script.sql: |
+      CREATE TABLE `oc_share` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `share_type` smallint(6) NOT NULL DEFAULT '0',
+      `share_with` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `uid_owner` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+      `uid_initiator` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+      `parent` int(11) DEFAULT NULL,
+      `item_type` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+      `item_source` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `item_target` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `file_source` bigint(20) unsigned DEFAULT NULL,
+      `file_target` varchar(512) COLLATE utf8_bin DEFAULT NULL,
+      `permissions` smallint(6) NOT NULL DEFAULT '0',
+      `stime` bigint(20) NOT NULL DEFAULT '0',
+      `accepted` smallint(6) NOT NULL DEFAULT '0',
+      `expiration` datetime DEFAULT NULL,
+      `token` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+      `mail_send` smallint(6) NOT NULL DEFAULT '0',
+      `fileid_prefix` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      `orphan` tinyint(4) DEFAULT NULL,
+      `share_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `item_share_type_index` (`item_type`,`share_type`),
+      KEY `file_source_index` (`file_source`),
+      KEY `token_index` (`token`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=333566 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+      CREATE TABLE `oc_share_status` (
+      `id` int(11) NOT NULL,
+      `recipient` varchar(255) NOT NULL,
+      `state` int(11) DEFAULT '0',
+      PRIMARY KEY (`id`,`recipient`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  auth:
+    rootPassword: reva
+    database: my_database
+    username: reva
+    password: reva
+
+
 #
 # EOS
 #
@@ -584,6 +585,53 @@ swan:
     #     ingress:
     #       cert:
     #       key:
+#
+# CERNBox
+#
+ocis:
+  ingress:
+    enabled: true
+    exposeIdp: true
+    annotation:
+      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+
+  image:
+    repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+    tag: 1.20.0
+  extensions:
+    - proxy
+    - idp
+  env:
+    IDP_ACCESS_TOKEN_EXPIRATION: 28800
+    IDP_ISS: https://sciencebox.local
+    IDP_INSECURE: true
+    IDP_HTTP_ADDR: 0.0.0.0:9130
+    REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
+    LDAP_URI: ldaps://sciencebox-ldap:636
+    LDAP_INSECURE: true
+    LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
+    LDAP_BIND_PASSWORD: readuser
+    LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
+    LDAP_GROUPFILTER: "(objectclass=owncloud)"
+    LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
+    LDAP_USER_BASE_DN: "dc=owncloud,dc=com"
+    LDAP_USERFILTER: "(objectclass=owncloud)"
+    LDAP_USER_OBEJECTCLASS: "inetOrgPerson"
+    LDAP_LOGIN_ATTRIBUTES: "uid,mail"
+    IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
+    IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
+    IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
+    PROXY_ACCOUNT_BACKEND_TYPE: cs3
+    OCIS_LOG_LEVEL: debug
+    PROXY_TLS: true
+    OCIS_JWT_SECRET: Pive-Fumkiu4
+    STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
+    OCIS_MACHINE_AUTH_API_KEY: random_api_key
+    OCIS_INSECURE: true
+    PROXY_ENABLE_BASIC_AUTH: false
+    ACCOUNTS_DEMO_USERS_AND_GROUPS: false
+    IDM_CREATE_DEMO_USERS: false
+
 
 ## cbox web
 cernbox-web:
@@ -1171,45 +1219,3 @@ authprovider-bearer:
       uid_claim = "uid"
       gid_claim = "gid"
       gatewaysvc = "sciencebox-gateway:9142"
-# values for mariadb
-mariadb:
-  initdbScripts:
-    my_init_script.sql: |
-      CREATE TABLE `oc_share` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `share_type` smallint(6) NOT NULL DEFAULT '0',
-      `share_with` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-      `uid_owner` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
-      `uid_initiator` varchar(64) COLLATE utf8_bin DEFAULT NULL,
-      `parent` int(11) DEFAULT NULL,
-      `item_type` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
-      `item_source` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-      `item_target` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-      `file_source` bigint(20) unsigned DEFAULT NULL,
-      `file_target` varchar(512) COLLATE utf8_bin DEFAULT NULL,
-      `permissions` smallint(6) NOT NULL DEFAULT '0',
-      `stime` bigint(20) NOT NULL DEFAULT '0',
-      `accepted` smallint(6) NOT NULL DEFAULT '0',
-      `expiration` datetime DEFAULT NULL,
-      `token` varchar(32) COLLATE utf8_bin DEFAULT NULL,
-      `mail_send` smallint(6) NOT NULL DEFAULT '0',
-      `fileid_prefix` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-      `orphan` tinyint(4) DEFAULT NULL,
-      `share_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-      PRIMARY KEY (`id`),
-      KEY `item_share_type_index` (`item_type`,`share_type`),
-      KEY `file_source_index` (`file_source`),
-      KEY `token_index` (`token`)
-      ) ENGINE=InnoDB AUTO_INCREMENT=333566 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-    
-      CREATE TABLE `oc_share_status` (
-      `id` int(11) NOT NULL,
-      `recipient` varchar(255) NOT NULL,
-      `state` int(11) DEFAULT '0',
-      PRIMARY KEY (`id`,`recipient`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-  auth:
-    rootPassword: reva
-    database: my_database
-    username: reva
-    password: reva
