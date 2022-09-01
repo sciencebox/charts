@@ -40,7 +40,7 @@ dependencies:
 #
 # SWAN
 - name: swan
-  version: 0.1.10
+  version: 0.1.11
   repository: "https://registry.cern.ch/chartrepo/swan"
 #
 # CERNBox
