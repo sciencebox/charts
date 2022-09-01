@@ -748,26 +748,6 @@ cernbox:
             }
 
 
-
-  #
-  # NGINX
-  #   This is a simple nginx web server to provide a landing page to ScienceBox users.
-  #
-  nginx-welcome-page:
-    ingress:
-      enabled: true
-      path: /sciencebox
-    service:
-      type: ClusterIP
-    staticSiteConfigmap: sciencebox-landing-page-cfgmap
-    serverBlock: |-
-      server {
-        listen 8080;
-        location /sciencebox {
-          alias /app/;
-        }
-      }
-
   # values for revad-gateway service
   gateway:
     image:
@@ -1219,3 +1199,22 @@ cernbox:
         uid_claim = "uid"
         gid_claim = "gid"
         gatewaysvc = "sciencebox-gateway:9142"
+
+#
+# NGINX
+#   This is a simple nginx web server to provide a landing page to ScienceBox users.
+#
+nginx-welcome-page:
+  ingress:
+    enabled: true
+    path: /sciencebox
+  service:
+    type: ClusterIP
+  staticSiteConfigmap: sciencebox-landing-page-cfgmap
+  serverBlock: |-
+    server {
+      listen 8080;
+      location /sciencebox {
+        alias /app/;
+      }
+    }
