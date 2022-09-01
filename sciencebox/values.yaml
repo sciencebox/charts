@@ -584,55 +584,50 @@ swan:
 #
 # CERNBox
 #
-ocis:
-  ingress:
-    enabled: true
-    exposeIdp: true
-    annotation:
-      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
-
-  image:
-    repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
-    tag: 1.20.0
-  extensions:
-    - proxy
-    - idp
-  env:
-    IDP_ACCESS_TOKEN_EXPIRATION: 28800
-    IDP_ISS: https://sciencebox.local
-    IDP_INSECURE: true
-    IDP_HTTP_ADDR: 0.0.0.0:9130
-    REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
-    LDAP_URI: ldaps://sciencebox-ldap:636
-    LDAP_INSECURE: true
-    LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
-    LDAP_BIND_PASSWORD: readuser
-    LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
-    LDAP_GROUPFILTER: "(objectclass=owncloud)"
-    LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
-    LDAP_USER_BASE_DN: "dc=owncloud,dc=com"
-    LDAP_USERFILTER: "(objectclass=owncloud)"
-    LDAP_USER_OBEJECTCLASS: "inetOrgPerson"
-    LDAP_LOGIN_ATTRIBUTES: "uid,mail"
-    IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
-    IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
-    IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
-    PROXY_ACCOUNT_BACKEND_TYPE: cs3
-    OCIS_LOG_LEVEL: debug
-    PROXY_TLS: true
-    OCIS_JWT_SECRET: Pive-Fumkiu4
-    STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
-    OCIS_MACHINE_AUTH_API_KEY: random_api_key
-    OCIS_INSECURE: true
-    PROXY_ENABLE_BASIC_AUTH: false
-    ACCOUNTS_DEMO_USERS_AND_GROUPS: false
-    IDM_CREATE_DEMO_USERS: false
-
-
-#
-# CERNBox
-#
 cernbox:
+  ocis:
+    ingress:
+      enabled: true
+      exposeIdp: true
+      annotation:
+        "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+
+    image:
+      repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+      tag: 1.20.0
+    extensions:
+      - proxy
+      - idp
+    env:
+      IDP_ACCESS_TOKEN_EXPIRATION: 28800
+      IDP_ISS: https://sciencebox.local
+      IDP_INSECURE: true
+      IDP_HTTP_ADDR: 0.0.0.0:9130
+      REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
+      LDAP_URI: ldaps://sciencebox-ldap:636
+      LDAP_INSECURE: true
+      LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
+      LDAP_BIND_PASSWORD: readuser
+      LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
+      LDAP_GROUPFILTER: "(objectclass=owncloud)"
+      LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
+      LDAP_USER_BASE_DN: "dc=owncloud,dc=com"
+      LDAP_USERFILTER: "(objectclass=owncloud)"
+      LDAP_USER_OBEJECTCLASS: "inetOrgPerson"
+      LDAP_LOGIN_ATTRIBUTES: "uid,mail"
+      IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
+      IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
+      IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
+      PROXY_ACCOUNT_BACKEND_TYPE: cs3
+      OCIS_LOG_LEVEL: debug
+      PROXY_TLS: true
+      OCIS_JWT_SECRET: Pive-Fumkiu4
+      STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
+      OCIS_MACHINE_AUTH_API_KEY: random_api_key
+      OCIS_INSECURE: true
+      PROXY_ENABLE_BASIC_AUTH: false
+      ACCOUNTS_DEMO_USERS_AND_GROUPS: false
+      IDM_CREATE_DEMO_USERS: false
   ## cbox web
   cernbox-web:
     initContainers:
@@ -746,27 +741,6 @@ cernbox:
                     }
                 }
             }
-
-
-
-  #
-  # NGINX
-  #   This is a simple nginx web server to provide a landing page to ScienceBox users.
-  #
-  nginx-welcome-page:
-    ingress:
-      enabled: true
-      path: /sciencebox
-    service:
-      type: ClusterIP
-    staticSiteConfigmap: sciencebox-landing-page-cfgmap
-    serverBlock: |-
-      server {
-        listen 8080;
-        location /sciencebox {
-          alias /app/;
-        }
-      }
 
   # values for revad-gateway service
   gateway:
@@ -1219,3 +1193,21 @@ cernbox:
         uid_claim = "uid"
         gid_claim = "gid"
         gatewaysvc = "sciencebox-gateway:9142"
+#
+# NGINX
+#   This is a simple nginx web server to provide a landing page to ScienceBox users.
+#
+nginx-welcome-page:
+  ingress:
+    enabled: true
+    path: /sciencebox
+  service:
+    type: ClusterIP
+  staticSiteConfigmap: sciencebox-landing-page-cfgmap
+  serverBlock: |-
+    server {
+      listen 8080;
+      location /sciencebox {
+        alias /app/;
+      }
+    }
