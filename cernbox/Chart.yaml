@@ -40,9 +40,8 @@ dependencies:
   repository: "https://cs3org.github.io/charts"
 
 - name: ocis
-  version: 0.0.6
-  #repository: "https://registry.cern.ch/chartrepo/sciencebox"
-  repository: "file://../ocis"
+  version: 0.0.7
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 
 - name: nginx
   alias: cernbox-web
