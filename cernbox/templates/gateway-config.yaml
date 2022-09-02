@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.cfgmapName }}
+  labels:
+    {{- include "cernbox.labels" . | nindent 4 }}
+data:
+  revad.toml: |-
+    jimil

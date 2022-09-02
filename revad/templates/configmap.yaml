@@ -1,0 +1,15 @@
+{{- if eq .Values.configMap false }}
+{{- if .Values.configFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "revad.fullname" . }}-config
+  labels:
+    {{- include "revad.labels" . | nindent 4 }}
+data:
+{{- range $filename, $fileContents := .Values.configFiles }}
+  {{ $filename }}: |-
+{{ $fileContents | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
