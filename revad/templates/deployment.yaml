@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "revad.fullname" . }}
+  labels:
+    {{- include "revad.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "revad.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        {{- include "revad.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http.port }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.service.grpc.port }}
+              protocol: TCP
+          command:
+            - /usr/bin/revad
+          args:
+              - "-c"
+              - "/etc/revad/revad.toml"
+              - "-p"
+              - "/var/run/revad.pid"
+          volumeMounts:
+            - name: {{ include "revad.fullname" . }}-configfiles
+              mountPath: /etc/revad/
+            - name: {{ include "revad.fullname" . }}-datadir
+              mountPath: {{ .Values.persistentVolume.mountPath }}
+              subPath: "{{ .Values.persistentVolume.subPath }}"
+            {{- if .Values.extraVolumeMounts }}
+              {{ toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.env .Values.extraEnv }}
+          env:
+          {{- range $name, $value := .Values.env }}
+            - name: "{{ $name }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- if .Values.extraEnv }}
+            {{- toYaml .Values.extraEnv | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.envFrom }}
+          envFrom:
+            {{ toYaml .Values.envFrom | indent 12 }}
+          {{- end }}
+      volumes:
+        - name: {{ include "revad.fullname" . }}-configfiles
+          configMap:
+            name: {{ template "revad.fullname" . }}-config
+        - name: {{ include "revad.fullname" . }}-datadir
+        {{- if .Values.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "revad.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir:
+          {{- if .Values.emptyDir.sizeLimit }}
+            sizeLimit: {{ .Values.emptyDir.sizeLimit }}
+          {{- else }}
+            {}
+          {{- end -}}
+        {{- end -}}
+        {{- if .Values.extraVolumes }}
+          {{ toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
