@@ -374,6 +374,10 @@ mariadb:
       `state` int(11) DEFAULT '0',
       PRIMARY KEY (`id`,`recipient`)
       ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+      CREATE INDEX fileid_prefix_index ON oc_share(fileid_prefix) USING BTREE;
+      CREATE INDEX item_source ON oc_share(item_source) USING BTREE;
+
   auth:
     rootPassword: reva
     database: my_database
