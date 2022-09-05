@@ -760,6 +760,7 @@ cernbox:
         port: 9143
     env:
       XrdSecPROTOCOL: sss
+    cfgmapName: gateway-config
     # configFiles:
     #   revad.toml: |
     #     [shared]
