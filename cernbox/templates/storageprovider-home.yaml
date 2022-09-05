@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.storageproviderhome.cfgmapName }}
+  labels:
+    {{- include "revad.labels" . | nindent 4 }}
+data:
+  revad.toml: |-
+    [shared]
+    gatewaysvc = "sciencebox-gateway:9142"
+    jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
+
+    [grpc]
+    address = "0.0.0.0:18000"
+
+    [grpc.services.storageprovider]
+    driver = "eoshome"
+    mount_path = "/home"
+    mount_id = "eos"
+    data_server_url = "http://sciencebox-storageproviderhome:17000/data"
+
+    [grpc.services.storageprovider.drivers.eoshome]
+    namespace = "/eos/user/"
+    quota_node = "/eos/user/"
+    master_url = "root://sciencebox-mgm.default.svc.cluster.local:1094"
+    slave_url = "root://sciencebox-mgm.default.svc.cluster.local:1094"
+    user_layout = "{{`{{substr 0 1 .Username}}/{{.Username}}`}}"
+    xrdcopy_binary = "/opt/eos/xrootd/bin/xrdcopy"
+    cache_directory = "/tmp/reva"
+    use_keytab = true
+    keytab = "/etc/eos.keytab"
+    sec_protocol = "sss"
+
+    [http]
+    address = "0.0.0.0:17000"
+
+    [http.services.dataprovider]
+    driver = "eoshome"
+
+    [http.services.dataprovider.drivers.eoshome]
+    namespace = "/eos/user/"
+    quota_node = "/eos/user/"
+    master_url = "root://sciencebox-mgm.default.svc.cluster.local:1094"
+    slave_url = "root://sciencebox-mgm.default.svc.cluster.local:1094"
+    user_layout = "{{`{{substr 0 1 .Username}}/{{.Username}}`}}"
+    xrdcopy_binary = "/opt/eos/xrootd/bin/xrdcopy"
+    cache_directory = "/tmp/reva"
+    use_keytab = true
+    keytab = "/etc/eos.keytab"
+    sec_protocol = "sss"

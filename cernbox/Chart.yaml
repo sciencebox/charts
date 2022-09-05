@@ -16,27 +16,27 @@ dependencies:
 
 - name: revad
   version: "1.4.1"
-  alias: storageprovider-home
+  alias: storageproviderhome
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-  alias: storageprovider-user
+  alias: storageprovideruser
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-  alias: storageprovider-public
+  alias: storageproviderpublic
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-  alias: authprovider-machine
+  alias: authprovidermachine
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-  alias: authprovider-bearer
+  alias: authproviderbearer
   repository: "file://../../revad-fork/revad"
 
 - name: ocis
