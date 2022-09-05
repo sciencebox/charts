@@ -1,2 +1,2 @@
-gateway:
-  cfgmapName: gateway-config
+cfgmapName: gateway-config
+ldapHostname: sciencebox-ldap
