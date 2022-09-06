@@ -22,8 +22,6 @@ data:
     share_folder = "MyShares"
     usershareprovidersvc = "localhost:9142"
     publicshareprovidersvc = "localhost:9142"
-
-
     datagateway = "http://localhost:9143/data"
 
     [grpc.services.authprovider]
