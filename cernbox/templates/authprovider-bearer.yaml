@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.authproviderbearer.cfgmapName }}
+  labels:
+    {{- include "revad.labels" . | nindent 4 }}
+data:
+  revad.toml: |-
+    [shared]
+    gatewaysvc = "sciencebox-gateway:9142"
+    jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
+
+    [grpc]
+    address = "0.0.0.0:9158"
+
+    [grpc.services.authprovider]
+    auth_manager = "oidc"
+
+    [grpc.services.authprovider.auth_managers.oidc]
+    insecure = true
+    issuer = "https://jimil-laptop.dyndns.cern.ch"
+    id_claim = "name"
+    uid_claim = "uid"
+    gid_claim = "gid"
+    gatewaysvc = "sciencebox-gateway:9142"

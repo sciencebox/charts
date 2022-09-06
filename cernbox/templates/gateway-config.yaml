@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.cfgmapName }}
+  name: {{ .Values.gateway.cfgmapName }}
   labels:
     {{- include "revad.labels" . | nindent 4 }}
 data:
@@ -45,9 +45,9 @@ data:
 
     [grpc.services.authregistry.drivers.static.rules]
     basic = "localhost:9142"
-    publicshares = "sciencebox-storageprovider-public:9278"
-    machine = "sciencebox-authprovider-machine:9166"
-    bearer = "sciencebox-authprovider-bearer:9158"
+    publicshares = "sciencebox-storageproviderpublic:9278"
+    machine = "sciencebox-authprovidermachine:9166"
+    bearer = "sciencebox-authproviderbearer:9158"
 
     [grpc.services.userprovider]
     driver = "ldap"
@@ -100,11 +100,11 @@ data:
     home_provider = "/home"
 
     [grpc.services.storageregistry.drivers.static.rules]
-    "/home" = { address = "sciencebox-storageprovider-home:18000" }
-    "/eos/user" = { address = "sciencebox-storageprovider-user:16000" }
-    "eos" = { address = "sciencebox-storageprovider-user:16000" }
-    "/public" = { address = "sciencebox-storageprovider-public:9278" }
-    "public-storage" = { address = "sciencebox-storageprovider-public:9278" }
+    "/home" = { address = "sciencebox-storageproviderhome:18000" }
+    "/eos/user" = { address = "sciencebox-storageprovideruser:16000" }
+    "eos" = { address = "sciencebox-storageprovideruser:16000" }
+    "/public" = { address = "sciencebox-storageproviderpublic:9278" }
+    "public-storage" = { address = "sciencebox-storageproviderpublic:9278" }
 
     [grpc.services.publicshareprovider]
     driver = "sql"
