@@ -16,47 +16,27 @@ dependencies:
 
 - name: revad
   version: "1.4.1"
-<<<<<<< HEAD
-  alias: storageprovider-home
-=======
   alias: storageproviderhome
->>>>>>> 970822375819c1c093baa6e053630ccf15543382
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-<<<<<<< HEAD
-  alias: storageprovider-user
-=======
   alias: storageprovideruser
->>>>>>> 970822375819c1c093baa6e053630ccf15543382
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-<<<<<<< HEAD
-  alias: storageprovider-public
-=======
   alias: storageproviderpublic
->>>>>>> 970822375819c1c093baa6e053630ccf15543382
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-<<<<<<< HEAD
-  alias: authprovider-machine
-=======
   alias: authprovidermachine
->>>>>>> 970822375819c1c093baa6e053630ccf15543382
   repository: "file://../../revad-fork/revad"
 
 - name: revad
   version: "1.4.1"
-<<<<<<< HEAD
-  alias: authprovider-bearer
-=======
   alias: authproviderbearer
->>>>>>> 970822375819c1c093baa6e053630ccf15543382
   repository: "file://../../revad-fork/revad"
 
 - name: ocis
