@@ -1,0 +1,13 @@
+apiVersion: v2
+#
+name: eos-user-cache-refresher
+type: application
+version: 0.0.1
+appVersion: 4.8.78
+#
+description: The Chart to refresh EOS cached user info
+icon: https://eos-web.web.cern.ch/eos-web/img/logos/EOS_logo1.svg 
+dependencies:
+- name: utils
+  version: 0.1.4
+  repository: "https://registry.cern.ch/chartrepo/eos"

@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eos-user-cache-refresher.fullname" . }}-script
+  labels:
+    {{- include "eos-user-cache-refresher.labels" . | nindent 4 }}
+data:
+  user_cache_refresh.sh: |
+    #!/bin/bash
+    set -x
+    alias eos='eos -r 0 0'
+    shopt -s expand_aliases
+
+    init_probe() {
+      local cmd=$@
+      local max_wait=60
+      local sleep=5
+      start_time=$(date +%s)
+      rc=-1
+      while [ $rc -ne 0 ];
+      do
+        timeout --preserve-status $sleep $cmd >/dev/null 2>&1
+        rc=$?
+
+        # Bail out after max_wait
+        tot_wait=$(($(date +%s)-start_time))
+        echo "        $tot_wait seconds... (timeout at $max_wait)"
+        if [ $tot_wait -ge $max_wait ]; then
+          echo "ERROR: cmd \`$cmd\` failed after $tot_wait secs. Giving up."
+          exit 1
+        fi
+        sleep $sleep
+      done
+    }
+
+    run_eos_access_ls() {
+      date --iso-8601=seconds
+      timeout --preserve-status 10 eos access ls 2>&1
+      if [ $? -ne 0 ];
+      then
+        echo "Warning: `eos access ls` timed out"
+      fi
+      echo
+    }
+
+    # Wait for the MGM to be online
+    echo "INFO: Checking the MGM is online..."
+    echo "INFO: EOS_MGM_URL="$EOS_MGM_URL
+    init_probe eos ns
+    echo "INFO: MGM is online."
+
+    # Refresh cached user info
+    {{- with .Values.refreshUserCache.initialBurst }}
+    {{- if .enable }}
+    # Do the initial burst to warm-up local cache
+    echo "Performing initial burst"
+    echo "  duration: {{ .duration }}"
+    echo "  interval: {{ .interval }}"
+    now=$(date +%s)
+    end=$(($now + {{ .duration }} ))
+    while [ $now -le $end ];
+    do
+      run_eos_access_ls
+      sleep {{ .interval }}
+      now=$(date +%s)
+    done
+    {{- end }}
+    {{- end }}
+
+    while true
+    do
+      {{- with .Values.refreshUserCache.exitOnResolve }}
+      {{- if .enable }}
+      # Check the condition to exit
+      echo "Checking the exit condition"
+      echo "  type: {{ .type }}"
+      echo "  identity: {{ .identity }}"
+      eos access ls -m | grep ^{{ .type }} | cut -d '=' -f 2 | grep -q -w {{ .identity}}
+      if [ $? -eq 0 ];
+      then
+        exit 0
+      fi
+      {{- end }}
+      {{- end }}
+
+      run_eos_access_ls
+      sleep {{ .Values.refreshUserCache.interval }}
+    done
+
+    exit 0
