@@ -84,10 +84,3 @@ config:
       uidStart: 1000
       gname: "users"
       gid: 100
-
-customLabels:
-  service: eos
-  component: eos-mgm
-
-podAssignment:
-  enableNodeSelector: false     # Requires a node labeled as per customLabels
