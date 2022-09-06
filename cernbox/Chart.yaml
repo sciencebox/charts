@@ -10,34 +10,34 @@ icon: https://avatars.githubusercontent.com/u/5640319
 #
 dependencies:
 - name: revad
-  version: "1.3.3"
+  version: "1.4.1"
   alias: gateway
-  repository: "https://cs3org.github.io/charts"
+  repository: "file://../../revad-fork/revad"
 
 - name: revad
-  version: "1.3.3"
-  alias: storageprovider-home
-  repository: "https://cs3org.github.io/charts"
+  version: "1.4.1"
+  alias: storageproviderhome
+  repository: "file://../../revad-fork/revad"
 
 - name: revad
-  version: "1.3.3"
-  alias: storageprovider-user
-  repository: "https://cs3org.github.io/charts"
+  version: "1.4.1"
+  alias: storageprovideruser
+  repository: "file://../../revad-fork/revad"
 
 - name: revad
-  version: "1.3.3"
-  alias: storageprovider-public
-  repository: "https://cs3org.github.io/charts"
+  version: "1.4.1"
+  alias: storageproviderpublic
+  repository: "file://../../revad-fork/revad"
 
 - name: revad
-  version: "1.3.3"
-  alias: authprovider-machine
-  repository: "https://cs3org.github.io/charts"
+  version: "1.4.1"
+  alias: authprovidermachine
+  repository: "file://../../revad-fork/revad"
 
 - name: revad
-  version: "1.3.3"
-  alias: authprovider-bearer
-  repository: "https://cs3org.github.io/charts"
+  version: "1.4.1"
+  alias: authproviderbearer
+  repository: "file://../../revad-fork/revad"
 
 - name: ocis
   version: 0.0.7

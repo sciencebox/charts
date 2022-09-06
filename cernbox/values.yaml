@@ -1,0 +1,12 @@
+gateway:
+  cfgmapName: gateway-config
+storageproviderhome:
+  cfgmapName: storageprovider-home-config
+storageproviderpublic:
+  cfgmapName: storageprovider-public-config
+storageprovideruser:
+  cfgmapName: storageprovider-user-config
+authprovidermachine:
+  cfgmapName: authprovider-machine-config
+authproviderbearer:
+  cfgmapName: authprovider-bearer-config
