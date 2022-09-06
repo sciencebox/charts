@@ -30,7 +30,7 @@ data:
     auth_manager = "ldap"
 
     [grpc.services.authprovider.auth_managers.ldap]
-    hostname = "sciencebox-ldap"
+    hostname = "{{ .Release.Name }}-ldap"
     port = 636
     insecure = true
     base_dn = "dc=owncloud,dc=com"
@@ -45,15 +45,15 @@ data:
 
     [grpc.services.authregistry.drivers.static.rules]
     basic = "localhost:9142"
-    publicshares = "sciencebox-storageproviderpublic:9278"
-    machine = "sciencebox-authprovidermachine:9166"
-    bearer = "sciencebox-authproviderbearer:9158"
+    publicshares = "{{ .Release.Name }}-storageproviderpublic:9278"
+    machine = "{{ .Release.Name }}-authprovidermachine:9166"
+    bearer = "{{ .Release.Name }}-authproviderbearer:9158"
 
     [grpc.services.userprovider]
     driver = "ldap"
 
     [grpc.services.userprovider.drivers.ldap]
-    hostname="sciencebox-ldap"
+    hostname="{{ .Release.Name }}-ldap"
     port = 636
     insecure = true
     base_dn = "dc=owncloud,dc=com"
@@ -75,7 +75,7 @@ data:
     driver = "ldap"
 
     [grpc.services.groupprovider.drivers.ldap]
-    hostname="sciencebox-ldap"
+    hostname="{{ .Release.Name }}-ldap"
     port = 636
     insecure = true
     base_dn = "dc=owncloud,dc=com"
@@ -100,11 +100,11 @@ data:
     home_provider = "/home"
 
     [grpc.services.storageregistry.drivers.static.rules]
-    "/home" = { address = "sciencebox-storageproviderhome:18000" }
-    "/eos/user" = { address = "sciencebox-storageprovideruser:16000" }
-    "eos" = { address = "sciencebox-storageprovideruser:16000" }
-    "/public" = { address = "sciencebox-storageproviderpublic:9278" }
-    "public-storage" = { address = "sciencebox-storageproviderpublic:9278" }
+    "/home" = { address = "{{ .Release.Name }}-storageproviderhome:18000" }
+    "/eos/user" = { address = "{{ .Release.Name }}-storageprovideruser:16000" }
+    "eos" = { address = "{{ .Release.Name }}-storageprovideruser:16000" }
+    "/public" = { address = "{{ .Release.Name }}-storageproviderpublic:9278" }
+    "public-storage" = { address = "{{ .Release.Name }}-storageproviderpublic:9278" }
 
     [grpc.services.publicshareprovider]
     driver = "sql"
@@ -113,7 +113,7 @@ data:
     [grpc.services.publicshareprovider.drivers.sql]
     db_username = "root"
     db_password = "reva"
-    db_host = "sciencebox-mariadb"
+    db_host = "{{ .Release.Name }}-mariadb"
     db_port = 3306
     db_name = "my_database"
     password_hash_cost = 11
@@ -127,7 +127,7 @@ data:
     [grpc.services.usershareprovider.drivers.sql]
     db_username = "root"
     db_password = "reva"
-    db_host = "sciencebox-mariadb"
+    db_host = "{{ .Release.Name }}-mariadb"
     db_port = 3306
     db_name = "my_database"
     password_hash_cost = 11
@@ -157,6 +157,7 @@ data:
     website = "reva"
     # needs to templated
     # host = "https://jimil-nuc.dyndns.cern.ch"
+    host = "{{ .Values.gateway.hostname }}"
     contact = "admin@localhost"
     ssl = "false"
 

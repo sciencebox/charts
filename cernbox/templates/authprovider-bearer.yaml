@@ -7,7 +7,7 @@ metadata:
 data:
   revad.toml: |-
     [shared]
-    gatewaysvc = "sciencebox-gateway:9142"
+    gatewaysvc = "{{ .Release.Name }}-gateway:9142"
     jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
 
     [grpc]
@@ -18,8 +18,8 @@ data:
 
     [grpc.services.authprovider.auth_managers.oidc]
     insecure = true
-    issuer = "https://jimil-laptop.dyndns.cern.ch"
+    issuer = "{{ .Values.authproviderbearer.hostname }}"
     id_claim = "name"
     uid_claim = "uid"
     gid_claim = "gid"
-    gatewaysvc = "sciencebox-gateway:9142"
+    gatewaysvc = "{{ .Release.Name }}-gateway:9142"

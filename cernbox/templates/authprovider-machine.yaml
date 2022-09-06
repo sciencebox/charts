@@ -18,4 +18,4 @@ data:
 
     [grpc.services.authprovider.auth_managers.machine]
     api_key = "random_api_key"
-    gateway_addr = "sciencebox-gateway:9142"
+    gateway_addr = "{{ .Release.Name }}-gateway:9142"

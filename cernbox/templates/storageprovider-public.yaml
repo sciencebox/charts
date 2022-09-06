@@ -7,7 +7,7 @@ metadata:
 data:
   revad.toml: |-
     [shared]
-    gatewaysvc = "sciencebox-gateway:9142"
+    gatewaysvc = "{{ .Release.Name }}-gateway:9142"
     jwt_secret = "POZSOrlP7AgnTxH7MJebWV8ohvsApgbd4u3Joen30c"
 
     [grpc]
@@ -16,10 +16,10 @@ data:
     [grpc.services.publicstorageprovider]
     mount_path = "/public"
     mount_id = "public-storage"
-    gateway_addr = "sciencebox-gateway:9142"
+    gateway_addr = "{{ .Release.Name }}-gateway:9142"
 
     [grpc.services.authprovider]
     auth_manager = "publicshares"
 
     [grpc.services.authprovider.auth_managers.publicshares]
-    gateway_addr = "sciencebox-gateway:9142"
+    gateway_addr = "{{ .Release.Name }}-gateway:9142"
