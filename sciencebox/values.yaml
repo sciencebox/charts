@@ -437,6 +437,20 @@ eos-instance-config:
           uid: 20002
           gid: 30000
 
+#
+#   The eos-user-cache-refresher to warm up the local mgm cache with user identities
+eos-user-cache-refresher:
+  tag: 4.8.80
+  refreshUserCache:
+    initialBurst:
+      enable: false
+      duration: 10
+      interval: 1
+    exitOnResolve:
+      enable: true
+      type: user.allowed
+      identity: reva
+
 
 #
 # SWAN

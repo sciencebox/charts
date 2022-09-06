@@ -37,6 +37,9 @@ dependencies:
 - name: eos-instance-config
   version: 0.0.5
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
+- name: eos-user-cache-refresher
+  version: 0.0.1
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
 #
 # SWAN
 - name: swan
