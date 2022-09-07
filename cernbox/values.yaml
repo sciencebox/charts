@@ -1,25 +1,25 @@
 gateway:
   image:
     repository: cs3org/revad
-    tag: latest
+    tag: v1.19.0
   cfgmapName: gateway-config
 
 storageproviderhome:
   image:
     repository: cs3org/revad
-    tag: latest-eos
+    tag: v1.19.0-eos
   cfgmapName: storageprovider-home-config
 
 storageproviderpublic:
   image:
     repository: cs3org/revad
-    tag: latest-eos
+    tag: v1.19.0-eos
   cfgmapName: storageprovider-public-config
 
 storageprovideruser:
   image:
     repository: cs3org/revad
-    tag: latest-eos
+    tag: v1.19.0-eos
   cfgmapName: storageprovider-user-config
 
 authprovidermachine:
