@@ -1,12 +1,35 @@
 gateway:
+  image:
+    repository: cs3org/revad
+    tag: latest
   cfgmapName: gateway-config
+
 storageproviderhome:
+  image:
+    repository: cs3org/revad
+    tag: latest-eos
   cfgmapName: storageprovider-home-config
+
 storageproviderpublic:
+  image:
+    repository: cs3org/revad
+    tag: latest-eos
   cfgmapName: storageprovider-public-config
+
 storageprovideruser:
+  image:
+    repository: cs3org/revad
+    tag: latest-eos
   cfgmapName: storageprovider-user-config
+
 authprovidermachine:
+  image:
+    repository: cs3org/revad
+    tag: latest
   cfgmapName: authprovider-machine-config
+
 authproviderbearer:
+  image:
+    repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
+    tag: latest-20220815
   cfgmapName: authprovider-bearer-config
