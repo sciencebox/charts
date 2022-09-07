@@ -768,9 +768,6 @@ cernbox:
 
   # values for revad-gateway service
   gateway:
-    image:
-      repository: cs3org/revad
-      tag: latest
     service:
       grpc:
         port: 9142
@@ -781,9 +778,6 @@ cernbox:
 
   # values for revad-storage provider home service
   storageproviderhome:
-    image:
-      repository: cs3org/revad
-      tag: latest-eos
     service:
       grpc:
         port: 18000
@@ -808,9 +802,6 @@ cernbox:
 
   # values for revad-storage provider public service
   storageproviderpublic:
-    image:
-      repository: cs3org/revad
-      tag: latest-eos
     service:
       grpc:
         port: 9278
@@ -832,9 +823,6 @@ cernbox:
 
   # values for revad-storage provider user service
   storageprovideruser:
-    image:
-      repository: cs3org/revad
-      tag: latest-eos
     service:
       grpc:
         port: 16000
@@ -859,17 +847,11 @@ cernbox:
 
   #values for revad-auth provider machine service
   authprovidermachine:
-    image:
-      repository: cs3org/revad
-      tag: latest
     service:
       grpc:
         port: 9166
 
   authproviderbearer:
-    image:
-      repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
-      tag: latest-20220815
     service:
       grpc:
         port: 9158
