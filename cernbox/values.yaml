@@ -24,8 +24,8 @@ storageprovideruser:
 
 authprovidermachine:
   image:
-    repository: cs3org/revad
-    tag: latest
+    repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
+    tag: latest-20220815
   cfgmapName: authprovider-machine-config
 
 authproviderbearer:
