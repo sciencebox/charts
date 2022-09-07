@@ -31,8 +31,7 @@ global:
   #   - Used by eos-server (qdb, mq, mgm, fst) (eos-all image)
   #             eos-instance-config (eos-all image)
   #             fusex in SWAN (eos-fusex image)
-  ## tag: 4.8.80
-  #    As of now we are using 4.8.80 for all but fusex, which uses 4.8.62 (due to OAuth issue)
+  tag: 5.0.31
   #
   # SSS keytab:
   #   - Anchor from sciencebox:sssKeytab
@@ -414,7 +413,6 @@ eos:
 #
 #   The eos-instance-config chart to configure the instance for the ScienceBox needs
 eos-instance-config:
-  tag: 4.8.80
   config:
     demoUsers:
       userList:
@@ -440,7 +438,6 @@ eos-instance-config:
 #
 #   The eos-user-cache-refresher to warm up the local mgm cache with user identities
 eos-user-cache-refresher:
-  tag: 4.8.80
   refreshUserCache:
     initialBurst:
       enable: false
