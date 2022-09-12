@@ -1,35 +1,276 @@
+## cbox web
+cernbox-web:
+  initContainers:
+    - name: install-web
+      image: busybox
+      command: ["/bin/sh", "/root/cbox_init.sh"]
+      envFrom:
+        - configMapRef:
+            name: cbox-cfgmap-init
+      volumeMounts:
+      - name: web
+        mountPath: "/var/www/web/"
+      - name: cbox-cfgmap-init
+        mountPath: /root/cbox_init.sh
+        subPath: cbox_init.sh
+  extraVolumeMounts:
+    - name: web-config
+      mountPath: /var/www/web/config.json
+      subPath: config.json
+    - name: web
+      mountPath: /var/www/web/
+    - name: nginx-conf
+      mountPath: /etc/nginx/nginx.conf
+      subPath: nginx.conf
+  extraVolumes:
+    - name: web-config
+      configMap:
+        name: web-config
+    - name: web
+      emptyDir: {}
+    - name: nginx-conf
+      configMap:
+        name: nginx-conf
+    - name: cbox-cfgmap-init
+      configMap:
+        name: cbox-cfgmap-init
+        defaultMode: 0755
+  command: ["/opt/bitnami/nginx/sbin/nginx"]
+  args: ["-c", "/etc/nginx/nginx.conf"]
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+  extraDeploy:
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: nginx-conf
+      data:
+        nginx.conf: |-
+          daemon off;
+          worker_processes  auto;
+
+          error_log  /opt/bitnami/nginx/logs/error.log debug;
+          pid        /opt/bitnami/nginx/tmp/nginx.pid;
+
+          events {
+              worker_connections  1024;
+          }
+
+          http {
+              include       /opt/bitnami/nginx/conf/mime.types;
+              default_type  application/octet-stream;
+              log_format    main '$remote_addr - $remote_user [$time_local] '
+                                  '"$request" $status  $body_bytes_sent "$http_referer" '
+                                  '"$http_user_agent" "$http_x_forwarded_for"';
+              access_log    "/opt/bitnami/nginx/logs/access.log" main;
+              add_header    X-Frame-Options SAMEORIGIN;
+
+              client_body_temp_path  "/opt/bitnami/nginx/tmp/client_body" 1 2;
+              proxy_temp_path        "/opt/bitnami/nginx/tmp/proxy" 1 2;
+              fastcgi_temp_path      "/opt/bitnami/nginx/tmp/fastcgi" 1 2;
+              scgi_temp_path         "/opt/bitnami/nginx/tmp/scgi" 1 2;
+              uwsgi_temp_path        "/opt/bitnami/nginx/tmp/uwsgi" 1 2;
+
+              sendfile           on;
+              tcp_nopush         on;
+              tcp_nodelay        off;
+              gzip               on;
+              gzip_http_version  1.0;
+              gzip_comp_level    2;
+              gzip_proxied       any;
+              gzip_types         text/plain text/css application/javascript text/xml application/xml+rss;
+              keepalive_timeout  65;
+              ssl_protocols      TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+              ssl_ciphers        HIGH:!aNULL:!MD5;
+              client_max_body_size 80M;
+              server_tokens off;
+
+              absolute_redirect  off;
+              port_in_redirect   off;
+
+              server {
+                  listen 8080;
+
+                  location ~ ^/(js|css)/
+                  {
+                      root /var/www/web;
+                      add_header Cache-Control "public, max-age=31536000, immutable";
+                      etag off;
+                      gzip_static on;
+                  }
+
+                  location /
+                  {
+                      root /var/www/web;
+                      add_header Cache-Control "no-cache";
+                      etag on;
+                      gzip_static on;
+                      try_files $uri /index.html;
+                  }
+              }
+          }
+
+# ocis proxy and idp
+ocis:
+  ingress:
+    enabled: true
+    exposeIdp: true
+    annotation:
+      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+
+  image:
+    repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+    tag: 1.20.0
+  extensions:
+    - proxy
+    - idp
+  env:
+    IDP_ACCESS_TOKEN_EXPIRATION: 28800
+    IDP_ISS: https://sciencebox.local
+    IDP_INSECURE: true
+    IDP_HTTP_ADDR: 0.0.0.0:9130
+    REVA_GATEWAY: sciencebox-gateway.default.svc.cluster.local:9142
+    LDAP_URI: ldaps://sciencebox-ldap:636
+    LDAP_INSECURE: true
+    LDAP_BIND_DN: "cn=readuser,dc=owncloud,dc=com"
+    LDAP_BIND_PASSWORD: readuser
+    LDAP_GROUP_BASE_DN: "dc=owncloud,dc=com"
+    LDAP_GROUPFILTER: "(objectclass=owncloud)"
+    LDAP_GROUP_OBJECTCLASS: "groupOfUniqueNames"
+    LDAP_USER_BASE_DN: "dc=owncloud,dc=com"
+    LDAP_USERFILTER: "(objectclass=owncloud)"
+    LDAP_USER_OBEJECTCLASS: "inetOrgPerson"
+    LDAP_LOGIN_ATTRIBUTES: "uid,mail"
+    IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
+    IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
+    IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
+    PROXY_ACCOUNT_BACKEND_TYPE: cs3
+    OCIS_LOG_LEVEL: debug
+    PROXY_TLS: true
+    OCIS_JWT_SECRET: Pive-Fumkiu4
+    STORAGE_TRANSFER_SECRET: replace-me-with-a-transfer-secret
+    OCIS_MACHINE_AUTH_API_KEY: random_api_key
+    OCIS_INSECURE: true
+    PROXY_ENABLE_BASIC_AUTH: false
+    ACCOUNTS_DEMO_USERS_AND_GROUPS: false
+    IDM_CREATE_DEMO_USERS: false
+
+# revad gateway service
 gateway:
+  service:
+    grpc:
+      port: 9142
+    http:
+      port: 9143
+  env:
+    XrdSecPROTOCOL: sss
   image:
     repository: cs3org/revad
     tag: v1.19.0
   cfgmapName: gateway-config
 
+
+# revad storageprovider home service
 storageproviderhome:
+  service:
+    grpc:
+      port: 18000
+    http:
+      port: 17000
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        defaultMode: 256
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
   image:
     repository: cs3org/revad
     tag: v1.19.0-eos
   cfgmapName: storageprovider-home-config
 
+# revad storageprovider public service
 storageproviderpublic:
+  service:
+    grpc:
+      port: 9278
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
   image:
     repository: cs3org/revad
     tag: v1.19.0-eos
   cfgmapName: storageprovider-public-config
 
+# revad storageprovider user service
 storageprovideruser:
+  service:
+    grpc:
+      port: 16000
+    http:
+      port: 15000
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        defaultMode: 256
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
   image:
     repository: cs3org/revad
     tag: v1.19.0-eos
   cfgmapName: storageprovider-user-config
 
+# revad authprovider machine service
 authprovidermachine:
+  service:
+    grpc:
+      port: 9166
   image:
     repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
     tag: latest-20220815
   cfgmapName: authprovider-machine-config
 
+# revad authprovider bearer service
 authproviderbearer:
+  service:
+    grpc:
+      port: 9158
   image:
     repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
     tag: latest-20220815
   cfgmapName: authprovider-bearer-config
+
+
