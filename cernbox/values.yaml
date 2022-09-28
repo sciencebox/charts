@@ -181,8 +181,8 @@ gateway:
 # revad storageprovider home
 storageproviderhome:
   image:
-    repository: cs3org/revad
-    tag: v1.19.0-eos
+    repository: &revadStorageproviderImageRepo cs3org/revad
+    tag: &revadStorageproviderImageTag v1.19.0-eos
   env:
     XrdSecPROTOCOL: sss
   extraVolumes:
@@ -210,8 +210,8 @@ storageproviderhome:
 # revad storageprovider public
 storageproviderpublic:
   image:
-    repository: cs3org/revad
-    tag: v1.19.0-eos
+    repository: *revadStorageproviderImageRepo
+    tag: *revadStorageproviderImageTag
   env:
     XrdSecPROTOCOL: sss
   extraVolumes:
@@ -236,8 +236,8 @@ storageproviderpublic:
 # revad storageprovider user
 storageprovideruser:
   image:
-    repository: cs3org/revad
-    tag: v1.19.0-eos
+    repository: *revadStorageproviderImageRepo
+    tag: *revadStorageproviderImageTag
   env:
     XrdSecPROTOCOL: sss
   extraVolumes:
@@ -265,8 +265,8 @@ storageprovideruser:
 # revad authprovider machine
 authprovidermachine:
   image:
-    repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
-    tag: latest-20220815
+    repository: &revadAuthproviderImageRepo gitlab-registry.cern.ch/sciencebox/hotfixes/revad
+    tag: &revadAuthproviderImageTag latest-20220815
   cfgmapName: authprovider-machine-config
   service:
     grpc:
@@ -276,8 +276,8 @@ authprovidermachine:
 # revad authprovider bearer
 authproviderbearer:
   image:
-    repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
-    tag: latest-20220815
+    repository: *revadAuthproviderImageRepo 
+    tag: *revadAuthproviderImageTag
   cfgmapName: authprovider-bearer-config
   service:
     grpc:
