@@ -1,4 +1,9 @@
-## cbox web
+#
+# CERNBox chart for use with ScienceBox
+#
+
+#
+# CERNBox web interface with custom web assets and theme
 cernbox-web:
   initContainers:
     - name: install-web
@@ -112,14 +117,9 @@ cernbox-web:
               }
           }
 
-# ocis proxy and idp
+#
+# oCIS proxy and IDP extensions
 ocis:
-  ingress:
-    enabled: true
-    exposeIdp: true
-    annotation:
-      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
-
   image:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
@@ -156,29 +156,88 @@ ocis:
     PROXY_ENABLE_BASIC_AUTH: false
     ACCOUNTS_DEMO_USERS_AND_GROUPS: false
     IDM_CREATE_DEMO_USERS: false
+  ingress:
+    enabled: true
+    exposeIdp: true
+    annotation:
+      "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
 
-# revad gateway service
+#
+# revad gateway
 gateway:
+  image:
+    repository: cs3org/revad
+    tag: v1.19.0
+  env:
+    XrdSecPROTOCOL: sss
+  cfgmapName: gateway-config
   service:
     grpc:
       port: 9142
     http:
       port: 9143
-  env:
-    XrdSecPROTOCOL: sss
+
+#
+# revad storageprovider home
+storageproviderhome:
   image:
     repository: cs3org/revad
-    tag: v1.19.0
-  cfgmapName: gateway-config
-
-
-# revad storageprovider home service
-storageproviderhome:
+    tag: v1.19.0-eos
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        defaultMode: 256
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
+  cfgmapName: storageprovider-home-config
   service:
     grpc:
       port: 18000
     http:
       port: 17000
+
+#
+# revad storageprovider public
+storageproviderpublic:
+  image:
+    repository: cs3org/revad
+    tag: v1.19.0-eos
+  env:
+    XrdSecPROTOCOL: sss
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+    - name: eos-keytab
+      secret:
+        secretName: sciencebox-eos-sss-keytab
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp/reva
+    - name: eos-keytab
+      mountPath: /etc/eos.keytab
+      subPath: eos.keytab
+      readOnly: true
+  cfgmapName: storageprovider-public-config
+  service:
+    grpc:
+      port: 9278
+
+#
+# revad storageprovider user
+storageprovideruser:
+  image:
+    repository: cs3org/revad
+    tag: v1.19.0-eos
   env:
     XrdSecPROTOCOL: sss
   extraVolumes:
@@ -195,82 +254,31 @@ storageproviderhome:
       mountPath: /etc/eos.keytab
       subPath: eos.keytab
       readOnly: true
-  image:
-    repository: cs3org/revad
-    tag: v1.19.0-eos
-  cfgmapName: storageprovider-home-config
-
-# revad storageprovider public service
-storageproviderpublic:
-  service:
-    grpc:
-      port: 9278
-  env:
-    XrdSecPROTOCOL: sss
-  extraVolumes:
-    - name: tmp-volume
-      emptyDir: {}
-    - name: eos-keytab
-      secret:
-        secretName: sciencebox-eos-sss-keytab
-  extraVolumeMounts:
-    - name: tmp-volume
-      mountPath: /tmp/reva
-    - name: eos-keytab
-      mountPath: /etc/eos.keytab
-      subPath: eos.keytab
-      readOnly: true
-  image:
-    repository: cs3org/revad
-    tag: v1.19.0-eos
-  cfgmapName: storageprovider-public-config
-
-# revad storageprovider user service
-storageprovideruser:
+  cfgmapName: storageprovider-user-config
   service:
     grpc:
       port: 16000
     http:
       port: 15000
-  env:
-    XrdSecPROTOCOL: sss
-  extraVolumes:
-    - name: tmp-volume
-      emptyDir: {}
-    - name: eos-keytab
-      secret:
-        defaultMode: 256
-        secretName: sciencebox-eos-sss-keytab
-  extraVolumeMounts:
-    - name: tmp-volume
-      mountPath: /tmp/reva
-    - name: eos-keytab
-      mountPath: /etc/eos.keytab
-      subPath: eos.keytab
-      readOnly: true
-  image:
-    repository: cs3org/revad
-    tag: v1.19.0-eos
-  cfgmapName: storageprovider-user-config
 
-# revad authprovider machine service
+#
+# revad authprovider machine
 authprovidermachine:
-  service:
-    grpc:
-      port: 9166
   image:
     repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
     tag: latest-20220815
   cfgmapName: authprovider-machine-config
-
-# revad authprovider bearer service
-authproviderbearer:
   service:
     grpc:
-      port: 9158
+      port: 9166
+
+#
+# revad authprovider bearer
+authproviderbearer:
   image:
     repository: gitlab-registry.cern.ch/sciencebox/hotfixes/revad
     tag: latest-20220815
   cfgmapName: authprovider-bearer-config
-
-
+  service:
+    grpc:
+      port: 9158
