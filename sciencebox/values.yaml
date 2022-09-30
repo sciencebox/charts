@@ -594,8 +594,54 @@ swan:
     #       cert:
     #       key:
 
+# CERNBox
 
-
+cernbox:
+  storageproviderhome:
+    extraVolumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: eos-keytab
+        secret:
+          defaultMode: 256
+          secretName: *sssKeytabName
+    extraVolumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp/reva
+      - name: eos-keytab
+        mountPath: /etc/eos.keytab
+        subPath: eos.keytab
+        readOnly: true
+  storageproviderpublic:
+    extraVolumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: eos-keytab
+        secret:
+          defaultMode: 256
+          secretName: *sssKeytabName
+    extraVolumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp/reva
+      - name: eos-keytab
+        mountPath: /etc/eos.keytab
+        subPath: eos.keytab
+        readOnly: true
+  storageprovideruser:
+    extraVolumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: eos-keytab
+        secret:
+          defaultMode: 256
+          secretName: *sssKeytabName
+    extraVolumeMounts:
+      - name: tmp-volume
+        mountPath: /tmp/reva
+      - name: eos-keytab
+        mountPath: /etc/eos.keytab
+        subPath: eos.keytab
+        readOnly: true
 
 #
 # NGINX

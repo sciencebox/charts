@@ -190,20 +190,6 @@ storageproviderhome:
     tag: &revadStorageproviderImageTag v1.19.0-eos
   env:
     XrdSecPROTOCOL: sss
-  extraVolumes:
-    - name: tmp-volume
-      emptyDir: {}
-    - name: eos-keytab
-      secret:
-        defaultMode: 256
-        secretName: sciencebox-eos-sss-keytab
-  extraVolumeMounts:
-    - name: tmp-volume
-      mountPath: /tmp/reva
-    - name: eos-keytab
-      mountPath: /etc/eos.keytab
-      subPath: eos.keytab
-      readOnly: true
   cfgmapName: storageprovider-home-config
   service:
     grpc:
@@ -219,19 +205,6 @@ storageproviderpublic:
     tag: *revadStorageproviderImageTag
   env:
     XrdSecPROTOCOL: sss
-  extraVolumes:
-    - name: tmp-volume
-      emptyDir: {}
-    - name: eos-keytab
-      secret:
-        secretName: sciencebox-eos-sss-keytab
-  extraVolumeMounts:
-    - name: tmp-volume
-      mountPath: /tmp/reva
-    - name: eos-keytab
-      mountPath: /etc/eos.keytab
-      subPath: eos.keytab
-      readOnly: true
   cfgmapName: storageprovider-public-config
   service:
     grpc:
@@ -245,20 +218,6 @@ storageprovideruser:
     tag: *revadStorageproviderImageTag
   env:
     XrdSecPROTOCOL: sss
-  extraVolumes:
-    - name: tmp-volume
-      emptyDir: {}
-    - name: eos-keytab
-      secret:
-        defaultMode: 256
-        secretName: sciencebox-eos-sss-keytab
-  extraVolumeMounts:
-    - name: tmp-volume
-      mountPath: /tmp/reva
-    - name: eos-keytab
-      mountPath: /etc/eos.keytab
-      subPath: eos.keytab
-      readOnly: true
   cfgmapName: storageprovider-user-config
   service:
     grpc:
