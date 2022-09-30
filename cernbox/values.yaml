@@ -4,6 +4,11 @@
 
 #
 # CERNBox web interface with custom web assets and theme
+
+cbox_cfg:
+  web_asset: https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz
+  web_theme: https://github.com/cernbox/web-extensions/releases/download/theme-cernbox/v0.1.7/theme-cernbox.tar.gz
+
 cernbox-web:
   initContainers:
     - name: install-web

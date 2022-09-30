@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: cbox-cfgmap-init
 data:
-  WEB_ASSET: {{ .Values.sciencebox.web_asset }}
-  WEB_THEME: {{ .Values.sciencebox.web_theme }}
+  WEB_ASSET: {{ .Values.cbox_cfg.web_asset }}
+  WEB_THEME: {{ .Values.cbox_cfg.web_theme }}
   cbox_init.sh: |
     #!/bin/bash
     set -x
