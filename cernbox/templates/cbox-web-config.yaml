@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: web-config
+  name: {{ .Values.cernboxconfig.webCfgName }}
 data:
   config.json: |-
     {
-      "server": {{ quote .Values.config.server }},
+      "server": {{ quote .Values.cernboxconfig.server }},
       "version": "0.1.0",
-      "theme": "{{ .Values.config.server }}/theme.json",
+      "theme": "{{ .Values.cernboxconfig.server }}/theme.json",
       "openIdConnect": {
-        "metadata_url": "{{ .Values.config.server }}/.well-known/openid-configuration",
-        "authority": {{ quote .Values.config.server }},
+        "metadata_url": "{{ .Values.cernboxconfig.server }}/.well-known/openid-configuration",
+        "authority": {{ quote .Values.cernboxconfig.server }},
         "client_id": "web",
         "response_type": "code",
         "scope": "openid profile email"

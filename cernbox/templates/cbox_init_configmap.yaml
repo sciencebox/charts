@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cbox-cfgmap-init
+  name: {{ .Values.cernboxconfig.initCfgName }}
 data:
-  WEB_ASSET: {{ .Values.cbox_cfg.web_asset }}
-  WEB_THEME: {{ .Values.cbox_cfg.web_theme }}
+  WEB_ASSET: {{ .Values.cernboxconfig.web_asset }}
+  WEB_THEME: {{ .Values.cernboxconfig.web_theme }}
   cbox_init.sh: |
     #!/bin/bash
     set -x
