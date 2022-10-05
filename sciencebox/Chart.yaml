@@ -2,7 +2,7 @@ apiVersion: v2
 #
 name: sciencebox
 type: application
-version: 0.0.3
+version: 0.0.4
 #
 description: The chart to deploy and configure ScienceBox
 icon: #TODO
