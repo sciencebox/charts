@@ -12,32 +12,32 @@ dependencies:
 - name: revad
   version: "1.4.1"
   alias: gateway
-  repository: "file://../../revad-fork/revad"
+  repository: "https://cs3org.github.io/charts"
 
 - name: revad
   version: "1.4.1"
   alias: storageproviderhome
-  repository: "file://../../revad-fork/revad"
+  repository: "https://cs3org.github.io/charts"
 
 - name: revad
   version: "1.4.1"
   alias: storageprovideruser
-  repository: "file://../../revad-fork/revad"
+  repository: "https://cs3org.github.io/charts"
 
 - name: revad
   version: "1.4.1"
   alias: storageproviderpublic
-  repository: "file://../../revad-fork/revad"
+  repository: "https://cs3org.github.io/charts"
 
 - name: revad
   version: "1.4.1"
   alias: authprovidermachine
-  repository: "file://../../revad-fork/revad"
+  repository: "https://cs3org.github.io/charts"
 
 - name: revad
   version: "1.4.1"
   alias: authproviderbearer
-  repository: "file://../../revad-fork/revad"
+  repository: "https://cs3org.github.io/charts"
 
 - name: ocis
   version: 0.0.7
