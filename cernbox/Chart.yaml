@@ -3,7 +3,7 @@ apiVersion: v2
 name: cernbox
 type: application
 version: 0.0.1
-appVersion: 1.3.3
+appVersion: 1.4.1
 #
 description: The chart to deploy and configure CERNBox in ScienceBox
 icon: https://avatars.githubusercontent.com/u/5640319
