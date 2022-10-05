@@ -4,49 +4,44 @@
 
 #
 # CERNBox web interface with custom web assets and theme
-
-cernboxconfig:
-  initCfgName: &cboxInitConfig sciencebox-cbox-init-config
-  webCfgName: &cboxWebConfig sciencebox-cbox-web-config
-  web_asset: https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz
-  web_theme: https://github.com/cernbox/web-extensions/releases/download/theme-cernbox/v0.1.7/theme-cernbox.tar.gz
-
 cernbox-web:
   initContainers:
-    - name: install-web
+    - name: cernbox-web-init
       image: busybox
       command: ["/bin/sh", "/root/cbox_init.sh"]
-      envFrom:
-        - configMapRef:
-            name: *cboxInitConfig
+      env:
+      - name: WEB_ASSET
+        value: https://github.com/cernbox/web-release/releases/download/v0.0.9/web.tar.gz
+      - name: WEB_THEME
+        value: https://github.com/cernbox/web-extensions/releases/download/theme-cernbox/v0.1.7/theme-cernbox.tar.gz
       volumeMounts:
-      - name: web
-        mountPath: "/var/www/web/"
-      - name: cbox-init
+      - name: web-init
         mountPath: /root/cbox_init.sh
         subPath: cbox_init.sh
+      - name: web-content
+        mountPath: /var/www/web/
   extraVolumeMounts:
-    - name: cbox-web
+    - name: web-config
       mountPath: /var/www/web/config.json
       subPath: config.json
-    - name: web
-      mountPath: /var/www/web/
     - name: nginx-conf
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
+    - name: web-content
+      mountPath: /var/www/web/
   extraVolumes:
-    - name: cbox-web
+    - name: web-init
       configMap:
-        name: *cboxWebConfig
-    - name: web
+        name: cernbox-web-init
+        defaultMode: 0755
+    - name: web-content
       emptyDir: {}
+    - name: web-config
+      configMap:
+        name: cernbox-web-config
     - name: nginx-conf
       configMap:
         name: nginx-conf
-    - name: cbox-init
-      configMap:
-        name: *cboxInitConfig
-        defaultMode: 0755
   command: ["/opt/bitnami/nginx/sbin/nginx"]
   args: ["-c", "/etc/nginx/nginx.conf"]
   livenessProbe:
