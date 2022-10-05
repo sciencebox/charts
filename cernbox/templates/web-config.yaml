@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.cernboxconfig.webCfgName }}
+  name: cernbox-web-config
 data:
   config.json: |-
     {
