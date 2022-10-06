@@ -7,9 +7,9 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "ocis.labels" . | nindent 4 }}
-  {{- if .Values.ingress.annotations }}
+  {{- if .Values.ingress.annotation_http }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
+    {{- range $key, $value := .Values.ingress.annotation_http }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}

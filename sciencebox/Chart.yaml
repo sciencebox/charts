@@ -2,7 +2,7 @@ apiVersion: v2
 #
 name: sciencebox
 type: application
-version: 0.0.3
+version: 0.0.4
 #
 description: The chart to deploy and configure ScienceBox
 icon: #TODO
@@ -32,10 +32,13 @@ dependencies:
 # EOS
 - name: server
   alias: eos
-  version: 0.1.3
+  version: 0.1.5
   repository: "https://registry.cern.ch/chartrepo/eos"
 - name: eos-instance-config
   version: 0.0.5
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"
+- name: eos-user-cache-refresher
+  version: 0.0.1
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
 #
 # SWAN
@@ -46,4 +49,4 @@ dependencies:
 # CERNBox
 - name: cernbox
   version: 0.0.1
-  repository: "file://../cernbox"
+  repository: "https://registry.cern.ch/chartrepo/sciencebox"

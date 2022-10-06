@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "eos-user-cache-refresher.fullname" . }}
+  labels:
+    {{- include "eos-user-cache-refresher.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "eos-user-cache-refresher.selectorLabels" . | nindent 8 }}
+        {{- toYaml .Values.customLabels | nindent 8 }}
+    spec:
+      {{- if .Values.podAssignment.enableNodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.customLabels | nindent 8 }}
+      {{- end }}
+      {{- if .Values.podAssignment.enableMgmColocation }}
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                  - eos-mgm
+              topologyKey: "kubernetes.io/hostname"
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+        - name: eos-user-cache-refresher
+          image: {{ include "utils.image" . }}
+          imagePullPolicy: {{ include "utils.imagePullPolicy" . }}
+          command: ["/bin/bash", "/root/user_cache_refresh.sh"]
+          env:
+            - name: XrdSecPROTOCOL
+              value: sss
+            - name: XrdSecsssKT
+              value: /etc/eos.keytab
+            - name: EOS_MGM_URL
+              value: root://{{ include "mgm.fqdn" . }}
+          volumeMounts:
+            - name: eos-sss-keytab
+              mountPath: /etc/eos.keytab
+              subPath: eos.keytab
+            - name: eos-user-cache-refresher-script
+              mountPath: /root/user_cache_refresh.sh
+              subPath: user_cache_refresh.sh
+      volumes:
+        - name: eos-sss-keytab
+          secret:
+            secretName: {{ include "utils.sssKeytabName" . }}
+            defaultMode: 0400
+        - name: eos-user-cache-refresher-script
+          configMap:
+            name: {{ include "eos-user-cache-refresher.fullname" . }}-script
+            defaultMode: 0755

@@ -1,5 +1,11 @@
 ## Work-arounds for running CERNBOX Charts
 
+## Fixed Work-arounds for running CERNBOX Charts [SOLVED]
+
+
+This documents keeps track of all the work-arounds used to run CERNBox charts. It contains a brief description of all the charts used.
+
+
 ### Replace localhost with ingress and k8s services
 
 As you can notice in the `web-config.json` we configure the server to run at `https://localhost:9200` inside the pod. So in order to access the server from a browser, one needs to port-forward 9200 port to the localhost:
@@ -11,12 +17,6 @@ $ kubectl port-forward <ocis-pod> 9200:9200
 After running the port-forward and the above mentioned manual steps, one can access the sciencebox deployment from their browser by going to [https://localhost:9200](https://localhost:9200)
 
 In the future, this should be exposed via a kubernetes services which can be reachable by an ingress object.
-
-## Fixed Work-arounds for running CERNBOX Charts
-
-
-This documents keeps track of all the work-arounds used to run CERNBox charts. It contains a brief description of all the charts used.
-
 
 ### EOS Charts
 

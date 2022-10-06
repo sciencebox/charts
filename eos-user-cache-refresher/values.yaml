@@ -1,0 +1,52 @@
+image:
+  repository: gitlab-registry.cern.ch/dss/eos/eos-all
+  tag: 4.8.78
+  pullPolicy: Always
+
+#
+# SSS keytab to authenticate against eos mgm
+#   The name of the kubernetes secret containing the eos keytab to use.
+# Default: eos-sss-keytab
+sssKeytab:
+  secret:
+
+#
+# Prefer colocation with MGM pod
+#   Assign weight 100 to colocation with 'component: eos-mgm' as per custom labels.
+#   The idea is to re-use the eos container image available on the node running the mgm.
+#
+podAssignment:
+  enableMgmColocation: true
+  enableNodeSelector: false     # Requires a node labeled as per customLabels
+
+#
+# Custom labels to identify eos-user-cache-refresher pod.
+#
+# They are used by node selection, if enabled (see above).
+# Label nodes accordingly to avoid scheduling problems.
+#
+customLabels:
+  service: eos
+  component: eos-mgm
+
+#
+# Refresher parameters
+#
+#   interval: The interval in seconds at which `eos access ls` is executed on the mgm
+#   initialBurst: Used to populate the local cache fast upon bootstrapping the instance.
+#                 Once the burst is over, the normal refresh interval (see above) will be used.
+#     duration: Duration of the burst in seconds. Expected to be short (e.g., <60 seconds)
+#     interval: The interval at which `eos access ls` is executed during the burst. Expected to be short (e.g., <5 seconds)
+#   exitOnResolve: Exit the job in case of a successful match found in the `eos access ls` output
+#     type: Can be {user, group, host, domain}.allowed
+#     identity: The identifier we are looking for (can be a user name, user id, group name, group id, hostname, IP or domain name)
+refreshUserCache:
+  interval: 30
+  initialBurst:
+    enable: false
+    duration: 10
+    interval: 1
+  exitOnResolve:
+    enable: false
+    type:
+    identity:
