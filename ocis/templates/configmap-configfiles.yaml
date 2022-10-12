@@ -26,7 +26,7 @@ data:
       routes:
       - type: ""
         endpoint: /
-        backend: http://sciencebox-cernbox-web
+        backend: http://{{ .Release.Name }}-cernbox-web
         service: ""
         apache-vhost: false
       - type: ""
@@ -51,42 +51,42 @@ data:
         apache-vhost: false
       - type: ""
         endpoint: /ocs/
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: query
         endpoint: /remote.php/?preview=1 # gateway
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: ""
         endpoint: /remote.php/ # gateway
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: ""
         endpoint: /dav/ # gateway
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: ""
         endpoint: /webdav/ # gateway
-        backend: http://sciencebox-gateway:9143 
+        backend: http://{{ .Release.Name }}-gateway:9143 
         service: ""
         apache-vhost: false
       - type: ""
         endpoint: /status.php # gateway
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: ""
         endpoint: /index.php/
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: ""
         endpoint: /apps/
-        backend: http://sciencebox-gateway:9143
+        backend: http://{{ .Release.Name }}-gateway:9143
         service: ""
         apache-vhost: false
       - type: ""
