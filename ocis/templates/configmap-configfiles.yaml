@@ -26,7 +26,6 @@ data:
       routes:
       - type: ""
         endpoint: /
-        # replace the hardcoded sciencebox here
         backend: http://{{ .Release.Name }}-cernbox-web
         service: ""
         apache-vhost: false
