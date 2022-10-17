@@ -3,7 +3,7 @@
 #
 
 #
-# CERNBox web interface with custom web assets and theme
+# CERNBox web interface with custom web assets and theme served by nginx
 cernbox-web:
   initContainers:
     - name: cernbox-web-init
@@ -125,10 +125,13 @@ ocis:
   image:
     repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
     tag: 1.20.0
+  # ocis extensions (https://owncloud.dev/services/)
   extensions:
     - proxy
     - idp
+  # Environment variables to configure OCIS
   env:
+    # IDP Config - https://owncloud.dev/services/idp/configuration/#environment-variables
     IDP_ACCESS_TOKEN_EXPIRATION: 28800
     IDP_ISS: https://sciencebox.local
     IDP_INSECURE: true
@@ -148,6 +151,8 @@ ocis:
     IDP_LDAP_LOGIN_ATTRIBUTE: "uid"
     IDP_LDAP_UUID_ATTRIBUTE: "ownclouduuid"
     IDP_LDAP_UUID_ATTRIBUTE_TYPE: binary
+
+    # Proxy Config - https://owncloud.dev/services/proxy/configuration/
     PROXY_ACCOUNT_BACKEND_TYPE: cs3
     OCIS_LOG_LEVEL: debug
     PROXY_TLS: true
@@ -163,6 +168,8 @@ ocis:
     exposeIdp: true
     annotation:
       "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+
+## Revad Configurations
 
 #
 # revad gateway

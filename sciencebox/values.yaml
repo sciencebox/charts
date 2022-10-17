@@ -594,9 +594,10 @@ swan:
     #       cert:
     #       key:
 
-# CERNBox
 
+# CERNBox
 cernbox:
+  # CBox Revad-storageproviders
   storageproviderhome:
     extraVolumes:
       - name: tmp-volume

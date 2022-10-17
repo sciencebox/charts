@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "ocis.labels" . | nindent 4 }}
 data:
+  # indentifier_registration.yaml - used by IDP to register the oidc clients
   identifier_registration.yaml: |-
       clients:
         - id: swan
@@ -20,6 +21,7 @@ data:
             - https://{{ .Values.config.server }}/oidc-silent-redirect.html
           origins:
             - https://{{ .Values.config.server }}
+  # proxy.yaml - routing configuration for ocis proxy
   proxy.yaml:  |-
     policies:  
     - name: ocis
