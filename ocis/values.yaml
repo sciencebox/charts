@@ -1,8 +1,12 @@
+## -- Number of ocis replicas to run
 replicaCount: 1
 
 image:
+  ## -- Image to use for deploying ocis
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+  ## -- Image tag to use
   tag: 1.20.0
+  ## -- Kubernetes Image pull policy
   pullPolicy: Always
 
 services:
