@@ -11,31 +11,30 @@ The Helm Chart for the ocis extensions
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| configFiles."identifier_registration.yaml" | string | `"clients:\n  - id: web\n    name: ownCloud web app\n    trusted: yes\n    redirect_uris:\n      - https://ocis-idp.local/\n      - https://ocis-idp.local/oidc-callback.html\n      - https://ocis-idp.local/oidc-silent-redirect.html\n    origins:\n      - https://ocis-idp.local\n"` |  |
-| emptyDir.sizeLimit | string | `""` |  |
-| extraEnv | list | `[]` |  |
-| image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"gitlab-registry.cern.ch/sciencebox/docker-images/ocis"` |  |
-| image.tag | string | `"1.20.0"` |  |
-| ingress.annotations | object | `{}` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.exposeIdp | bool | `true` |  |
-| ingress.exposeLdap | bool | `false` |  |
-| ingress.grpc | object | `{}` |  |
-| ingress.hosts[0] | string | `"ocis-idp.local"` |  |
-| ingress.tls | list | `[]` |  |
-| persistentVolume.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| configFiles | object | `{"identifier_registration.yaml":"clients:\n  - id: web\n    name: ownCloud web app\n    trusted: yes\n    redirect_uris:\n      - https://ocis-idp.local/\n      - https://ocis-idp.local/oidc-callback.html\n      - https://ocis-idp.local/oidc-silent-redirect.html\n    origins:\n      - https://ocis-idp.local\n"}` | Configuration file for the IDP service - Configuration to register OAuth clients |
+| emptyDir | object | `{"sizeLimit":""}` | Empty Dir for temporary volume |
+| extraEnv | list | `[]` | Extra Environment variables for the ocis pod |
+| image.pullPolicy | string | `"Always"` | Kubernetes Image pull policy |
+| image.repository | string | `"gitlab-registry.cern.ch/sciencebox/docker-images/ocis"` | Image to use for deploying ocis |
+| image.tag | string | `"1.20.0"` | Image tag to use |
+| ingress | object | `{"annotations":{},"enabled":false,"exposeIdp":true,"exposeLdap":false,"grpc":{},"hosts":["ocis-idp.local"],"tls":[]}` | ingress configuration  |
+| ingress.enabled | bool | `false` | enable ingress for ocis |
+| ingress.exposeIdp | bool | `true` | configure ingress to expose the IDP |
+| ingress.exposeLdap | bool | `false` | configure ingress to expose the LDAP |
+| ingress.hosts | list | `["ocis-idp.local"]` | ingress hostnames |
+| ingress.tls | list | `[]` | ingress TLS configuration |
+| persistentVolume.accessModes | list | `["ReadWriteOnce"]` | Must match those of existing PV or dynamic provisioner    Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/ |
 | persistentVolume.annotations | object | `{}` |  |
-| persistentVolume.enabled | bool | `false` |  |
-| persistentVolume.existingClaim | string | `""` |  |
+| persistentVolume.enabled | bool | `false` | enable persistent volume |
+| persistentVolume.existingClaim | string | `""` | If defined, PVC MUST be created manually before volume will be bound |
 | persistentVolume.mountPath | string | `"/var/tmp"` |  |
 | persistentVolume.size | string | `"10Gi"` |  |
-| persistentVolume.subPath | string | `""` |  |
-| replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
-| services.idp.port | int | `9130` |  |
-| services.idp.targetPort | int | `9130` |  |
-| services.proxy.port | int | `443` |  |
-| services.proxy.targetPort | int | `9200` |  |
-| services.type | string | `"ClusterIP"` |  |
+| persistentVolume.subPath | string | `""` | Subdirectory of the PV to mount. If the root directory is not empty |
+| replicaCount | int | `1` | Number of ocis replicas to run |
+| resources | object | `{}` | CPU/RAM resources for the ocis pod |
+| services.idp.port | int | `9130` | Service port where the ocis idp extension is listening |
+| services.idp.targetPort | int | `9130` | Target service port for the ocis idp extension |
+| services.proxy.port | int | `443` | Service port where the ocis proxy extension is listening |
+| services.proxy.targetPort | int | `9200` | Target service port for the ocis proxy extension |
+| services.type | string | `"ClusterIP"` | Kubernetes service type |
 
