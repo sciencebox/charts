@@ -2,7 +2,7 @@
 
 set -eu
 
-bin/helm-docs
+ocis/bin/helm-docs
 
 dir_dirty=$(git diff HEAD)
 if [ -z "$dir_dirty" ]; then
