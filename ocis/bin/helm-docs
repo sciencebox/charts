@@ -47,12 +47,13 @@ if [ ! -f "$helmdocsbin" ]; then
         exit 126
     fi
     helmdocscurl="https://github.com/norwoodj/helm-docs/releases/download/v$helmdocsv/helm-docs_${helmdocsv}_${os}_${arch}.tar.gz"
+    helmdocszip="helm-docs_${helmdocsv}_${os}_${arch}.tar.gz"
     tmp=$(mktemp -d -t helm-docs.XXX)
     mkdir -p "$targetbin"
     (
         cd "$tmp"
-        curl -o "./helm-docs.tar.gz" "$helmdocscurl"
-        tar zf "./helm-docs.tar.gz" -x "helm-docs"
+        wget "$helmdocscurl"
+        tar zf "$helmdocszip" -x "helm-docs"
         chmod +x "helm-docs"
     )
     mv "$tmp/helm-docs" "$helmdocsbin"
