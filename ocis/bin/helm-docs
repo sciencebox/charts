@@ -6,6 +6,8 @@ if command -v helm-docs >/dev/null; then
 	exec helm-docs "$@"
 fi
 
+cd ocis
+
 helmdocsv=1.11.0
 bindir=$( cd "${0%/*}" && pwd ) # Change to script dir and set bin dir to this
 targetbin=$( cd "$bindir"/.. && pwd )/target/bin
@@ -59,4 +61,4 @@ if [ ! -f "$helmdocsbin" ]; then
     mv "$tmp/helm-docs" "$helmdocsbin"
 fi
 
-"$helmdocsbin" "$@"
+"$helmdocsbin" "$@" 
