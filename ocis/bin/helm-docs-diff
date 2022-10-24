@@ -10,9 +10,6 @@ if [ -z "$dir_dirty" ]; then
 	exit 0
 else
 	echo 'Helm-docs generated readmes diverge from current chart readmes:'
-	git status
-	cat ocis/README.md
-	ls ocis/target
 	exit 64
 fi
 
