@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/helm.yml
-      - ocis/bin/*
+      - bin/*
       - '**/ocis/**'
 
 permissions:
@@ -17,5 +17,5 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
-      - run: ocis/bin/helm-docs-diff
+      - run: bin/helm-docs-diff
    
