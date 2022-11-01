@@ -1,21 +1,36 @@
+# Default values for ocis.
+# This is a YAML formatted file.
+# Declare variables to be passed into your templates
+
+# -- Number of ocis replicas to run
 replicaCount: 1
 
 image:
+  # -- Image to use for deploying ocis
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/ocis
+  # -- Image tag to use
   tag: 1.20.0
+  # -- Kubernetes Image pull policy
   pullPolicy: Always
 
 services:
+  # -- Kubernetes service type
   type: ClusterIP
   idp:
+    # -- Service port where the ocis idp extension is listening
     port: 9130
+    # -- Target service port for the ocis idp extension
     targetPort: 9130
   proxy:
+    # -- Service port where the ocis proxy extension is listening
     port: 443
+    # -- Target service port for the ocis proxy extension
     targetPort: 9200
 
+# -- Extra Environment variables for the ocis pod
 extraEnv: []
 
+# -- Configuration file for the IDP service - Configuration to register OAuth clients
 configFiles:
   identifier_registration.yaml: |
     clients:
@@ -30,22 +45,21 @@ configFiles:
           - https://ocis-idp.local
 
 persistentVolume:
-  ## If true, ocis will create/use a Persistent Volume Claim
-  ## If false, use emptyDir instead
+  # -- enable persistent volume
   enabled: false
 
-  ## Must match those of existing PV or dynamic provisioner
-  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  # -- Must match those of existing PV or dynamic provisioner
+  #    Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   accessModes:
     - ReadWriteOnce
 
   annotations: {}
 
-  ## If defined, PVC MUST be created manually before volume will be bound
+  # -- If defined, PVC MUST be created manually before volume will be bound
   existingClaim: ""
 
   mountPath: /var/tmp
-  ## Subdirectory of the PV to mount. If the root directory is not empty
+  # -- Subdirectory of the PV to mount. If the root directory is not empty
   subPath: ""
   size: 10Gi
 
@@ -55,9 +69,11 @@ persistentVolume:
 
   # volumeBindingMode: ""
 
+# -- Empty Dir for temporary volume
 emptyDir:
   sizeLimit: ""
 
+# -- CPU/RAM resources for the ocis pod
 resources: {}
   # requests:
   #   cpu: 500m
@@ -68,14 +84,20 @@ resources: {}
   #   memory: 512Mi
   #   ephemeral-storage: "2Gi"
 
+# -- ingress configuration 
 ingress:
+  # -- enable ingress for ocis
   enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
+  # -- ingress hostnames
   hosts:
     - ocis-idp.local
+  # -- configure ingress to expose the IDP
   exposeIdp: true
+  # -- configure ingress to expose the LDAP
   exposeLdap: false
+  # -- ingress TLS configuration
   tls: []
   #  - secretName: ocis-tls
   #    hosts:
