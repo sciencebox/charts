@@ -1,0 +1,25 @@
+
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" .  }}{{ template "chart.typeBadge" .  }}{{ template "chart.appVersionBadge" .  }}
+
+A collection of other charts (and umbrella charts) to deploy ScienceBox in its entirety
+
+{{ template "chart.requirementsSection" . }}
+
+### Deploy
+
+Considering it's many parameters and configuration options, we recommend to try ScienceBox in its demo version first.
+
+Have a look at **mboxed**, our single-host self-configuring deployment in minikube --> https://github.com/sciencebox/mboxed.
+
+If interested in chart itself and all its dependencies, download it with Helm:
+
+```
+helm repo add sciencebox https://registry.cern.ch/chartrepo/sciencebox
+helm repo update
+helm pull sciencebox/sciencebox --untar
+```
+
+{{ template "helm-docs.versionFooter" . }}
