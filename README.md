@@ -1,5 +1,7 @@
 # ScienceBox
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/sciencebox)](https://artifacthub.io/packages/search?repo=sciencebox)
+
 ScienceBox project aims to provider container-based version CERN services namely EOS, CERNBox, CVMFS and SWAN services. The goal of the project is to provide an easy and hassle free way to deploy CERN Services on Kubernetes.
 
 # ScienceBox Charts
