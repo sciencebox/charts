@@ -27,12 +27,12 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | authproviderbearer.cfgmapName | string | `"authprovider-bearer-config"` | cfgmap containing revad authprovider bearer TOML configuratinos |
-| authproviderbearer.image.repository | string | `"gitlab-registry.cern.ch/sciencebox/hotfixes/revad"` | authproviderbearer image to use for deployment |
-| authproviderbearer.image.tag | string | `"latest-20220815"` | image tag to use |
+| authproviderbearer.image.repository | string | `"ghcr.io/cernbox/reva"` | authproviderbearer image to use for deployment |
+| authproviderbearer.image.tag | string | `"cernbox"` | image tag to use |
 | authproviderbearer.service.grpc.port | int | `9158` | port the grpc service listens on  |
 | authprovidermachine.cfgmapName | string | `"authprovider-machine-config"` |  |
-| authprovidermachine.image.repository | string | `"gitlab-registry.cern.ch/sciencebox/hotfixes/revad"` |  |
-| authprovidermachine.image.tag | string | `"latest-20220815"` |  |
+| authprovidermachine.image.repository | string | `"ghcr.io/cernbox/reva"` |  |
+| authprovidermachine.image.tag | string | `"cernbox"` |  |
 | authprovidermachine.service.grpc.port | int | `9166` |  |
 | cernbox-web.args[0] | string | `"-c"` |  |
 | cernbox-web.args[1] | string | `"/etc/nginx/nginx.conf"` |  |
