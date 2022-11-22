@@ -90,6 +90,8 @@ data:
     acl stratum_ones url_regex ^http://cvmfs02.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.ihep.ac.cn
     acl stratum_ones url_regex ^http://cvmfs-s1.*\.computecanada\.(ca|net)
+    acl stratum_ones url_regex ^http://sampacs.*\.if\.usp\.br
+    acl stratum_ones url_regex ^http://cvmfs-.*\.hpc\.swin\.edu\.au
 
     # ACL for ATLAS Frontier (for reference see ATLAS_FRONTIER from frontier-squid package)
     acl atlas_frontier dstdom_regex ^(frontier.*\.racf\.bnl\.gov|atlas.*frontier.*\.cern\.ch|cc.*\.in2p3\.fr|lcg.*\.gridpp\.rl\.ac\.uk|(.*frontier.*|tier1nfs)\.triumf\.ca|atlas.*frontier\.openhtc\.io)$
