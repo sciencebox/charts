@@ -3,7 +3,7 @@ apiVersion: v2
 name: frontier-squid
 type: application
 version: 0.1.4
-appVersion: 4.17-1.1
+appVersion: 4.17-2.1
 #
 description: Frontier Squid cache for CVMFS clients
 icon: https://upload.wikimedia.org/wikipedia/fr/b/b7/Squid-cache_logo.jpg
