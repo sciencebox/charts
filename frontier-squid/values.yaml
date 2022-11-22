@@ -101,8 +101,13 @@ httpAccessAllow:
 # Network Service Specs
 #   Docs: https://kubernetes.io/docs/concepts/services-networking/service/
 #
+#   clusterIP is set to None to have DNS returning all the A records for the pod replicas (headless service)
+#   This is required to leverage on the CVMFS client Proxy Sharding fearure:
+#     https://cvmfs.readthedocs.io/en/latest/cpt-configure.html#sct-proxy-sharding
+#
 service:
   type: ClusterIP
+  clusterIP: None
   ports:
     - port: 3128
       targetPort: 3128
