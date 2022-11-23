@@ -1,67 +1,57 @@
 image:
+  # -- Docker image repository for the CVMFS image
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
+  # -- image tag for cvmfs image
   tag: 2.9.0
+  # -- image pull policy
   pullPolicy: IfNotPresent
 
-#
-# Assign cvmfs pod to a node with a specific label.
-#   If true, it will be deployed only on nodes labeled as per customLabels (see below).
-#   If false, it will be deployed on all nodes of the cluster (it is a daemonSet).
-#
+# -- Assign cvmfs pod to a node with a specific label.
+#    If true, it will be deployed only on nodes labeled as per customLabels (see below).
+#    If false, it will be deployed on all nodes of the cluster (it is a daemonSet).
 podAssignment:
   enableNodeSelector: false
 
-#
-# Custom labels to identify cvmfs pod.
-#
-# They are used by node selection, if enabled (see above).
-# Label nodes accordingly to avoid scheduling problems.
-#
+# -- Custom labels to identify cvmfs pod.
+#    They are used by node selection, if enabled (see above).
+#    Label nodes accordingly to avoid scheduling problems.
 customLabels:
   service: swan
   component: swan-users
 
-#
-# Repositories to be mounted by cvmfs pod.
-#
+# -- Repositories to be mounted by cvmfs pod.
 repositories:
   - cvmfs-config.cern.ch
   - sft.cern.ch
   - sft-nightlies.cern.ch
 
+# -- cvmfs configuration common to all repositories stored as key:value pairs
 #
-# cvmfs configuration common to all repositories stored as key:value pairs
-#
-#   Documentation at:
-#   - https://cvmfs.readthedocs.io/en/stable/cpt-configure.html
-#   - https://cvmfs.readthedocs.io/en/stable/apx-parameters.html#client-parameters
-#
+#     Documentation at:
+#     - https://cvmfs.readthedocs.io/en/stable/cpt-configure.html
+#     - https://cvmfs.readthedocs.io/en/stable/apx-parameters.html#client-parameters
 default_local:
   CVMFS_DNS_MIN_TTL: 300
   CVMFS_QUOTA_LIMIT: 20000
   CVMFS_HTTP_PROXY: DIRECT
   CVMFS_CACHE_BASE: /var/lib/cvmfs
 
-#
-# Additional mount options common to all repositories
-#
+# -- Additional mount options common to all repositories
 mountOptions:
   uid: 998
   gid: 996
   hostMountpoint: /cvmfs
 
+# -- Prefetch from cvmfs repos to keep client cache warm
 #
-# Prefetch from cvmfs repos to keep client cache warm
+#    Parameters:
+#      - enabled: Boolean to enable/disable prefetcher. Defaults to false
+#      - jobs: List of commands to execute in crond format
 #
-# Parameters:
-#   - enabled: Boolean to enable/disable prefetcher. Defaults to false
-#   - jobs: List of commands to execute in crond format
-#
-#   'cat_readme' is the name of a sample prefetching job with the following properties
-#     - command: The command to be executed -- In this case, a simple cat of a file
-#     - user: The user executing the command (Default: root)
-#     - minute, hour, day, month, weekday: When to executre the command as per cron file format (Default: *, aka every minute)
-#
+#    'cat_readme' is the name of a sample prefetching job with the following properties
+#      - command: The command to be executed -- In this case, a simple cat of a file
+#      - user: The user executing the command (Default: root)
+#      - minute, hour, day, month, weekday: When to executre the command as per cron file format (Default: *, aka every minute)
 prefetcher:
   enabled: false
   #jobs:
