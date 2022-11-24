@@ -23,12 +23,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint chart
-        id: lint
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.1
+
+      # Python is required because `ct lint` runs Yamale and 
+      # yamllint which require python
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.3.1
         with:
-          command: lint
-          config: .ct.yaml
+          version: v3.3.0
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --config ct.yaml)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+
+      - name: Run chart-testing (lint)
+        run: ct lint --config ct.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.4.0

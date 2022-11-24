@@ -2,6 +2,6 @@
 remote: origin
 target-branch: master
 chart-dirs:
-  - ./ocis
+  - .
 helm-extra-args: --timeout 600s
 
