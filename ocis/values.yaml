@@ -44,6 +44,9 @@ configFiles:
         origins:
           - https://ocis-idp.local
 
+config:
+  server: https://ocis-idp.local/
+
 persistentVolume:
   # -- enable persistent volume
   enabled: false

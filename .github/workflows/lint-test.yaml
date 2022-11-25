@@ -41,10 +41,13 @@ jobs:
           version: v3.3.0
 
       - name: Run chart-testing (list-changed)
-        id: list-changed
+        id: generate-json
         run: |
           changed=$(ct list-changed --config .ct.yaml)
-          
+          for change in $changed
+          do
+            tools/generate-json-schema.py $change
+          done
           if [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
