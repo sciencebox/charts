@@ -11,6 +11,7 @@ The Helm Chart for the ocis extensions
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| config.server | string | `"https://ocis-idp.local/"` |  |
 | configFiles | object | `{"identifier_registration.yaml":"clients:\n  - id: web\n    name: ownCloud web app\n    trusted: yes\n    redirect_uris:\n      - https://ocis-idp.local/\n      - https://ocis-idp.local/oidc-callback.html\n      - https://ocis-idp.local/oidc-silent-redirect.html\n    origins:\n      - https://ocis-idp.local\n"}` | Configuration file for the IDP service - Configuration to register OAuth clients |
 | emptyDir | object | `{"sizeLimit":""}` | Empty Dir for temporary volume |
 | extraEnv | list | `[]` | Extra Environment variables for the ocis pod |

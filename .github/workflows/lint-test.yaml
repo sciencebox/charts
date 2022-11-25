@@ -46,7 +46,7 @@ jobs:
           changed=$(ct list-changed --config .ct.yaml)
           for change in $changed
           do
-            tools/generate-json-schema.py $change
+            python3 tools/generate-json-schema.py $change
           done
           if [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
