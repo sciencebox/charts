@@ -15,8 +15,11 @@ from collections.abc import MutableMapping
 import yaml
 import sys
 
-schema_yaml = os.path.join( sys.argv[1], "schema.yaml")
-values_schema_json = os.path.join(sys.argv[1], "values.schema.json")
+here_dir = os.path.abspath(os.path.dirname(__file__))
+schema_yaml = os.path.join(here_dir, os.pardir, sys.argv[1], "schema.yaml")
+values_schema_json = os.path.join(
+    here_dir, os.pardir, sys.argv[1], "values.schema.json"
+)
 
 
 def clean_jsonschema(d, parent_key=""):
@@ -41,8 +44,6 @@ def clean_jsonschema(d, parent_key=""):
 
 
 def run():
-    print(schema_yaml)
-    print(os.pardir)
     # Using these sets, we can validate further manually by printing the results
     # of set operations.
     with open(schema_yaml) as f:
