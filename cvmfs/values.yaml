@@ -54,7 +54,7 @@ mountOptions:
 #      - minute, hour, day, month, weekday: When to executre the command as per cron file format (Default: *, aka every minute)
 prefetcher:
   enabled: false
-  #jobs:
+  # jobs:
   #  cat_readme:
   #    command: 'cat /cvmfs/sft.cern.ch/README.md'
   #    user: 'root'
