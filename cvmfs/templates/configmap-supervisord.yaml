@@ -49,11 +49,9 @@ data:
     [eventlistener:watch_processes]
     command=bash -c "printf 'READY\n' && while read line; do kill -SIGQUIT $PPID; done < /dev/stdin"
     events=PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
-
 ---
-{{- $uid := (include "mount_uid" . ) -}}
-{{- $gid := (include "mount_gid" . ) -}}
-
+{{ $uid := (include "mount_uid" . ) }}
+{{ $gid := (include "mount_gid" . ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
