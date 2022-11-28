@@ -18,7 +18,7 @@ The Helm Chart for the ocis extensions
 | image.pullPolicy | string | `"Always"` | Kubernetes Image pull policy |
 | image.repository | string | `"gitlab-registry.cern.ch/sciencebox/docker-images/ocis"` | Image to use for deploying ocis |
 | image.tag | string | `"1.20.0"` | Image tag to use |
-| ingress | object | `{"annotations":{},"enabled":false,"exposeIdp":true,"exposeLdap":false,"grpc":{},"hosts":["ocis-idp.local"],"tls":[]}` | ingress configuration  |
+| ingress | object | `{"annotations":{},"enabled":false,"exposeIdp":true,"exposeLdap":false,"grpc":{},"hosts":["ocis-idp.local"],"tls":[]}` | ingress configuration |
 | ingress.enabled | bool | `false` | enable ingress for ocis |
 | ingress.exposeIdp | bool | `true` | configure ingress to expose the IDP |
 | ingress.exposeLdap | bool | `false` | configure ingress to expose the LDAP |
