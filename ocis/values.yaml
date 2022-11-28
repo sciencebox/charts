@@ -87,7 +87,7 @@ resources: {}
   #   memory: 512Mi
   #   ephemeral-storage: "2Gi"
 
-# -- ingress configuration 
+# -- ingress configuration
 ingress:
   # -- enable ingress for ocis
   enabled: false
