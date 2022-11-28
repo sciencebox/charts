@@ -41,16 +41,19 @@ jobs:
           version: v3.3.0
 
       - name: Run chart-testing (list-changed)
-        id: list-changed
+        id: generate-json
         run: |
           changed=$(ct list-changed --config .ct.yaml)
-          
+          for change in $changed
+          do
+            python3 tools/generate-json-schema.py $change
+          done
           if [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --config .ct.yaml
+        run: ct lint --check-version-increment=false --validate-maintainers=false --config .ct.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.4.0

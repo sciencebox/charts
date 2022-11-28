@@ -44,6 +44,9 @@ configFiles:
         origins:
           - https://ocis-idp.local
 
+config:
+  server: https://ocis-idp.local/
+
 persistentVolume:
   # -- enable persistent volume
   enabled: false
@@ -84,7 +87,7 @@ resources: {}
   #   memory: 512Mi
   #   ephemeral-storage: "2Gi"
 
-# -- ingress configuration 
+# -- ingress configuration
 ingress:
   # -- enable ingress for ocis
   enabled: false
