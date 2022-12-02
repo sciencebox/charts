@@ -3,7 +3,7 @@
 
 The chart to deploy and configure ScienceBox
 
-![Version: 0.0.4](https://img.shields.io/badge/Version-0.0.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.0.5](https://img.shields.io/badge/Version-0.0.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A collection of other charts (and umbrella charts) to deploy ScienceBox in its entirety
 
@@ -15,7 +15,7 @@ A collection of other charts (and umbrella charts) to deploy ScienceBox in its e
 | https://charts.bitnami.com/bitnami | nginx-welcome-page(nginx) | 13.0.0 |
 | https://jp-gouin.github.io/helm-openldap/ | ldap(openldap) | 2.0.4 |
 | https://registry.cern.ch/chartrepo/eos | eos(server) | 0.1.5 |
-| https://registry.cern.ch/chartrepo/sciencebox | cernbox | 0.0.1 |
+| https://registry.cern.ch/chartrepo/sciencebox | cernbox | 0.0.2 |
 | https://registry.cern.ch/chartrepo/sciencebox | eos-instance-config | 0.0.5 |
 | https://registry.cern.ch/chartrepo/sciencebox | eos-user-cache-refresher | 0.0.1 |
 | https://registry.cern.ch/chartrepo/sciencebox | ldap-instance-config | 0.0.1 |

@@ -7,7 +7,7 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 - [ocis](https://github.com/sciencebox/charts/tree/master/ocis) ~ ownCloud Infinite Scale extensions
 - [nginx](https://artifacthub.io/packages/helm/bitnami/nginx) ~ Bitnami's chart for NGINX webserver used to server CERNBox web assets and theme
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.1](https://img.shields.io/badge/AppVersion-1.4.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.1](https://img.shields.io/badge/AppVersion-1.4.1-informational?style=flat-square)
 
 ## Requirements
 
@@ -20,7 +20,7 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 | https://cs3org.github.io/charts | authprovidermachine(revad) | 1.4.1 |
 | https://cs3org.github.io/charts | authproviderbearer(revad) | 1.4.1 |
 | https://cs3org.github.io/charts | storageproviderhome(revad) | 1.4.1 |
-| https://registry.cern.ch/chartrepo/sciencebox | ocis | 0.0.7 |
+| https://registry.cern.ch/chartrepo/sciencebox | ocis | 0.0.8 |
 
 ## Values
 
