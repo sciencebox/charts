@@ -50,6 +50,8 @@ properties:
         type: string
       CVMFS_CACHE_BASE:
         type: string
+      CVMFS_PROXY_SHARD:
+        type: boolean
   mountOptions:
     type: object
     properties:

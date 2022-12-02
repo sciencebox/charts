@@ -2,8 +2,8 @@ apiVersion: v2
 #
 name: cvmfs
 type: application
-version: 0.0.5
-appVersion: 2.9.0
+version: 0.0.6
+appVersion: 2.10.0
 #
 description: A CVMFS client chart
 icon: https://cernvm.cern.ch/fs/images/cvmfs-logo.png

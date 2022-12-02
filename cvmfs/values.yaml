@@ -2,7 +2,7 @@ image:
   # -- Docker image repository for the CVMFS image
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
   # -- image tag for cvmfs image
-  tag: 2.9.0
+  tag: 2.10.0
   # -- image pull policy
   pullPolicy: IfNotPresent
 
@@ -35,6 +35,7 @@ default_local:
   CVMFS_QUOTA_LIMIT: 20000
   CVMFS_HTTP_PROXY: DIRECT
   CVMFS_CACHE_BASE: /var/lib/cvmfs
+  CVMFS_PROXY_SHARD: false
 
 # -- Additional mount options common to all repositories
 mountOptions:

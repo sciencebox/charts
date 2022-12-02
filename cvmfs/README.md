@@ -4,7 +4,7 @@ A CVMFS client chart
 
 The Helm chart for the CVMFS client
 
-![Version: 0.0.5](https://img.shields.io/badge/Version-0.0.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.0](https://img.shields.io/badge/AppVersion-2.9.0-informational?style=flat-square)
+![Version: 0.0.6](https://img.shields.io/badge/Version-0.0.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.10.0](https://img.shields.io/badge/AppVersion-2.10.0-informational?style=flat-square)
 
 ### Deploy
 The chart can be installed via Helm with
@@ -93,10 +93,10 @@ mountOptions:
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | customLabels | object | `{"component":"swan-users","service":"swan"}` | Custom labels to identify cvmfs pod.    They are used by node selection, if enabled (see above).    Label nodes accordingly to avoid scheduling problems. |
-| default_local | object | `{"CVMFS_CACHE_BASE":"/var/lib/cvmfs","CVMFS_DNS_MIN_TTL":300,"CVMFS_HTTP_PROXY":"DIRECT","CVMFS_QUOTA_LIMIT":20000}` | cvmfs configuration common to all repositories stored as key:value pairs      Documentation at:     - https://cvmfs.readthedocs.io/en/stable/cpt-configure.html     - https://cvmfs.readthedocs.io/en/stable/apx-parameters.html#client-parameters |
+| default_local | object | `{"CVMFS_CACHE_BASE":"/var/lib/cvmfs","CVMFS_DNS_MIN_TTL":300,"CVMFS_HTTP_PROXY":"DIRECT","CVMFS_PROXY_SHARD":false,"CVMFS_QUOTA_LIMIT":20000}` | cvmfs configuration common to all repositories stored as key:value pairs      Documentation at:     - https://cvmfs.readthedocs.io/en/stable/cpt-configure.html     - https://cvmfs.readthedocs.io/en/stable/apx-parameters.html#client-parameters |
 | image.pullPolicy | string | `"IfNotPresent"` | image pull policy |
 | image.repository | string | `"gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs"` | Docker image repository for the CVMFS image |
-| image.tag | string | `"2.9.0"` | image tag for cvmfs image |
+| image.tag | string | `"2.10.0"` | image tag for cvmfs image |
 | mountOptions | object | `{"gid":996,"hostMountpoint":"/cvmfs","uid":998}` | Additional mount options common to all repositories |
 | podAssignment | object | `{"enableNodeSelector":false}` | Assign cvmfs pod to a node with a specific label.    If true, it will be deployed only on nodes labeled as per customLabels (see below).    If false, it will be deployed on all nodes of the cluster (it is a daemonSet). |
 | prefetcher | object | `{"enabled":false}` | Prefetch from cvmfs repos to keep client cache warm     Parameters:      - enabled: Boolean to enable/disable prefetcher. Defaults to false      - jobs: List of commands to execute in crond format     'cat_readme' is the name of a sample prefetching job with the following properties      - command: The command to be executed -- In this case, a simple cat of a file      - user: The user executing the command (Default: root)      - minute, hour, day, month, weekday: When to executre the command as per cron file format (Default: *, aka every minute) |
