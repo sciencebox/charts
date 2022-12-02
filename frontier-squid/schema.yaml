@@ -1,0 +1,61 @@
+---
+"$schema": http://json-schema.org/schema
+type: object
+required:
+- image
+properties:
+  image:
+    type: object
+    required:
+    - repository
+    - tag
+    - pullPolicy
+    properties:
+      repository:
+        type: string
+        pattern: "^[.a-z0-9-/]+$"
+      pullPolicy:
+        type: string
+        enum:
+        - Always
+        - Never
+        - IfNotPresent
+      tag:
+        type: string
+  replicas:
+    type: integer
+  priorityClassName:
+    type: string
+  podAssignment:
+    type: object
+    properties:
+      enableNodeSelector:
+        type: boolean
+      enablePodAntiAffinity:
+        type: boolean
+  configFile:
+    type: string
+  config:
+    type: object
+    properties:
+      fileDescriptors:
+        type: integer
+      cache:
+        type: object
+        properties:
+          minSize:
+            type: string
+          diskDirectory:
+            type: string
+          diskSpace:
+            type: integer
+          diskMaxSize:
+            type: string
+          memorySpace:
+            type: string
+          memoryMaxSize:
+            type: string
+  httpAccessAllow:
+    type: array
+    items:
+      type: string

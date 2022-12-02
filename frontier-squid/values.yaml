@@ -1,94 +1,85 @@
 image:
+  # -- Docker image for the frontier squid image
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/frontier-squid
+  # -- image tag for frontier squid image
   tag: 4.17-2.1
+  # -- image pull policy
   pullPolicy: IfNotPresent
 
+# -- Number of frontier-squid pods to run
 #
-# Number of frontier-squid pods to run
-#
-#   Squid is seamlessly load-balanced via its network service. Running more replicas
-#     will provide more capacity and the ability to serve more clients.
-#   Consider enabling PodAntiAffinity to increase availability.
-#
+#    Squid is seamlessly load-balanced via its network service. Running more replicas
+#    will provide more capacity and the ability to serve more clients.
+#    Consider enabling PodAntiAffinity to increase availability.
 replicas: 1
 
-#
-# Squid pod resource requests and limits (CPU, RAM, etc.)
-#
+# -- Squid pod resource requests and limits (CPU, RAM, etc.)
 resources: {}
 
-#
-# priorityClassName, recommended for high-occupancy clusters to prioritize squid over other pods.
-#
+# -- priorityClassName, recommended for high-occupancy clusters to prioritize squid over other pods.
 priorityClassName: ""
 
-#
-# Assign frontier-squid pod(s) to a node with a specific label
-#   and distribute them on different nodes to avoid single points of failure.
-#
+# -- Assign frontier-squid pod(s) to a node with a specific label
+#    and distribute them on different nodes to avoid single points of failure.
 podAssignment:
-  # If true, requires a node labeled as per customLabels.
+  # -- If true, requires a node labeled as per customLabels.
   enableNodeSelector: false
-  # If true, run the pods on separate nodes if possible.
-  #   Relevant only when running multiple replicas.
-  #   Highly recommended for production scenarios.
+  # -- If true, run the pods on separate nodes if possible.
+  #    Relevant only when running multiple replicas.
+  #    Highly recommended for production scenarios.
   enablePodAntiAffinity: false
 
+# -- Custom labels to identify frontier-squid pod(s).
 #
-# Custom labels to identify frontier-squid pod(s).
-#
-# They are used by node selection, if enabled (see above).
-# Label nodes accordingly to avoid scheduling problems.
-#
+#    They are used by node selection, if enabled (see above).
+#    Label nodes accordingly to avoid scheduling problems.
 customLabels:
   service: cvmfs
   component: frontier-squid
 
+# -- Enable or disable health probes.
+#    Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 #
-# Enable or disable health probes.
-#   Docs: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+#    Liveness Probe:
+#     Checks every 10 seconds whether it is possible to open a TCP socket againsts port 3128.
+#     The frontier-squid container will be restarted after 3 failures.
 #
-# Liveness Probe:
-#   Checks every 10 seconds whether it is possible to open a TCP socket againsts port 3128.
-#   The frontier-squid container will be restarted after 3 failures.
+#    Readiness Probe:
+#     Checks every 30 seconds whether the readinessUrl is reachable using the squid in the pod as proxy.
+#     If unreachable, the failing frontier-squid pod will be removed from the service load-balanced alias.
 #
-# Readiness Probe:
-#   Checks every 30 seconds whether the readinessUrl is reachable using the squid in the pod as proxy.
-#   If unreachable, the failing frontier-squid pod will be removed from the service load-balanced alias.
-#
-#   Readiness Urls:
+#    Readiness Urls:
 #     The URLs used by the readiness probe to check the squid in the pod works as expected.
 #     Two URLs are used as backups for each other, to avoid marking the pods unready if one external server is unavailable.
 #
-# Default: All probes enabled.
-#
+#   Default: All probes enabled.
 probes:
   liveness: true
   readiness: true
   readinessUrl1: 'http://cvmfs-stratum-one.cern.ch/cvmfs/info/v1/meta.json'
   readinessUrl2: 'http://cvmfs.fnal.gov/cvmfs/info/v1/meta.json'
 
+# -- Squid configuration
 #
-# Squid configuration
-#
-#   - configFile: Provide a full configuration file.
-#       Overrides the provided configMap only if provided and the file exists
-#   - config: Parameters to change default valules in the provided configMap.
-#
+#      - configFile: Provide a full configuration file.
+#          Overrides the provided configMap only if provided and the file exists
+#      - config: Parameters to change default valules in the provided configMap.
 configFile: files/mysquid.conf
 config:
   fileDescriptors: 16384
   cache:
-    minSize: "0 KB"             # Applies to both in-memory and on disk caches
+    # -- Applies to both in-memory and on disk caches
+    minSize: "0 KB"
     diskDirectory: "/var/cache/squid"
-    diskSpace: 10000    # in MB
-    diskMaxSize: "1 GB"         # Maximum object size to be cached on disk
+    # -- in MB
+    diskSpace: 10000
+    diskMaxSize: "1 GB"
+    # -- Maximum object size to be cached on disk
     memorySpace: "256 MB"
-    memoryMaxSize: "32 KB"      # Maximum object size to be cached in memory
+    # -- Maximum object size to be cached in memory
+    memoryMaxSize: "32 KB"
 
-#
-# List of squid ACLs to enable via 'http_access allow' (see configmap for ACL definitions)
-#
+# -- List of squid ACLs to enable via 'http_access allow' (see configmap for ACL definitions)
 httpAccessAllow:
   - stratum_ones
   - osgstorage
@@ -98,13 +89,12 @@ httpAccessAllow:
 #  - cms_frontier
 
 #
-# Network Service Specs
-#   Docs: https://kubernetes.io/docs/concepts/services-networking/service/
+# -- Network Service Specs
+#    Docs: https://kubernetes.io/docs/concepts/services-networking/service/
 #
 #   clusterIP is set to None to have DNS returning all the A records for the pod replicas (headless service)
 #   This is required to leverage on the CVMFS client Proxy Sharding fearure:
-#     https://cvmfs.readthedocs.io/en/latest/cpt-configure.html#sct-proxy-sharding
-#
+#   https://cvmfs.readthedocs.io/en/latest/cpt-configure.html#sct-proxy-sharding
 service:
   type: ClusterIP
   clusterIP: None
