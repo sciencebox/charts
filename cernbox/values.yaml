@@ -322,3 +322,6 @@ authproviderbearer:
     grpc:
       # -- port the grpc service listens on
       port: 9158
+
+cernboxconfig:
+  server: "https://cernbox.hostname"
