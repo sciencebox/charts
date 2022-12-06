@@ -262,18 +262,18 @@ storageproviderpublic:
   image:
     # -- storageproviderpublic image to use for deployment
     repository: *revadStorageproviderImageRepo
-    # -- image tag to use    
+    # -- image tag to use
     tag: *revadStorageproviderImageTag
   env:
     # -- XrdSecPROTOCOL - protocol used to authenticate against EOS
     XrdSecPROTOCOL: sss
-  # --configMap containing revad storageproviderpublic TOML configurations    
+  # --configMap containing revad storageproviderpublic TOML configurations
   cfgmapName: storageprovider-public-config
   # -- service configurations
   service:
     # -- grpc port
     grpc:
-      # -- port the grpc service listens on 
+      # -- port the grpc service listens on
       port: 9278
 
 #
@@ -287,7 +287,7 @@ storageprovideruser:
   env:
     # -- XrdSecPROTOCOL - protocol used to authenticate against EOS
     XrdSecPROTOCOL: sss
-  # --configMap containing revad storageprovideruser TOML configurations      
+  # --configMap containing revad storageprovideruser TOML configurations
   cfgmapName: storageprovider-user-config
   service:
     grpc:
@@ -313,12 +313,12 @@ authprovidermachine:
 authproviderbearer:
   image:
     # -- authproviderbearer image to use for deployment
-    repository: *revadAuthproviderImageRepo 
+    repository: *revadAuthproviderImageRepo
     # -- image tag to use
     tag: *revadAuthproviderImageTag
   # -- cfgmap containing revad authprovider bearer TOML configuratinos
   cfgmapName: authprovider-bearer-config
   service:
     grpc:
-      # -- port the grpc service listens on 
+      # -- port the grpc service listens on
       port: 9158

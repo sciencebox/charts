@@ -18,7 +18,7 @@ sciencebox:
     createSecret: true
     secretName: &sssKeytabName sciencebox-eos-sss-keytab
     fromFile: files/eos.keytab
-    #fromValue:
+    # fromValue:
 #
 # Global values
 #
@@ -396,15 +396,15 @@ eos:
     ldapBindUsers:
       enable: true
       nslcd:
-       config:
-         ldap_uri: *ldapUri
-         ldap_base: *ldapBaseDn
-         ldap_binddn: cn=readuser,dc=owncloud,dc=com
-         ldap_bindpw: *ldapReadonlyPassword
-         ldap_user_search_base: ou=users,dc=owncloud,dc=com
-         ldap_group_search_base: ou=groups,dc=owncloud,dc=com
-         ldap_filter_passwd: (objectClass=posixAccount)
-         ldap_filter_group: (objectClass=posixGroup)
+        config:
+          ldap_uri: *ldapUri
+          ldap_base: *ldapBaseDn
+          ldap_binddn: cn=readuser,dc=owncloud,dc=com
+          ldap_bindpw: *ldapReadonlyPassword
+          ldap_user_search_base: ou=users,dc=owncloud,dc=com
+          ldap_group_search_base: ou=groups,dc=owncloud,dc=com
+          ldap_filter_passwd: (objectClass=posixAccount)
+          ldap_filter_group: (objectClass=posixGroup)
   fst:
     replicaCount: 4
 #
@@ -566,8 +566,8 @@ swan:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        #nginx.ingress.kubernetes.io/rewrite-target: /
-        #nginx.ingress.kubernetes.io/secure-backends: "true"
+        # nginx.ingress.kubernetes.io/rewrite-target: /
+        # nginx.ingress.kubernetes.io/secure-backends: "true"
       hosts:
       # tls:
       #   - secretName: swan-tls-cert
