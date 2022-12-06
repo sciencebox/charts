@@ -69,6 +69,7 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 | cernbox-web.initContainers[0].volumeMounts[1].mountPath | string | `"/var/www/web/"` | web-content volume mount path |
 | cernbox-web.livenessProbe.enabled | bool | `false` |  |
 | cernbox-web.readinessProbe.enabled | bool | `false` |  |
+| cernboxconfig.server | string | `"https://cernbox.hostname"` |  |
 | gateway.cfgmapName | string | `"gateway-config"` | configMap containing revad gateway TOML configurations |
 | gateway.env.XrdSecPROTOCOL | string | `"sss"` | XrdSecPROTOCOL - protocol used to authenticate against EOS |
 | gateway.image.repository | string | `"cs3org/revad"` | gateway image to use for deployment |
