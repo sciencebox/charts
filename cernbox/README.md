@@ -29,7 +29,7 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 | authproviderbearer.cfgmapName | string | `"authprovider-bearer-config"` | cfgmap containing revad authprovider bearer TOML configuratinos |
 | authproviderbearer.image.repository | string | `"ghcr.io/cernbox/reva"` | authproviderbearer image to use for deployment |
 | authproviderbearer.image.tag | string | `"cernbox"` | image tag to use |
-| authproviderbearer.service.grpc.port | int | `9158` | port the grpc service listens on  |
+| authproviderbearer.service.grpc.port | int | `9158` | port the grpc service listens on |
 | authprovidermachine.cfgmapName | string | `"authprovider-machine-config"` |  |
 | authprovidermachine.image.repository | string | `"ghcr.io/cernbox/reva"` |  |
 | authprovidermachine.image.tag | string | `"cernbox"` |  |
@@ -122,14 +122,14 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 | storageproviderhome.service.grpc.port | int | `18000` | port that grpc service listens on |
 | storageproviderhome.service.http | object | `{"port":17000}` | http port |
 | storageproviderhome.service.http.port | int | `17000` | port that http service listens on |
-| storageproviderpublic.cfgmapName | string | `"storageprovider-public-config"` | configMap containing revad storageproviderpublic TOML configurations     |
+| storageproviderpublic.cfgmapName | string | `"storageprovider-public-config"` | configMap containing revad storageproviderpublic TOML configurations |
 | storageproviderpublic.env.XrdSecPROTOCOL | string | `"sss"` | XrdSecPROTOCOL - protocol used to authenticate against EOS |
 | storageproviderpublic.image.repository | string | `"cs3org/revad"` | storageproviderpublic image to use for deployment |
-| storageproviderpublic.image.tag | string | `"v1.19.0-eos"` | image tag to use     |
+| storageproviderpublic.image.tag | string | `"v1.19.0-eos"` | image tag to use |
 | storageproviderpublic.service | object | `{"grpc":{"port":9278}}` | service configurations |
 | storageproviderpublic.service.grpc | object | `{"port":9278}` | grpc port |
-| storageproviderpublic.service.grpc.port | int | `9278` | port the grpc service listens on  |
-| storageprovideruser.cfgmapName | string | `"storageprovider-user-config"` | configMap containing revad storageprovideruser TOML configurations       |
+| storageproviderpublic.service.grpc.port | int | `9278` | port the grpc service listens on |
+| storageprovideruser.cfgmapName | string | `"storageprovider-user-config"` | configMap containing revad storageprovideruser TOML configurations |
 | storageprovideruser.env.XrdSecPROTOCOL | string | `"sss"` | XrdSecPROTOCOL - protocol used to authenticate against EOS |
 | storageprovideruser.image.repository | string | `"cs3org/revad"` | storageprovideruser image to use for deployment |
 | storageprovideruser.image.tag | string | `"v1.19.0-eos"` | image tag to use |
