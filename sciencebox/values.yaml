@@ -597,6 +597,8 @@ swan:
 
 # CERNBox
 cernbox:
+  cernboxconfig:
+    server: "https://cernbox.hostname"
   # CBox Revad-storageproviders
   storageproviderhome:
     extraVolumes:
