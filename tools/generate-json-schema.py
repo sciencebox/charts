@@ -16,9 +16,9 @@ import yaml
 import sys
 
 here_dir = os.path.abspath(os.path.dirname(__file__))
-schema_yaml = "none"
-if sys.argv[1] == "ocis" or sys.argv[1] == "cvmfs":
-    schema_yaml = os.path.join(here_dir, os.pardir, sys.argv[1], "schema.yaml")
+schema_yaml = os.path.join(here_dir, os.pardir, sys.argv[1], "schema.yaml")
+if sys.argv[1] == "sciencebox" or sys.argv[1] == "cernbox":
+    schema_yaml = "none"
 values_schema_json = os.path.join(
     here_dir, os.pardir, sys.argv[1], "values.schema.json"
 )
