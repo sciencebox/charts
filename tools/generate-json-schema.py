@@ -16,7 +16,9 @@ import yaml
 import sys
 
 here_dir = os.path.abspath(os.path.dirname(__file__))
-schema_yaml = os.path.join(here_dir, os.pardir, sys.argv[1], "schema.yaml")
+schema_yaml = "none"
+if sys.argv[1] == "ocis" or sys.argv[1] == "cvmfs":
+    schema_yaml = os.path.join(here_dir, os.pardir, sys.argv[1], "schema.yaml")
 values_schema_json = os.path.join(
     here_dir, os.pardir, sys.argv[1], "values.schema.json"
 )
@@ -46,19 +48,20 @@ def clean_jsonschema(d, parent_key=""):
 def run():
     # Using these sets, we can validate further manually by printing the results
     # of set operations.
-    with open(schema_yaml) as f:
-        schema = yaml.safe_load(f)
+    if schema_yaml != "none":
+        with open(schema_yaml) as f:
+            schema = yaml.safe_load(f)
 
-    # Drop what isn't relevant for a values.schema.json file packaged with the
-    # Helm chart, such as the description keys only relevant for our
-    # configuration reference.
-    clean_jsonschema(schema)
+        # Drop what isn't relevant for a values.schema.json file packaged with the
+        # Helm chart, such as the description keys only relevant for our
+        # configuration reference.
+        clean_jsonschema(schema)
 
-    # dump schema to values.schema.json
-    with open(values_schema_json, "w") as f:
-        json.dump(schema, f)
+        # dump schema to values.schema.json
+        with open(values_schema_json, "w") as f:
+            json.dump(schema, f)
 
-    print("values.schema.json created")
+        print("values.schema.json created")
 
 
 run()
