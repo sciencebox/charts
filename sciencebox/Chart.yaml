@@ -5,8 +5,7 @@ type: application
 version: 0.0.5
 #
 description: The chart to deploy and configure ScienceBox
-icon: #TODO
-#
+
 dependencies:
 #
 # User account info
