@@ -17,6 +17,8 @@ import sys
 
 here_dir = os.path.abspath(os.path.dirname(__file__))
 schema_yaml = os.path.join(here_dir, os.pardir, sys.argv[1], "schema.yaml")
+# ct list-changed tools is buggy when listing changed directories with the --excluded-charts label, hence
+# we had to hack the python script to not include umbrella chart directories (which does not contain schema files)
 if sys.argv[1] == "sciencebox" or sys.argv[1] == "cernbox":
     schema_yaml = "none"
 values_schema_json = os.path.join(
