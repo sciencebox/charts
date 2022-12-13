@@ -19,6 +19,14 @@ customLabels:
   service: swan
   component: swan-users
 
+# -- cvmfs container's resource (cpu and memory) requests and limits
+#    Documentation at https://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  # -- reqeusts: Resources that will be reserved for the container (can use more)
+  requests: {}
+  # -- limits: kubelet won't allow the continer to use more
+  limits: {}
+
 # -- Repositories to be mounted by cvmfs pod.
 repositories:
   - cvmfs-config.cern.ch
@@ -26,7 +34,6 @@ repositories:
   - sft-nightlies.cern.ch
 
 # -- cvmfs configuration common to all repositories stored as key:value pairs
-#
 #     Documentation at:
 #     - https://cvmfs.readthedocs.io/en/stable/cpt-configure.html
 #     - https://cvmfs.readthedocs.io/en/stable/apx-parameters.html#client-parameters

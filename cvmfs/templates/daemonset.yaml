@@ -53,6 +53,9 @@ spec:
             preStop:
               exec:
                 command: ["/usr/bin/supervisorctl", "shutdown"]
+          {{- if .Values.resources }}
+          resources: {{ toYaml .Values.resources | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: cvmfs-dev-fuse
               mountPath: /dev/fuse
