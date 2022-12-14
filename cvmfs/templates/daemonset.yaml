@@ -32,14 +32,22 @@ spec:
         - name: cvmfs-init1-create-mountpoints
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
           command: ["/bin/sh", "-c"]
-          args: ["for repo in $CVMFS_REPOSITORIES; do mkdir -p /cvmfs/$repo; chown cvmfs:cvmfs /cvmfs/$repo; done"]
+          args: ["for repo in $CVMFS_REPOSITORIES; do /root/create_mountpoint.sh $repo; done"]
           env:
             - name: CVMFS_REPOSITORIES
               value: {{ template "repolist" . }}
           volumeMounts:
+            - name: cvmfs-cfgmap-create-mountpoint
+              mountPath: /root/create_mountpoint.sh
+              subPath: create_mountpoint.sh
             - name: cvmfs-export
               mountPath: /cvmfs
+              mountPropagation: Bidirectional
       containers:
         - name: cvmfs
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -94,6 +102,10 @@ spec:
         - name: cvmfs-run-sockets
           emptyDir:
             medium: Memory
+        - name: cvmfs-cfgmap-create-mountpoint
+          configMap:
+            name: {{ include "cvmfs.fullname" . }}-cfgmap-create-mountpoint
+            defaultMode: 0755
         - name: cvmfs-cfgmap-supervisord-conf
           configMap:
             name: {{ include "cvmfs.fullname" . }}-cfgmap-supervisord-conf

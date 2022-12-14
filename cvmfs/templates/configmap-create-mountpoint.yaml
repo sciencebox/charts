@@ -1,0 +1,50 @@
+{{- if .Values.cleanStaleMounts }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cvmfs.fullname" . }}-cfgmap-create-mountpoint
+  labels:
+    {{- include "cvmfs.labels" . | nindent 4 }}
+data:
+  create_mountpoint.sh: |
+    #!/bin/sh
+    set -x
+
+    REPO=$1
+    if [ x"REPO" == x"" ]; then
+      echo "ERROR: Repository not specified"
+      exit 1
+    fi
+
+    {{- if .Values.cleanStaleMounts }}
+    # Finding cvmfs2 processes will not work as pid namespace is not shared
+    CVMFS_PIDS=$(pidof cvmfs2)
+    if [ x"$CVMFS_PIDS" == x"" ]; then
+      IS_RUNNING=1
+    else
+      IS_RUNNING=$(ps --no-heading -o command -p $CVMFS_PIDS | grep -q $REPO; echo $?)
+    fi
+
+    IS_MOUNTED=$(findmnt --source cvmfs2 -o target --noheadings | grep -q $REPO; echo $?)
+
+    if [ $IS_MOUNTED -eq 1 ]; then
+      if [ $IS_RUNNING -eq 1 ]; then
+        echo "$REPO: Not mounted and cvmfs2 client not running. Ready to mount."
+      else
+        echo "$REPO: Not mounted, but cvmfs2 client running (another mount elsewhere?). Continuing..."
+      fi
+    elif [ $IS_MOUNTED -eq 0 ]; then
+      if [ $IS_RUNNING -eq 0 ]; then
+        echo "$REPO: cvmfs2 client running and mounted (existing deployment?). Continuing..."
+      else
+         echo "$REPO: Stale mount! Repo is mounted but no cvmfs2 client running."
+         umount /cvmfs/$REPO
+      fi
+    else
+        echo "$REPO: Unable to infer mount state. Continuing..."
+    fi
+    {{- end }}
+
+    mkdir -p /cvmfs/$REPO
+    chown cvmfs:cvmfs /cvmfs/$REPO
+{{- end }}

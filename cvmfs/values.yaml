@@ -27,6 +27,9 @@ resources:
   # -- limits: kubelet won't allow the continer to use more
   limits: {}
 
+# -- umount stale cvmfs repos in case previous mount crashed
+cleanStaleMounts: true
+
 # -- Repositories to be mounted by cvmfs pod.
 repositories:
   - cvmfs-config.cern.ch
