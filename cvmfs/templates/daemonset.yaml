@@ -123,5 +123,5 @@ spec:
             name: {{ include "cvmfs.fullname" . }}-prefetcher-crontab
         - name: cvmfs-export
           hostPath:
-            path: {{ default "/cvmfs" .Values.mountOptions.hostMountpoint }}
+            path: {{ include "host_mountpoint" . }}
             type: DirectoryOrCreate

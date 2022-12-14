@@ -103,3 +103,17 @@ Mount GID definition
 {{- end }}
 {{- printf "%d" $gid }}
 {{- end }}
+
+{{/*
+hostMountpoint definition
+  Define the mountpoint on the host where cvmfs repositories will be mounted.
+*/}}
+{{- define "host_mountpoint" -}}
+{{- $hm := "/cvmfs" -}}
+{{- if .Values.mountOptions -}}
+{{- if .Values.mountOptions.hostMountpoint -}}
+  {{ $hm = .Values.mountOptions.hostMountpoint }}
+{{- end }}
+{{- end }}
+{{- printf "%s" $hm }}
+{{- end }}
