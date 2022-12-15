@@ -65,8 +65,9 @@ data:
   mount-{{ . }}.ini: |
     [program:cvmfs-{{ . }}]
     command=/usr/bin/cvmfs2 -o rw,nodev,_netdev,fsname=cvmfs2,system_mount,allow_other,foreground,uid={{ $uid }},gid={{ $gid }} {{ . }} /cvmfs/{{ . }}
-    startsecs=10
+    startsecs=30
     startretries=5
+    autorestart=unexpected
     ;exitcodes=0,2
     ;stopsignal=QUIT
     ;stopwaitsecs=10
