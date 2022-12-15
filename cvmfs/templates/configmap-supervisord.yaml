@@ -45,10 +45,11 @@ data:
     [include]
     files = /etc/supervisord.d/*.ini
 
-    ; Quit supervisord if all controlled processes enter a failed state
+    ; Quit supervisord if one of the processes enters a failed state
+    ; i.e., supervisord tried to revive it startretries times unsuccessfully
     [eventlistener:watch_processes]
     command=bash -c "printf 'READY\n' && while read line; do kill -SIGQUIT $PPID; done < /dev/stdin"
-    events=PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
+    events=PROCESS_STATE_FATAL
 ---
 {{ $uid := (include "mount_uid" . ) }}
 {{ $gid := (include "mount_gid" . ) }}
