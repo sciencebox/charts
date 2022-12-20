@@ -25,7 +25,7 @@ dependencies:
 # ScienceBox welcome page
 - name: nginx
   alias: nginx-welcome-page
-  version: 13.0.0
+  version: 13.2.19
   repository: "https://charts.bitnami.com/bitnami"
 #
 # EOS
