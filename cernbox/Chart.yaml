@@ -45,5 +45,5 @@ dependencies:
 
 - name: nginx
   alias: cernbox-web
-  version: 13.0.0
+  version: 13.2.19
   repository: "https://charts.bitnami.com/bitnami"
