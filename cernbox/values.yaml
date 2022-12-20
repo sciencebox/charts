@@ -318,6 +318,11 @@ authproviderbearer:
     tag: *revadAuthproviderImageTag
   # -- cfgmap containing revad authprovider bearer TOML configuratinos
   cfgmapName: authprovider-bearer-config
+  oidc:
+    insecure: true
+    id_claim: name
+    uid_claim: uid
+    gid_claim: gid
   service:
     grpc:
       # -- port the grpc service listens on
