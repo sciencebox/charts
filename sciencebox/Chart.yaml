@@ -19,7 +19,7 @@ dependencies:
 #
 # CBox shares
 - name: mariadb
-  version: 11.0.2
+  version: 11.4.2
   repository: "https://charts.bitnami.com/bitnami"
 #
 # ScienceBox welcome page
