@@ -33,27 +33,27 @@ cernbox-web:
         # -- web-content volume mount path
         mountPath: /var/www/web/
   extraVolumeMounts:
-    - name: web-config
-      mountPath: /var/www/web/config.json
-      subPath: config.json
     - name: nginx-conf
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
+    - name: web-config
+      mountPath: /var/www/web/config.json
+      subPath: config.json
     - name: web-content
       mountPath: /var/www/web/
   extraVolumes:
+    - name: nginx-conf
+      configMap:
+        name: nginx-conf
+    - name: web-config
+      configMap:
+        name: cernbox-web-config
     - name: web-init
       configMap:
         name: cernbox-web-init
         defaultMode: 0755
     - name: web-content
       emptyDir: {}
-    - name: web-config
-      configMap:
-        name: cernbox-web-config
-    - name: nginx-conf
-      configMap:
-        name: nginx-conf
   # command that the nginx (cernbox-web) runs on startup
   command: ["/opt/bitnami/nginx/sbin/nginx"]
   # arguments for the command
