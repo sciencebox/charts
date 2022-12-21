@@ -9,8 +9,8 @@ data:
       "version": "0.1.0",
       "theme": "{{ .Values.web.hostname }}/theme.json",
       "openIdConnect": {
-        "metadata_url": "{{ .Values.web.hostname }}/.well-known/openid-configuration",
-        "authority": {{ quote .Values.web.hostname }},
+        "metadata_url": "{{ .Values.web.oidcHostname }}/.well-known/openid-configuration",
+        "authority": {{ quote .Values.web.oidcHostname }},
         "client_id": {{ quote .Values.web.clientId }},
         "response_type": "code",
         "scope":  {{ quote .Values.web.scope }}
