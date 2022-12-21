@@ -36,9 +36,10 @@ spec:
 {{- end }}
 
 ---
-{{- if and .Values.ingress.enabled .Values.ingress.exposeIdp -}}
+{{- if and .Values.ingress.enabled .Values.ingress.exposeProxy -}}
 {{- $fullName := include "ocis.fullname" . -}}
 {{- $proxyPort := .Values.services.proxy.port -}}
+{{- $extraProxyPaths := .Values.ingress.extraProxyPaths -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -64,6 +65,9 @@ spec:
                 name: {{ $fullName }}
                 port:
                   number: {{ $proxyPort }}
+          {{- if $extraProxyPaths }}
+            {{- toYaml $extraProxyPaths | nindent 10 }}
+          {{- end }}
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
