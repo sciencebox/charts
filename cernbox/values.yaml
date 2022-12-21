@@ -232,8 +232,8 @@ storageprovideruser:
 # revad authprovider machine
 authprovidermachine:
   image:
-    repository: &revadAuthproviderImageRepo ghcr.io/cernbox/reva
-    tag: &revadAuthproviderImageTag cernbox
+    repository: &revadAuthproviderImageRepo gitlab-registry.cern.ch/sciencebox/hotfixes/revad
+    tag: &revadAuthproviderImageTag latest-20220815
   cfgmapName: authprovider-machine-config
   service:
     grpc:
