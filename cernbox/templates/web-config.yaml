@@ -5,15 +5,15 @@ metadata:
 data:
   config.json: |-
     {
-      "server": {{ quote .Values.cernboxconfig.server }},
+      "server": {{ quote .Values.web.hostname }},
       "version": "0.1.0",
-      "theme": "{{ .Values.cernboxconfig.server }}/theme.json",
+      "theme": "{{ .Values.web.hostname }}/theme.json",
       "openIdConnect": {
-        "metadata_url": "{{ .Values.cernboxconfig.server }}/.well-known/openid-configuration",
-        "authority": {{ quote .Values.cernboxconfig.server }},
-        "client_id": "web",
+        "metadata_url": "{{ .Values.web.hostname }}/.well-known/openid-configuration",
+        "authority": {{ quote .Values.web.hostname }},
+        "client_id": {{ quote .Values.web.clientId }},
         "response_type": "code",
-        "scope": "openid profile email"
+        "scope":  {{ quote .Values.web.scope }}
       },
       "apps": ["files"],
       "external_apps": [

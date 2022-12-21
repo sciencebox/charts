@@ -54,14 +54,18 @@ cernbox-web:
         defaultMode: 0755
     - name: web-content
       emptyDir: {}
-  # command that the nginx (cernbox-web) runs on startup
   command: ["/opt/bitnami/nginx/sbin/nginx"]
-  # arguments for the command
   args: ["-c", "/etc/nginx/nginx.conf"]
   livenessProbe:
     enabled: false
   readinessProbe:
     enabled: false
+
+#
+# CERNBox web config: Extra values to populate configMaps used by cernbox-web
+web:
+  clientId: "web"
+  scope: "openid profile email"
 
 #
 # oCIS proxy and IDP extensions
@@ -131,6 +135,7 @@ ocis:
     # -- ingress annotation
     annotation:
       "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS"
+
 
 ## Revad Configurations
 
@@ -253,6 +258,3 @@ authproviderbearer:
     grpc:
       # -- port the grpc service listens on
       port: 9158
-
-cernboxconfig:
-  server: "https://cernbox.hostname"
