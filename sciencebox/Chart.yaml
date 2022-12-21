@@ -47,5 +47,5 @@ dependencies:
 #
 # CERNBox
 - name: cernbox
-  version: 0.0.2
+  version: 0.0.3
   repository: "https://registry.cern.ch/chartrepo/sciencebox"
