@@ -18,8 +18,8 @@ data:
 
     [grpc.services.authprovider.auth_managers.oidc]
     insecure = {{ .Values.authproviderbearer.oidc.insecure }}
-    issuer = "{{ .Values.authproviderbearer.oidc.issuer }}"
-    id_claim = "{{ .Values.authproviderbearer.oidc.id_claim }}"
-    uid_claim = "{{ .Values.authproviderbearer.oidc.uid_claim }}"
-    gid_claim = "{{ .Values.authproviderbearer.oidc.gid_claim }}"
+    issuer = {{ quote .Values.authproviderbearer.oidc.issuer }}
+    id_claim = {{ quote .Values.authproviderbearer.oidc.id_claim }}
+    uid_claim = {{ quote .Values.authproviderbearer.oidc.uid_claim }}
+    gid_claim = {{ quote .Values.authproviderbearer.oidc.gid_claim }}
     gatewaysvc = "{{ .Release.Name }}-gateway:9142"
