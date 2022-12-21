@@ -64,8 +64,8 @@ cernbox-web:
 #
 # CERNBox web config: Extra values to populate configMaps used by cernbox-web
 web:
-  clientId: "web"
-  scope: "openid profile email"
+  oidcClientId: "web"
+  oidcScope: "openid profile email"
 
 #
 # oCIS proxy and IDP extensions

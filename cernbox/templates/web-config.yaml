@@ -11,9 +11,9 @@ data:
       "openIdConnect": {
         "metadata_url": "{{ .Values.web.oidcHostname }}/.well-known/openid-configuration",
         "authority": {{ quote .Values.web.oidcHostname }},
-        "client_id": {{ quote .Values.web.clientId }},
+        "client_id": {{ quote .Values.web.oidcClientId }},
         "response_type": "code",
-        "scope":  {{ quote .Values.web.scope }}
+        "scope":  {{ quote .Values.web.oidcScope }}
       },
       "apps": ["files"],
       "external_apps": [
