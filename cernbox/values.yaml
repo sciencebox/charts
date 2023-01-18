@@ -8,7 +8,7 @@ cernbox-web:
   initContainers:
     - name: cernbox-web-init
       # -- image that the initContainer should use
-      image: busybox
+      image: busybox:stable
       # -- Command that the initContainer runs after startup
       command: ["/bin/sh", "/root/cbox_init.sh"]
       # -- Environment Variables
