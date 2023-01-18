@@ -2,7 +2,7 @@ apiVersion: v2
 #
 name: sciencebox
 type: application
-version: 0.0.6
+version: 0.0.7
 #
 description: The chart to deploy and configure ScienceBox
 
