@@ -7,10 +7,7 @@ The Helm chart for the frontier-squid proxy
 ### Deploy
 The chart can be installed via Helm with
 ```
-helm repo add sciencebox https://registry.cern.ch/chartrepo/sciencebox
-helm repo update
-
-helm install squid sciencebox/frontier-squid
+helm install squid oci://registry.cern.ch/sciencebox/charts/frontier-squid
 ```
 
 A Deployment will be created with one replica of the frontier-squid pod, together with a Service to make the frontier-squid proxy reachable by other applications running in the cluster. No ingress functionalities are provided: The proxy is meant for clients within the same Kubernetes cluster only.
@@ -47,6 +44,13 @@ config:
 Extensive documentation on such parameters is provided by the [upstream squid-cache documentation](http://www.squid-cache.org/Doc/config/).
 
 It is also possible to replace the configuration file completely by setting `configFile: <custom_configuration_file>` in `values.yaml`. This configuration option will apply only if the `configFile` parameter is set and if the file at the provided path exists.
+
+
+### Chartmuseum deprecation notice
+Since 28 April 2023, the Helm chart for Frontier Squid will be stored in OCI format.
+
+Chartmuseum format is deprecated. The last chart tag published in chartmuseum format is `0.1.5`.
+
 
 {{ template "chart.requirementsSection" . }}
 
