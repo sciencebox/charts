@@ -8,6 +8,12 @@ A collection of other charts to deploy CERNBox in ScienceBox:
 - [nginx](https://artifacthub.io/packages/helm/bitnami/nginx) ~ Bitnami's chart for NGINX webserver used to server CERNBox web assets and theme
 
 
+### Chartmuseum deprecation notice
+Since 28 April 2023, the Helm chart for CERNBox will be stored in OCI format.
+
+Chartmuseum format is deprecated. The last chart tag published in chartmuseum format is `0.0.4`.
+
+
 {{ template "chart.versionBadge" . }}{{  template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
 
 {{ template "chart.requirementsSection" . }}
