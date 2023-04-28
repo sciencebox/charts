@@ -5,7 +5,7 @@ oCIS (ownCloud Infinite Scale) extensions
 
 The Helm Chart for the ocis extensions
 
-![Version: 0.0.8](https://img.shields.io/badge/Version-0.0.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.20.0](https://img.shields.io/badge/AppVersion-1.20.0-informational?style=flat-square)
+![Version: 0.0.9](https://img.shields.io/badge/Version-0.0.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.20.0](https://img.shields.io/badge/AppVersion-1.20.0-informational?style=flat-square)
 
 ## Values
 
@@ -18,10 +18,11 @@ The Helm Chart for the ocis extensions
 | image.pullPolicy | string | `"Always"` | Kubernetes Image pull policy |
 | image.repository | string | `"gitlab-registry.cern.ch/sciencebox/docker-images/ocis"` | Image to use for deploying ocis |
 | image.tag | string | `"1.20.0"` | Image tag to use |
-| ingress | object | `{"annotations":{},"enabled":false,"exposeIdp":true,"exposeLdap":false,"grpc":{},"hosts":["ocis-idp.local"],"tls":[]}` | ingress configuration |
+| ingress | object | `{"annotations":{},"enabled":false,"exposeIdp":true,"exposeProxy":true,"extraProxyPaths":{},"grpc":{},"hosts":["ocis-idp.local"],"tls":[]}` | ingress configuration |
 | ingress.enabled | bool | `false` | enable ingress for ocis |
 | ingress.exposeIdp | bool | `true` | configure ingress to expose the IDP |
-| ingress.exposeLdap | bool | `false` | configure ingress to expose the LDAP |
+| ingress.exposeProxy | bool | `true` | configure ingress to expose the Proxy |
+| ingress.extraProxyPaths | object | `{}` | Additional ingress paths (path prefix "/" is always kept) for Proxy service |
 | ingress.hosts | list | `["ocis-idp.local"]` | ingress hostnames |
 | ingress.tls | list | `[]` | ingress TLS configuration |
 | persistentVolume.accessModes | list | `["ReadWriteOnce"]` | Must match those of existing PV or dynamic provisioner    Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/ |
