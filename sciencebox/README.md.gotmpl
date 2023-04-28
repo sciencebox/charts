@@ -17,9 +17,13 @@ Have a look at **mboxed**, our single-host self-configuring deployment in miniku
 If interested in chart itself and all its dependencies, download it with Helm:
 
 ```
-helm repo add sciencebox https://registry.cern.ch/chartrepo/sciencebox
-helm repo update
-helm pull sciencebox/sciencebox --untar
+helm pull oci://registry.cern.ch/sciencebox/charts/sciencebox --untar
 ```
+
+
+### Chartmuseum deprecation notice
+Since 28 April 2023, the Helm chart for ScienceBox will be stored in OCI format.
+
+Chartmuseum format is deprecated. The last chart tag published in chartmuseum format is `0.0.7`.
 
 {{ template "helm-docs.versionFooter" . }}
