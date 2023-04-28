@@ -2,7 +2,7 @@ apiVersion: v2
 #
 name: eos-instance-config
 type: application
-version: 0.0.5
+version: 0.0.6
 appVersion: 4.8.78
 #
 description: The Chart to configure EOS for ScienceBox
