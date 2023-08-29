@@ -2,7 +2,7 @@ apiVersion: v2
 #
 name: cvmfs
 type: application
-version: 0.0.7
+version: 0.0.8
 appVersion: 2.11.0
 #
 description: A CVMFS client chart
