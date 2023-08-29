@@ -2,7 +2,7 @@ image:
   # -- Docker image repository for the CVMFS image
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/cvmfs
   # -- image tag for cvmfs image
-  tag: 2.10.0
+  tag: 2.11.0
   # -- image pull policy
   pullPolicy: IfNotPresent
 
