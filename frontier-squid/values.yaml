@@ -79,7 +79,7 @@ config:
     # -- Maximum object size to be cached in memory
     memoryMaxSize: "32 KB"
     # -- If you need further customization of the disk cache, beyond the diskDirectory and diskSpace values.
-    cache_dir: "cache_dir ufs {{ .Values.config.cache.diskDirectory }} {{ .Values.config.cache.diskSpace }} 16 256"
+    cache_dir: "cache_dir ufs {{ $.Values.config.cache.diskDirectory }} {{ $.Values.config.cache.diskSpace }} 16 256"
 
 # -- List of squid ACLs to enable via 'http_access allow' (see configmap for ACL definitions)
 httpAccessAllow:
