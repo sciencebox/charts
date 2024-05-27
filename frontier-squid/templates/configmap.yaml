@@ -18,7 +18,7 @@ data:
     # Cache management
     {{- with .Values.config.cache }}
     minimum_object_size {{ default "0 KB" .minSize }}
-    cache_dir ufs {{ default "/var/cache/squid" .diskDirectory }} {{ default "10000" .diskSpace }} 16 256
+    {{ tpl .cache_dir . }}
     maximum_object_size {{ default "1 GB" .diskMaxSize }}
     cache_mem {{ default "256 MB" .memorySpace }}
     maximum_object_size_in_memory {{ default "32 KB" .memoryMaxSize }}
