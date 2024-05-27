@@ -55,6 +55,7 @@ Chartmuseum format is deprecated. The last chart tag published in chartmuseum fo
 | config.cache.diskDirectory | string | `"/var/cache/squid"` |  |
 | config.cache.diskMaxSize | string | `"1 GB"` |  |
 | config.cache.diskSpace | int | `10000` | in MB |
+| config.cache.cache_dir | string | `"cache_dir ufs {{ $.Values.config.cache.diskDirectory }} {{ $.Values.config.cache.diskSpace }} 16 256"` | Allows full configurability of the `cache_dir` parameter. |
 | config.cache.memoryMaxSize | string | `"32 KB"` | Maximum object size to be cached in memory |
 | config.cache.memorySpace | string | `"256 MB"` | Maximum object size to be cached on disk |
 | config.cache.minSize | string | `"0 KB"` | Applies to both in-memory and on disk caches |
