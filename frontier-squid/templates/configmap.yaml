@@ -75,22 +75,25 @@ data:
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.cern.ch
     acl stratum_ones url_regex ^http://cernvmfs.gridpp.rl.ac.uk
     acl stratum_ones url_regex ^http://cvmfs-egi.gridpp.rl.ac.uk
-    acl stratum_ones url_regex ^http://grid-cvmfs-one.desy.de
-    acl stratum_ones url_regex ^http://cvmfs-stratum-one.zeuthen.desy.de
+    acl stratum_ones url_regex ^http://cvmfs.*\.(racf|sdcc)\.bnl\.gov
+    acl stratum_ones url_regex ^http://cvmfs.fnal.gov
     acl stratum_ones url_regex ^http://klei.nikhef.nl
     acl stratum_ones url_regex ^http://cvmfs01.nikhef.nl
-    acl stratum_ones url_regex ^http://cvmfs.fnal.gov
-    acl stratum_ones url_regex ^http://cvmfs.racf.bnl.gov
-    acl stratum_ones url_regex ^http://hcc-cvmfs.unl.edu
-    acl stratum_ones url_regex ^http://cvmfs-s1.*.opensciencegrid.org
-    acl stratum_ones url_regex ^http://oasis.opensciencegrid.org
-    acl stratum_ones url_regex ^http://cvmfsrepo.lcg.triumf.ca
     acl stratum_ones url_regex ^http://cvmfsrep.grid.sinica.edu.tw
     acl stratum_ones url_regex ^http://cvmfs02.grid.sinica.edu.tw
+    acl stratum_ones url_regex ^http://cvmfsrepo.lcg.triumf.ca
+    acl stratum_ones url_regex ^http://cvmfs-s1.*.opensciencegrid.org
+    acl stratum_ones url_regex ^http://oasis.opensciencegrid.org
     acl stratum_ones url_regex ^http://cvmfs-stratum-one.ihep.ac.cn
+    acl stratum_ones url_regex ^http://hcc-cvmfs.unl.edu
+    acl stratum_ones url_regex ^http://grid-cvmfs-one.desy.de
+    acl stratum_ones url_regex ^http://cvmfs-stratum-one.zeuthen.desy.de
+    acl stratum_ones url_regex ^http://.*cvmfs\.openhtc\.io
     acl stratum_ones url_regex ^http://cvmfs-s1.*\.computecanada\.(ca|net)
+    acl stratum_ones url_regex ^http://object-.*\.cloud\.computecanada\.ca
     acl stratum_ones url_regex ^http://sampacs.*\.if\.usp\.br
     acl stratum_ones url_regex ^http://cvmfs-.*\.hpc\.swin\.edu\.au
+    acl stratum_ones url_regex ^http://cvmfs-stratum-one\.cc\.kek\.jp
 
     # ACL for ATLAS Frontier (for reference see ATLAS_FRONTIER from frontier-squid package)
     acl atlas_frontier dstdom_regex ^(frontier.*\.racf\.bnl\.gov|atlas.*frontier.*\.cern\.ch|cc.*\.in2p3\.fr|lcg.*\.gridpp\.rl\.ac\.uk|(.*frontier.*|tier1nfs)\.triumf\.ca|atlas.*frontier\.openhtc\.io)$
