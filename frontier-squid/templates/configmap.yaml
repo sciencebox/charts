@@ -45,7 +45,6 @@ data:
     quick_abort_max 0 KB
     # As per https://bugs.squid-cache.org/show_bug.cgi?id=4531
     minimum_expiry_time 0
-    dns_v4_first on
     negative_ttl 1 minute
     collapsed_forwarding on
     cache_miss_revalidate off
