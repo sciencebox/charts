@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
-   matchLabels:
-     {{- include "frontier-squid.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "frontier-squid.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
