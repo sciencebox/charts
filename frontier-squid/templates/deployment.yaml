@@ -47,7 +47,8 @@ spec:
             - name: frontier-squid-disk-cache
               mountPath: {{ default "/var/cache/squid" .Values.config.cache.diskDirectory }}
           {{- if .Values.containerSecurityContext }}
-          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           {{- end }}
       containers:
       - name: frontier-squid
@@ -82,7 +83,8 @@ spec:
           - name: frontier-squid-disk-cache
             mountPath: {{ default "/var/cache/squid" .Values.config.cache.diskDirectory }}
         {{- if .Values.containerSecurityContext }}
-        {{- toYaml .Values.containerSecurityContext | nindent 8 }}
+        securityContext:
+          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
         {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
