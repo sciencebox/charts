@@ -10,6 +10,7 @@ Collection of ScienceBox Helm Charts.
 This repository hosts a collection of Helm charts for stand-alone ScienceBox deployments:
 - **Sciencebox**: The master umbrella chart for the deployment of ScienceBox in its entirety.
 - **CVMFS**: The [CVMFS](https://cernvm.cern.ch/fs/) client for [SWAN](https://swan.web.cern.ch/swan/) to use software stacks from centrally-managed repositories.
+- **Frontier Squid**: The [Squid](https://www.squid-cache.org/) HTTP cache optimized for use with CVMFS.
 - **eos-instance-config**: An helper chart to get an [EOS](https://owncloud.dev/extensions/idp/) instance configured according to the ScienceBox requirements.
 - **OCIS**: OwnCloud Infinite Scale -  Web frontend, Proxy and Identity Provider based on [OwnCloud OpenID Connect Provider](https://owncloud.dev/extensions/idp/).
 - **ldap-instance-config**: An helper chart to populate the LDAP server with custom users.

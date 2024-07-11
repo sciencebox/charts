@@ -2,7 +2,7 @@
 
 The Helm chart for the frontier-squid proxy
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.17-2.1](https://img.shields.io/badge/AppVersion-4.17--2.1-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.17-2.1](https://img.shields.io/badge/AppVersion-4.17--2.1-informational?style=flat-square)
 
 ### Deploy
 The chart can be installed via Helm with
@@ -52,6 +52,7 @@ Chartmuseum format is deprecated. The last chart tag published in chartmuseum fo
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| config.cache.cache_dir | string | `"cache_dir ufs {{ $.Values.config.cache.diskDirectory }} {{ $.Values.config.cache.diskSpace }} 16 256"` | For further customization of cache_dir if needed. |
 | config.cache.diskDirectory | string | `"/var/cache/squid"` |  |
 | config.cache.diskMaxSize | string | `"1 GB"` |  |
 | config.cache.diskSpace | int | `10000` | in MB |
