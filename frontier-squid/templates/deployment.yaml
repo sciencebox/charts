@@ -7,8 +7,8 @@ metadata:
 spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
-   matchLabels:
-     {{- include "frontier-squid.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "frontier-squid.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
@@ -46,6 +46,10 @@ spec:
               subPath: squid.conf
             - name: frontier-squid-disk-cache
               mountPath: {{ default "/var/cache/squid" .Values.config.cache.diskDirectory }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
       containers:
       - name: frontier-squid
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -78,6 +82,10 @@ spec:
             subPath: squid.conf
           - name: frontier-squid-disk-cache
             mountPath: {{ default "/var/cache/squid" .Values.config.cache.diskDirectory }}
+        {{- if .Values.containerSecurityContext }}
+        securityContext:
+          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
+        {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}

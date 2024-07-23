@@ -61,6 +61,7 @@ Chartmuseum format is deprecated. The last chart tag published in chartmuseum fo
 | config.cache.minSize | string | `"0 KB"` | Applies to both in-memory and on disk caches |
 | config.fileDescriptors | int | `16384` |  |
 | configFile | string | `"files/mysquid.conf"` | Squid configuration       - configFile: Provide a full configuration file.          Overrides the provided configMap only if provided and the file exists      - config: Parameters to change default valules in the provided configMap. |
+| containerSecurityContext | object | (See values) | securityContext of containers in the pod. |
 | customLabels | object | `{"component":"frontier-squid","service":"cvmfs"}` | Custom labels to identify frontier-squid pod(s).     They are used by node selection, if enabled (see above).    Label nodes accordingly to avoid scheduling problems. |
 | httpAccessAllow | list | `["stratum_ones","osgstorage","misc","grid_ca"]` | List of squid ACLs to enable via 'http_access allow' (see configmap for ACL definitions) |
 | image.pullPolicy | string | `"IfNotPresent"` | image pull policy |

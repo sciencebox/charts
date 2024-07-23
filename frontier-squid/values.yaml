@@ -19,6 +19,17 @@ resources: {}
 # -- priorityClassName, recommended for high-occupancy clusters to prioritize squid over other pods.
 priorityClassName: ""
 
+# -- securityContext for containers
+containerSecurityContext:
+  privileged: false
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsGroup: 5000
+  runAsUser: 5000
+
 # -- Assign frontier-squid pod(s) to a node with a specific label
 #    and distribute them on different nodes to avoid single points of failure.
 podAssignment:
