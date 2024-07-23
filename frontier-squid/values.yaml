@@ -26,6 +26,8 @@ containerSecurityContext:
   capabilities:
     drop:
       - ALL
+  seccompProfile:
+    type: RuntimeDefault
   runAsNonRoot: true
   runAsGroup: 5000
   runAsUser: 5000
