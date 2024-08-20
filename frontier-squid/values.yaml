@@ -1,8 +1,8 @@
 image:
   # -- Docker image for the frontier squid image
   repository: gitlab-registry.cern.ch/sciencebox/docker-images/frontier-squid
-  # -- image tag for frontier squid image
-  tag: 4.17-2.1
+  # -- Override image tag for frontier squid image if needed. Default is chart AppVersion.
+  tag:
   # -- image pull policy
   pullPolicy: IfNotPresent
 

@@ -8,7 +8,7 @@ properties:
     type: object
     required:
     - repository
-    - tag
+    # - tag
     - pullPolicy
     properties:
       repository:
@@ -20,8 +20,8 @@ properties:
         - Always
         - Never
         - IfNotPresent
-      tag:
-        type: string
+      #tag:
+        #type: string
   replicas:
     type: integer
   priorityClassName:
